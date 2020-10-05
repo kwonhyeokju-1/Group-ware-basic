@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
+<!--
+   @file documentDraft.html
+   @brief 문서기안하기 form view
+   @author 김건훈
+ -->	
+		<!-- CSS custom -->
+		<th:block layout:fragment="customCss">
+			 <link rel="stylesheet" href="/dist/css/electronicApproval/electronicApproval.css">
+			 <link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.8/summernote.css" rel="stylesheet">
+			 <link rel="stylesheet" href="/dist/css/electronicApproval/electronicApprovalSelect2.min.css">
+		</th:block>
+		
+		<th:block layout:fragment="customTitle">
+		<title>기안하기</title>
+		</th:block>
+	
+		<!--  Script custom -->
+		<th:block layout:fragment="customScript">
+			<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+			<script src="dist/js/electronicApproval/documentDraft.js"></script>
+		</th:block>
+		<th:block layout:fragment="customContents">
+						<div class="page-header">
+					       <div class="row align-items-end">
+					           <div class="col-lg-8">
+				               <div class="page-header-title">
+							   <i class="ik ik-edit bg-blue"></i>
+								   <div class="d-inline">
+										<h5>문서 기안하기</h5>
+										<span>문서를 기안 할 수 있는 곳입니다.</span>
+								   </div>
+								</div>
+					           </div>
+					           <div class="col-lg-4">
+					               <nav class="breadcrumb-container" aria-label="breadcrumb">
+					                   <ol class="breadcrumb">
+					                       <li class="breadcrumb-item">
+					                           <a th:href="@{/index}"><i class="ik ik-home"></i></a>
+					                       </li>
+					                       <li class="breadcrumb-item active" aria-current="page">기안하기</li>
+					                   </ol>
+					               </nav>
+					           </div>
+					       </div>
+					   </div>                    
+		               <div class="card">
+	               		<!-- 기안하기 테이블 상단 메뉴탭 Start-->
+		                 <div class="card-header ea-card-header">
+		                 	<h3>기안하기</h3>
+		                 </div>
+                      	<!-- 기안하기 테이블 상단 메뉴탭 End-->
+	                           <div class="electronic-approval-form">                 
+                               <!-- 문서 기안하기 기본설정 테이블 Start -->
+                                    <div class="card-header d-block">
+                                        <h6>기본설정</h6> 
+                                    <div class="card-body p-0 table-border-style">
+                                        <div class="table-responsive">
+                                            <table class="table document-form-table">                                          
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="table-active document-form-table-td">문서 종류</td>
+                                                        <td> 
+                                                        	<div class="document-draft-btn">         
+                                                        	<button id="draft-document-form-type-name-drop-down" class="btn btn-outline-dark btn-xs dropdown-toggle col-sm-12" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    		분류 선택<i class="ik ik-chevron-down mr-0 align-middle"></i>
+                                               				</button>
+			                                                <div class="dropdown-menu">
+			                                                	<th:block th:each="dftl:${eaDocumentFormTypeList}">
+			                                                		<a class="dropdown-item document-form-type-dropdown-item" th:text="${dftl.dFormType}" th:value="${dftl.dFormTypeCode}"></a>
+			                                                	</th:block>
+			                                                </div>
+			                                                </div>
+			                                                <div class="document-draft-btn" id="draft-document-form-type-drop-down">
+			                                                <button class="btn btn-outline-dark btn-xs dropdown-toggle col-sm-12" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    		종류 선택<i class="ik ik-chevron-down mr-0 align-middle"></i>
+                                               				</button>
+			                                                <div class="dropdown-menu" id="draft-document-form-name-drop-down-menu">
+			                                                	<a class="dropdown-item draft-document-form-name-drop-down"></a>
+			                                                </div>
+			                                                </div>
+                                              		  </td>
+                                                        <td class="table-active document-form-table-td">작성자</td>
+                                                        <td><span>김건훈</span></td>
+                                                    </tr>
+                                                     <tr>
+                                                        <td class="table-active document-form-table-td"><span>보존 연한</span><i class="ik ik-help-circle"></i></td>
+                                                        <td> 	
+                                                        	<button class="btn btn-outline-dark btn-xs dropdown-toggle document-draft-btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    			<span id="draft-document-form-expiry-date">보존연한 선택</span><i class="ik ik-chevron-down mr-0 align-middle"></i>
+                                               				</button>
+			                                                <div class="dropdown-menu ">
+			                                                	<a class="dropdown-item">1년</a>
+			                                                    <a class="dropdown-item">5년</a>
+			                                                    <a class="dropdown-item">10년</a>
+			                                                    <a class="dropdown-item">영구</a>
+			                                                </div>
+			                                            </td>
+                                                        <td class="table-active document-form-table-td"><span>보안 등급</span><i class="ik ik-help-circle"></i></td>
+                                                        <td>
+                                                        <div class="document-draft-btn">       
+                                                        	<button class="btn btn-outline-dark btn-xs dropdown-toggle document-draft-btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    		<span id="draft-document-form-security-level">보안등급 선택</span><i class="ik ik-chevron-down mr-0 align-middle"></i>
+                                               				</button>
+			                                                <div class="dropdown-menu">
+			                                                	<a class="dropdown-item">S등급</a>
+			                                                    <a class="dropdown-item">A등급</a>
+			                                                    <a class="dropdown-item">B등급</a>
+			                                                    <a class="dropdown-item">C등급</a>
+			                                                </div>
+			                                                </div>
+			                                                <div class="document-draft-btn">
+			                                                </div>       
+			                                           </td>
+                                                    </tr>                                                                         
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    </div>
+                                 <!-- 문서 기안하기 기본설정 테이블  End -->
+                                 
+                                 
+                                 	<div id="draft-documnet-before">
+	                                 <div class="card-header d-block">                                   
+                                       <p>문서 종류 선택 시  상세내용이 노출됩니다.<p>
+	                                 </div>
+	                                </div>
+	                                <!-- 문서 기안하기 결재선 지정 Start -->  
+                                    <div class="card-header d-block" id="draft-approval-format-table-after">                                   
+                                       <h6>결재선 </h6>
+                                       <!-- <p>문서 종류 선택 시 결재선이 노출됩니다.</p> -->
+                                       
+                                       <!-- 결재라인 포맷 테이블 Start -->
+                                       <div class="table-responsive">
+											<table style="height: 300px; width: 100%; table-layout: fixed; text-align: center; border: 1px solid #cdcdcd;">
+												<tbody>
+													<tr style="height: 50px;" id="approverPosition">
+														<td style="width: 96px; height: 140px; background: #f9f9f9; border: 1px solid #cdcdcd; "
+															rowspan="3">
+															<div class="col-md-12">
+																결재
+																<img src="img/electronicApproval/add.png"
+																	style="position: absolute; bottom: 80px; right: 5px; width: 20px; height: auto; cursor: pointer;"
+																	data-toggle="modal" data-target="#approvalLine" id="addApproverImg" data-backdrop="static" data-keyboard="false">
+															</div>
+														</td>
+														<td style="background: #f9f9f9; border-: 1px solid #cdcdcd;">직급1</td>
+														<td style="background: #f9f9f9; border: 1px solid #cdcdcd;"></td>
+														<td style="background: #f9f9f9; border: 1px solid #cdcdcd;"></td>
+														<td style="background: #f9f9f9; border: 1px solid #cdcdcd;"></td>
+														<td style="background: #f9f9f9; border: 1px solid #cdcdcd;"></td>
+														<td style="background: #f9f9f9; border: 1px solid #cdcdcd;"></td>
+														<td style="background: #f9f9f9; border: 1px solid #cdcdcd;"></td>
+													</tr>
+													<tr style="height: 100px; border: 1px solid #cdcdcd;">
+														<td style="border: 1px solid #cdcdcd;"></td>
+														<td style="border: 1px solid #cdcdcd;"></td>
+														<td style="border: 1px solid #cdcdcd;"></td>
+														<td style="border: 1px solid #cdcdcd;"></td>
+														<td style="border: 1px solid #cdcdcd;"></td>
+														<td style="border: 1px solid #cdcdcd;"></td>
+														<td style="border: 1px solid #cdcdcd;"></td>
+													</tr>
+													<tr style="height: 50px; border: 1px solid #cdcdcd;" id="approverName">
+														<td style="border: 1px solid #cdcdcd;">김건훈</td>
+														<td style="border: 1px solid #cdcdcd;"></td>
+														<td style="border: 1px solid #cdcdcd;"></td>
+														<td style="border: 1px solid #cdcdcd;"></td>
+														<td style="border: 1px solid #cdcdcd;"></td>
+														<td style="border: 1px solid #cdcdcd;"></td>
+														<td style="border: 1px solid #cdcdcd;"></td>
+													</tr>
+													<tr style="height: 50px; border: 1px solid #cdcdcd;" id="agreementName">
+														<td style="background: #f9f9f9; border: 1px solid #cdcdcd;">
+															<div class="col-md-12">합의
+																<img src="img/electronicApproval/add.png" style="position: absolute; right: 5px; width: 20px; height: auto; cursor: pointer;" data-toggle="modal" data-target="#agreementLine" id="addAgreementImg" data-backdrop="static" data-keyboard="false">							
+															</div>
+														</td>
+														<td></td>
+														<td></td>
+														<td></td>
+														<td></td>
+														<td></td>
+														<td></td>
+														<td></td>
+													</tr>
+													<tr style="height: 45px;">
+														<td style="background: #f9f9f9; border: 1px solid #cdcdcd;">
+														<div class="col-md-12">참조</div>
+														</td>
+														<td colspan="7"> 
+															<form>
+												            	<select id="referrerSelect" class="form-control" multiple="multiple">
+													          		<option value=""></option>
+													          		<optgroup label="TEAM 02">
+														                <option value="김건훈">김건훈</option>
+														                <option value="김정훈">김정훈</option>
+														                <option value="이원준">이원준</option>
+														                <option value="김연지">김연지</option>
+													                </optgroup>
+													                <optgroup label="경영지원부">
+														             	<option value="사원1">사원1</option>
+														                <option value="사원2">사원2</option>
+														                <option value="사원3">사원3</option>
+													                </optgroup>
+													                <optgroup label="영업관리">
+														                <option value="사원4">사원4</option>
+														                <option value="사원5">사원5</option>
+														                <option value="사원6">사원6</option>
+													                </optgroup>
+													                <optgroup label="고객응대">
+														                <option value="사원7">사원7</option>
+														                <option value="사원8">사원8</option>
+													                </optgroup>
+												           		</select>
+												    		</form>
+								 						 </td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+                                       <!-- 결재라인 포맷 테이블 End -->
+                                    </div>
+                                    	<!-- 결재자 추가 Modal View Start -->
+										  <div class="modal fade show" id="approvalLine" role="dialog" aria-hidden="true">
+										    <div class="modal-dialog modal-sm mt-0 mb-0 modal-dialog-centered" role="document">
+										     <div class="modal-content">
+										        <div class="modal-header">
+										            <h5 class="modal-title">결재 설정</h5>	
+										        </div>
+										        <div class="modal-body">
+										      <ul class="list-group approverGroupList" style="overflow-y: inherit; overflow-x:hidden; max-height: 200px; -webkit-overflow-scrolling: touch;">
+												  <li class="list-group-item list-group-item-action disabled">
+												  	<select id="approverSelect" class="form-control">
+																    <option value="">클릭 후 입력</option>
+															   		<optgroup label="TEAM 02">
+															          <option value="김건훈,직급1">김건훈</option>
+															          <option value="김정훈,직급2">김정훈</option>
+															          <option value="이원준,직급3">이원준</option>
+															          <option value="김연지,직급4">김연지</option>
+															         </optgroup>
+															         <optgroup label="경영지원부">
+															       	  <option value="사원1,직급5">사원1</option>
+															          <option value="사원2,직급6">사원2</option>
+															          <option value="사원3,직급7">사원3</option>
+															         </optgroup>
+															         <optgroup label="영업관리">
+															          <option value="사원4,직급8">사원4</option>
+															          <option value="사원5,직급9">사원5</option>
+															          <option value="사원6,직급10">사원6</option>
+															         </optgroup>
+															         <optgroup label="고객응대">
+															          <option value="사원7,직급11">사원7</option>
+															          <option value="사원8,직급12">사원8</option>
+															         </optgroup>
+																  </select>
+												  </li>
+												  <li class="list-group-item list-group-item-action">김건훈</li>
+									  
+											</ul>
+									   		 
+										        </div>
+										        <div class="modal-footer">
+										            <button type="button" class="btn btn-primary" data-dismiss="modal" id=approverAddBtn>확인</button>
+										            <button type="button" class="btn btn-secondary" data-dismiss="modal" id=approverCancelBtn>취소</button>
+										        </div>
+										    	</div>
+										   </div>
+										 </div>  
+										<!-- 결재자 추가 Modal View End -->
+										<!-- 합의자 추가 Modal View Start -->
+										  <div class="modal fade show" id="agreementLine" role="dialog" aria-hidden="true">
+										    <div class="modal-dialog modal-sm mt-0 mb-0 modal-dialog-centered" role="document">
+										     <div class="modal-content">
+										        <div class="modal-header">
+										            <h5 class="modal-title">합의 설정</h5>		
+										        </div>
+										        <div class="modal-body">
+										      <ul class="list-group agreementGroupList" style="overflow-y: inherit; overflow-x:hidden; max-height: 200px; -webkit-overflow-scrolling: touch;">
+												  <li class="list-group-item list-group-item-action disabled">
+												  	<select id="agreementSelect" class="form-control">
+																    <option value="">클릭 후 입력</option>
+															   		<optgroup label="TEAM 02">
+															          <option value="김건훈,직급1">김건훈</option>
+															          <option value="김정훈,직급2">김정훈</option>
+															          <option value="이원준,직급3">이원준</option>
+															          <option value="김연지,직급4">김연지</option>
+															         </optgroup>
+															         <optgroup label="경영지원부">
+															       	  <option value="사원1,직급5">사원1</option>
+															          <option value="사원,직급6">사원2</option>
+															          <option value="사원3,직급7">사원3</option>
+															         </optgroup>
+															         <optgroup label="영업관리">
+															          <option value="사원4,직급8">사원4</option>
+															          <option value="사원5,직급9">사원5</option>
+															          <option value="사원6,직급10">사원6</option>
+															         </optgroup>
+															         <optgroup label="고객응대">
+															          <option value="사원7,직급11">사원7</option>
+															          <option value="사원8,직급12">사원8</option>
+															         </optgroup>
+																  </select>
+												  </li>
+												  <li class="list-group-item list-group-item-action" style="display:none;">
+												  	<!-- <img src="img/electronicApproval/cancel.png" style="position: absolute; float:left; width: 10px; height: auto; margin-top : 5px; margin-left: 10px;" class="approverCancel"> -->
+												  </li>
+									  
+											</ul>
+									   		 
+										        </div>
+										        <div class="modal-footer">
+										            <button type="button" class="btn btn-primary" data-dismiss="modal" id=agreementAddBtn>확인</button>
+										            <button type="button" class="btn btn-secondary" data-dismiss="modal" id=agreementCancelBtn>취소</button>
+										        </div>
+										    	</div>
+										   </div>
+										 </div>  
+										<!-- 합의자 추가 Modal View End -->
+                                 <!-- 문서 기안하기 결재선 지정 End -->
+                                 
+                                 <!-- 문서 기안하기 프로젝트 선택 Start --> 
+                                 <div class="card-header d-block" id="project-document-section">                                   
+                                       <h6>프로젝트</h6>
+                                       <button class="btn btn-outline-dark btn-xs dropdown-toggle document-draft-btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                  		프로젝트 선택<i class="ik ik-chevron-down mr-0 align-middle"></i>
+                             			</button>
+		                                 <div class="dropdown-menu">
+		                                 	<a class="dropdown-item">2팀 프로젝트 그룹웨어</a>
+		                                    <a class="dropdown-item">쇼핑몰 개발</a>
+		                                 </div>
+                                 </div>
+                                 <!-- 문서 기안하기 프로젝트 선택 End -->
+                                 
+                                 <!-- 문서 기안하기 제목 Start --> 
+                                <div id="draft-documnet-contents">
+                                 <div class="card-header d-block">                                   
+                                       <h6>제목</h6>
+                                       <input type="text" class="form-control document-draft-title" >
+                                 </div>
+                                 <!-- 문서 기안하기 제목 End -->  
+                                 
+                                 <!-- 문서 기안하기 상세내용 summer note editor Start -->    
+                                    <div class="card-body  table-border-style">
+                                       <h6>상세 입력 </h6>
+                                       <!-- <p>문서 종류 선택 시 상세 입력이 노출됩니다.</p> -->
+                                    	<textarea id="draft-document-summernote" rows="10" ></textarea>
+                                    </div>
+                                 <!-- 문서 기안하기 상세내용 summer note editor End --> 
+                                    
+                                 <!-- 문서 기안하기 파일첨부 Start --> 
+		                                 <div class="card-header d-block">                                   
+		                                       <h6>파일 첨부</h6>
+		                                       <ul class="nav">
+				                                    <li class="nav-item add-file-nav">
+				                                        <a class="text-primary" th:href="@{#}">파일 첨부</a>
+				                                    </li>
+				                                    <li class="nav-item add-file-nav">I</li>
+				                                    <li class="nav-item">
+				                                        <a class="text-primary" th:href="@{#}">관련문서 첨부</a>
+				                                    </li>
+	                               			   </ul>
+		                                 </div>
+                                 <!-- 문서 기안하기 파일첨부 End -->
+                           
+								 <!-- 기안하기 버튼 Start -->  
+                                    <div class="card-header d-block ea-submit-btn">                                   
+                                        <button type="button" class="btn btn-primary">기안하기</button>
+                                    </div>
+                                </div>
+                                 	<!-- 기안하기 버튼  End -->
+                                  </div>            
+                        		</div>
+                        		<!-- 기안하기 페이지 테이블 내 보존연한, 보안등급 물음표 아이콘 Modal View Start --> 
+	                        	<div class="modal-dialog modal-sm mt-0 mb-0 ruletip" role="document">
+						        	<div class="modal-content">
+	                               		 <div class="modal-body">
+	                                   		 <p id="modal-content-type"></p>
+	                                	 </div>
+	                           		 </div>
+                           		</div>
+                        		<!-- 기안하기 페이지 테이블 내 보존연한, 보안등급 물음표 아이콘 Modal View End -->               		
+                        		
+		</th:block>
+
+	<th:block layout:fragment="customJs">        
+        <script>window.jQuery || document.write('<script src="../src/js/vendor/jquery-3.3.1.min.js"><\/script>')</script>
+        <script src="/plugins/popper.js/dist/umd/popper.min.js"></script>
+        <script src="/plugins/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="/plugins/perfect-scrollbar/dist/perfect-scrollbar.min.js"></script>
+        <script src="/plugins/screenfull/dist/screenfull.js"></script>
+        <script src="/plugins/sweetalert/dist/sweetalert.min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.8/summernote.js"></script>
+        <script src="/summernote/lang/summernote-ko-KR.js"></script>
+        <script src="dist/js/theme.js"></script>
+        <script src="/js/layouts.js"></script>
+        <script src="dist/js/electronicApproval/electronicApprovalSelect2.min.js"></script>
+        
+        <!-- select2 플러그인 사용 Start (select2 플러그인 미적용 때문에 하단에 배치)-->
+		<script type="text/javascript">
+		
+		/* 이름과직급이 "," 기준으로 자르고 자른값을 배열로 담기 위한 배열변수 */
+		var approverVal = new Array();
+		/* approverVal 배열에 담긴값을 다차원 배열에 담아주기 위하면 선언한 배열변수*/
+		var approverArray = new Array();
+		
+		var agreementVal = new Array();
+		var agreementArray = new Array();
+		
+		$(document).ready(function() {
+				/* 참조자 지정 select box event*/
+			  $('#referrerSelect').select2({
+			   	  placeholder: "참조자를 추가하려면 입력하세요."    
+			  });
+				
+			   /* 결재자 지정 select box event*/		
+			  $('#approverSelect').select2().on("select2:select", function (e){
+			      var selectedElement = $(e.currentTarget);
+			      var approverOriginVal = selectedElement.val();
+			      approverVal = approverOriginVal.split(',');
+			      //console.log(approverOriginVal);
+			     
+			      approverArray.push(approverVal);
+			      //console.log(approverArray);
+			      
+			      var clone = $('.approverGroupList').children('li:last-child').clone();
+			      var tag = "<img src=\"img/electronicApproval/cancel.png\" style=\"position: absolute; float:left; width: 10px; height: auto; margin-top : 5px; margin-left: 10px;\" class=\"approverCancel\">";
+			      clone.text(approverVal[0]);
+			      clone.attr('value',approverOriginVal);
+			      
+			      clone.append(tag);
+			      $(".approverGroupList").append(clone);
+			      
+			      $('#approverSelect').val(null).trigger('change');
+			  });
+			 
+			   /* 지정된 결재자 삭제  event*/
+			  $(document).on('click','.approverCancel',function(){
+				 //console.log('취소버튼 테스트');
+				 //console.log($(this).parent().attr('value'));
+					var cancelApprover = $(this).parent().attr('value');
+				  for(var i=0; i<approverArray.length; i++){
+					  approverVal = approverArray[i];
+					  for(var j=0;j<approverVal.length/2; j++){
+						  var name = approverVal[j]
+						  var postion = approverVal[j+1]
+						  //console.log(name);
+						  //console.log(postion);
+						  if(name+","+postion==cancelApprover){
+							  approverArray.splice(i, 1);
+						  }
+					  }		
+				  }
+				  //console.log(approverArray);
+				  $(this).parent().remove();
+			  });
+			  
+			   
+			   /* 지정된 결재자 결재라인에 뿌려주는  event*/
+			  $(document).on('click','#approverAddBtn',function(){
+				 //console.log('결재 설정된 사람들 결재라인에 추가하기위한 버튼') 
+				  for(var i=0; i<approverArray.length; i++){
+					  approverVal = approverArray[i];
+					  for(var j=0;j<approverVal.length/2; j++){
+						  var name = approverVal[j]
+						  var postion = approverVal[j+1]
+						  //console.log(name);
+						  //console.log(postion);
+						  
+						  $('#approverPosition td:nth-child('+(i+3)+')').text(postion);
+						  $('#approverName td:nth-child('+(i+2)+')').text(name);
+					  }		
+				  }
+			  });
+			   
+			  /* 결재자 변경을위한 결재라인 초기화 이벤트*/
+			  $('#addApproverImg').on('click',function(){
+				 //console.log('결재자추가플러스이미지클릭') 
+				 for(var i=0; i<approverArray.length; i++){
+					 $('#approverPosition td:nth-child('+(i+3)+')').text("");
+					 $('#approverName td:nth-child('+(i+2)+')').text("");
+				 }
+			  });
+			
+			  /* 취소 버튼클릭시 지정해놓았던 결재자들 초기화 이벤트 */
+			  $(document).on('click','#approverCancelBtn',function(){
+				  var result = confirm('지정한 결재자가 초기화 됩니다. 계속하시겠습니까?');
+				  if(result){
+				  $('.approverCancel').parent().remove();
+				  approverArray = new Array(); 	
+				  }
+			  });
+			 
+			   /* 합의자 지정 select box event*/
+			  $('#agreementSelect').select2().on("select2:select", function (e){
+			      var selectedElement = $(e.currentTarget);
+			      var agreementOriginVal = selectedElement.val();
+			      agreementVal = agreementOriginVal.split(',');
+			      //console.log(agreementVal);
+			      agreementArray.push(agreementVal);
+			      var clone = $('.agreementGroupList').children('li:last-child').clone();
+			      var tag = "<img src=\"img/electronicApproval/cancel.png\" style=\"position: absolute; float:left; width: 10px; height: auto; margin-top : 5px; margin-left: 10px;\" class=\"agreementCancel\">";
+			      clone.text(agreementVal[0]);
+			      clone.attr('value',agreementOriginVal);
+			      clone.css('display','block')
+			      clone.append(tag);
+			      $(".agreementGroupList").append(clone);
+			      $('#agreementSelect').val(null).trigger('change');
+			  });
+			 
+			   /* 합의자 결재자 삭제  event*/
+			  $(document).on('click','.agreementCancel',function(){
+				  //console.log('취소버튼 테스트');
+				  var cancelAgreememt = $(this).parent().attr('value');
+				  
+				  for(var i=0; i<agreementArray.length; i++){
+					  agreementVal = agreementArray[i];
+					  for(var j=0;j<agreementVal.length/2; j++){
+						  var name = agreementVal[j]
+						  var postion = agreementVal[j+1]
+						  //console.log(name);
+						  //console.log(postion);
+						  if(name+","+postion==cancelAgreememt){
+							  agreementArray.splice(i, 1);
+						  }
+					  }		
+				  }
+				  console.log(agreementArray);
+				  $(this).parent().remove();
+					
+			  });	
+			   
+			   /* 지정된 합의자 결재라인에 뿌려주는  event*/
+			  $(document).on('click','#agreementAddBtn',function(){
+				 //console.log('합의설정된 사람들 결재라인에 추가하기위한 버튼') 
+				  for(var i=0; i<agreementArray.length; i++){
+					  agreementVal = agreementArray[i];
+					  for(var j=0;j<agreementVal.length/2; j++){
+						  var name = agreementVal[j]
+						  var postion = agreementVal[j+1]
+						  //console.log(name);
+						  //console.log(postion);
+						  console.log(name);
+						  $('#agreementName td:nth-child('+(i+2)+')').text(name);
+					  }		
+				  }
+			  });
+			   
+			  /* 합의자 변경을위한 결재라인 초기화 이벤트*/
+			  $('#addAgreementImg').on('click',function(){
+				 //console.log('결재자추가플러스이미지클릭') 
+				 for(var i=0; i<agreementArray.length; i++){
+					 $('#agreementName td:nth-child('+(i+2)+')').text("");
+				 }
+			  });
+			  
+			  /* 취소 버튼클릭시 지정해놓았던 합의자들 초기화 이벤트 */
+			  $(document).on('click','#agreementCancelBtn',function(){
+				  var result = confirm('지정한 합의자가 초기화 됩니다. 계속하시겠습니까?');
+				  if(result){
+					  $('.agreementCancel').parent().remove();
+					  agreementArray = new Array(); 					  
+				  }
+			  });
+		});
+	
+		</script>
+		<!-- select2 플러그인 사용 End-->
+	</th:block>
+</html>

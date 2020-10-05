@@ -1,0 +1,137 @@
+<!doctype html>
+<html class="no-js" lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>로그인 화면</title>
+        <meta name="description" content="">
+        <meta name="keywords" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <link rel="icon" href="../favicon.ico" type="image/x-icon" />
+
+        <link href="https://fonts.googleapis.com/css?family=Nunito+Sans:300,400,600,700,800" rel="stylesheet">
+        
+        <link rel="stylesheet" href="../plugins/bootstrap/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="../plugins/fontawesome-free/css/all.min.css">
+        <link rel="stylesheet" href="../plugins/ionicons/dist/css/ionicons.min.css">
+        <link rel="stylesheet" href="../plugins/icon-kit/dist/css/iconkit.min.css">
+        <link rel="stylesheet" href="../plugins/perfect-scrollbar/css/perfect-scrollbar.css">
+        <link rel="stylesheet" href="../dist/css/theme.min.css">
+        <script src="../src/js/vendor/modernizr-2.8.3.min.js"></script>
+        <style>
+        
+        	.login-btn-div{
+        		margin-bottom: 5px;
+        	}
+        </style>
+    </head>
+
+    <body>
+        <!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+        <div class="auth-wrapper">
+            <div class="container-fluid h-100">
+                <div class="row flex-row h-100 bg-white">
+                    <div class="col-xl-8 col-lg-6 col-md-5 p-0 d-md-block d-lg-block d-sm-none d-none">
+                        <div class="lavalite-bg" style="background-image: url('../img/auth/login-bg.jpg')">
+                            <div class="lavalite-overlay"></div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-6 col-md-7 my-auto p-0">
+                        <div class="authentication-form mx-auto">
+                            <div class="logo-centered">
+                                <a href="#"><img src="../src/img/brand.svg" alt=""></a>
+                            </div>
+                            <h3>권한별 로그인 화면 입니다.</h3>
+                            <div class="login-btn-div">
+                            
+	                            <button type="button" class="btn btn-primary login-btn">관리자</button>
+	                            <button type="button" class="btn login-btn ">프로젝트관리자</button>
+	                            <button type="button" class="btn login-btn ">일반사원1</button>
+	                            <button type="button" class="btn login-btn ">일반사원2</button>
+                            
+                            </div>
+                            <form class="login-form" action="/loginCheck" method="POST">
+                                <div class="form-group">
+                                    <input type="text" class="form-control input-id" name="userId" value="id001">
+                                    <i class="ik ik-user"></i>
+                                </div>
+                                <div class="form-group">
+                                    <input type="password" class="form-control input-pw" name="userPw" value="pw001">
+                                    <i class="ik ik-lock"></i>
+                                </div>
+                               
+                                <div class="sign-btn text-center">
+                                    <button class="btn btn-theme">로그인</button>
+                                </div>
+                            </form>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script>window.jQuery || document.write('<script src="../src/js/vendor/jquery-3.3.1.min.js"><\/script>')</script>
+        <script src="../plugins/popper.js/dist/umd/popper.min.js"></script>
+        <script src="../plugins/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="../plugins/perfect-scrollbar/dist/perfect-scrollbar.min.js"></script>
+        <script src="../plugins/screenfull/dist/screenfull.js"></script>
+        <script src="../dist/js/theme.js"></script>
+        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+        <script>
+            (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+            function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+            e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+            e.src='https://www.google-analytics.com/analytics.js';
+            r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+            ga('create','UA-XXXXX-X','auto');ga('send','pageview');
+        
+        
+        </script>
+        
+        <script>
+        	$('.login-btn').click(function(){
+        		
+        		var type = $(this).text();
+        		$('.login-btn').removeClass('btn-primary');
+        		this.classList.toggle('btn-primary')
+        		console.log(type)
+        		
+        		switch(type){
+        		
+        		case '관리자' :
+        			
+       				$('.input-id').val('id001');
+       				$('.input-pw').val('pw001');
+        			break;
+        		case '프로젝트관리자' :
+        			
+        			$('.input-id').val('id004');
+					$('.input-pw').val('pw004');
+        			break;
+        		case '일반사원1' :
+        			
+       				$('.input-id').val('id002');
+   					$('.input-pw').val('pw002');
+        			break;
+        			
+        		case '일반사원2' :
+        			
+        			$('.input-id').val('id003');
+					$('.input-pw').val('pw003');
+        			break;
+        		}
+        		
+        		
+        	})
+        
+        
+        
+        </script>
+    </body>
+</html>

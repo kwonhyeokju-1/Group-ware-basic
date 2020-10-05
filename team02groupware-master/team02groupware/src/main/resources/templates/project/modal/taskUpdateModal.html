@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div class="modal fade edit-layout-modal" id="editLayoutItem"
+		tabindex="-1" role="dialog" aria-labelledby="editLayoutItemLabel"
+		aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="editLayoutItemLabel">업무 수정</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="pr-update-modal card-body">
+							<form class="forms-sample" method="post">
+								<div class="form-group">
+									<label for="projectTitle">업무 제목</label> <input type="text"
+										class="form-control" id="updateTitle" name="projectTitle" th:value="${resultMap.get('title')}">
+								</div>
+								<div class="form-group">
+									<label for="projectDesc">설명(선택사항)</label> <input type="text"
+										class="form-control" id="updateDesc" name="projectDesc" th:value="${resultMap.get('desc')}">
+								</div>
+								<div class="form-group">
+									<label for="datepicker1">시작일</label> <input type="text"
+										name="projectStart" class="form-control datetimepicker-input"
+										id="datepicker1" data-toggle="datetimepicker"
+										data-target="#datepicker1" th:value="${resultMap.get('start')}">
+								</div>
+								
+								<div class="form-group">
+									<label for="datepicker2">마감일</label> <input type="text"
+										name="projectDeadline"
+										class="form-control datetimepicker-input" id="datepicker2"
+										data-toggle="datetimepicker" data-target="#datepicker2" th:value="${resultMap.get('dead')}">
+								</div>
+								<div class="form-group">
+									<label for="datepicker3">실제 완료일</label> <input type="text"
+										name="projectEnd" class="form-control datetimepicker-input"
+										id="datepicker3" data-toggle="datetimepicker"
+										data-target="#datepicker3" th:value="${resultMap.get('end')}">
+								</div>
+								<div class="form-group">
+									<label>업무 멤버(선택사항)</label>
+									<div>
+										<form class="sample-form">
+											<div class="add-btn-wrap">
+												<img class="member-update-btn"
+													src="/img/project/member_plus_btn.png">
+											</div>
+											<div class="update-member-select form-group">
+												<select class="form-control select2" id="update-select2"
+													multiple="multiple">
+													<option value="김연지" selected>김연지</option>
+													<option value="김건훈">김건훈</option>
+													<option value="김정훈">김정훈</option>
+													<option value="이원준">이원준</option>
+													<option value="김연지">김영훈</option>
+													<option value="김건훈">김곤지</option>
+													<option value="김정훈">김상훈</option>
+													<option value="이원준">이원영</option>
+												</select>
+											</div>
+										</form>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-light" data-dismiss="modal">취소</button>
+					<button type="button" class="btn btn-primary">수정</button>
+					<button type="button" class="btn btn-danger project-delete-btn">삭제</button>
+				</div>
+			</div>
+		</div>
+	</div>

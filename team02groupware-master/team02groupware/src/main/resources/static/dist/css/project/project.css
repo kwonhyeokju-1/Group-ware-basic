@@ -1,0 +1,143 @@
+@charset "UTF-8";
+/*
+작성자: 김연지
+적용페이지: project/projectList(프로젝트 추가 모달창, 수정 모달창 포함)
+*/
+
+/*---------------------------------------------- 프로젝트 리스트 start ---------------------------------------------- */
+
+.pr-wrap-content{
+	margin:0 auto;
+	max-width:1300px;
+	transform:translateZ(0);
+	
+}
+
+
+/* ------프로젝트 추가 버튼 start---- */
+.pr-btn-wrap{
+	height:40px;
+	width:100%;
+	margin-left:4px;
+}
+
+.info{
+	margin-left:10px;
+	font-size:15px;
+	color:#dadada;
+}
+/* ------프로젝트 추가 버튼 end----- */
+
+/* ------프로젝트 리스트 카드 start---- */
+.project-card{
+	display:flex;
+}
+.project-card .mt-3, .my-3 {
+	margin-top: 4rem !important;
+}
+.project-list-wrap{
+	margin:5px;
+}
+
+
+@media only screen and (min-width: 560px) {
+.pr-header { 
+	min-width:200px; max-width: 200px; }
+
+}
+
+
+.project-list {
+	margin:0 auto;
+	height:200px;
+	border:0.5px solid #fff;
+	box-sizing:border-box;
+}
+
+.project-list:hover { 
+	cursor:pointer;
+	transition:.1s;
+	border:0.5px solid #2dce89;
+	bottom:4px;
+	display:flex;
+	}
+	
+
+.project-list:hover .pr-ikon{
+	transition-timing-function:ease-in-out;
+	transition:.8s;
+	display:block;
+}
+
+.pr-header{
+	width:90%;
+	float:left;
+}
+.state{
+	height:100px;
+	max-width:85%;
+}
+.pr-title {
+	width:100%;
+	float: left;
+	font-size:1.2em;
+	line-height: 1.3em;
+}
+.pr-card-subtitle{
+	line-height: 1.3em;
+	min-height:45px;
+	min-width:40px;
+	font-size:1.1em;
+}
+
+.pr-ikon {
+	display:none;
+	position: absolute;
+	bottom:70px;
+	right:12px;
+	top:10px;
+	font-size:inherit !important;
+	list-style:none;
+	z-index:1;
+}
+
+.pr-status{
+	margin-bottom:10px;
+
+}
+.btn-icon{
+	line-height:0 !important;
+}
+.pr-setting-li{
+	margin-bottom:8px;
+}
+
+.pr-progress{
+	position:relative;
+	top:10px;
+}
+
+/*-------프로젝트 리스트 테이블 --------  */
+#displayOptions{
+	position:absolute;
+	top:0px;
+	right:0px;
+	
+	
+}
+.list-card{
+	margin-top:5px !important;
+}
+
+.pr-table-list{
+	display:none;
+	padding:50px;
+}
+
+/*---------------------------------------------- 프로젝트 리스트 end ---------------------------------------------- */
+
+
+
+
+
+

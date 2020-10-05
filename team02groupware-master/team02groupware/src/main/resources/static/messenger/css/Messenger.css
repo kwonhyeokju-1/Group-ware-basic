@@ -1,0 +1,224 @@
+@charset "UTF-8";
+
+	/* .chat-room-body::-webkit-scrollbar { 
+	
+	    display: none !important; 
+	
+	} */ 
+		
+	/* 대화방 리스트 Start*/
+	.chat-list-room{
+		border-radius: 5px / 5px;
+		cursor: pointer;
+	}
+	.chat-list-title{
+		font-weight: bold;
+	}
+	.chat-list-body{
+		max-height: 500px;
+		overflow-y: scroll;
+		overflow-x: hidden;
+		-ms-overflow-style: none;
+	}
+	.chat-list-time{
+		color: #979797;
+		font-size: 12px;
+	}
+	.chat-list-room-info{
+		width: 190px;
+	}
+	.chat-list-room-user{
+		color: #979797;
+	}
+	.chat-list-room-badge{
+		color: #fff; 
+		padding: 3px;
+		width: 28px;
+		float: right;"
+	}
+	/* 대화방 리스트 End */
+	
+	/*** 대화방 상세보기 Start***/
+	/* .card .card-header{
+		padding: 1.2rem 1.3rem 1.3rem 0.8rem;
+	    border: 0;
+	    background: none;
+	}
+	
+	.card .card-block{
+		padding: 15px 10px 10px 10px;
+	} */
+	
+	.chat-room{
+		border:1px solid #f1f1f1; 
+		position:fixed; 
+		top:100px; 
+		left:500px; 
+		z-index:1;
+	}
+	
+	.chat-room-detail{
+		padding: 0px;
+		height: 350px;
+	}
+	
+	.chat-room-title{
+		font-weight: bold;
+		font-size: 0.9rem;
+	}
+	
+	.chat-room-body{
+		padding: 20px 20px 20px 10px;
+		height: 350px;
+		overflow-y: scroll;
+		overflow-x: hidden;
+		-ms-overflow-style: none;
+	}
+	
+	.chat-room-name{
+		font-size: 0.80rem;
+		font-weight: bold;
+	}
+	
+	.received-chat .chat-room-message{
+		clear: both;
+		display: block !important;
+		width: fit-content;
+	}
+	
+	.send-chat .chat-room-message{
+		display: block;
+		width: fit-content;
+		text-align: right !important; 
+	}
+	
+	.chat-card .send-chat {
+		clear: both;
+	    text-align: right;
+	    float: right;
+	}
+	.chat-card .received-chat {
+		clear: both;
+	    text-align: left;
+	    float: left;
+	}  
+	
+	.chat-room-menu{
+		padding: 15px 15px;
+		text-align: center;
+	}
+	.chat-room-menu-item{
+		
+		margin: 5px 0px 15px 0px;
+		padding: 0;
+	}
+	.chat-room-user{
+		color: #979797;
+	}
+	
+	.chat-room-input{
+		padding: 10px 38px 5px 10px;
+	}
+	
+	/* 대화방 상세보기 End */
+	
+	
+	/* 메시지 부분 Start */
+	.received-chat .msg-user{
+	  		float: left;
+	  		width: 55px;
+	}
+	
+	.received-chat .msg-content{
+		float: left;
+	}
+	
+	.received-chat .msg-text-wrap{
+		clear: both;
+	}
+	
+	.received-chat .msg-time{
+		float:left;
+	}
+	
+	.send-chat .msg-user{
+		float: right;
+		width: 55px;
+	}
+	
+	.send-chat .msg-content{
+		float: right;		                		
+	}
+	
+	.send-chat .msg-text-wrap, .send-chat .msg-time{
+		clear: both;
+	}
+	/* 메시지 부분 End */
+	
+	
+	/* 대화방 생성 Modal 네임태그 Start */
+	.name-tag-area{
+		
+		max-height:101px; 
+		overflow-y: auto; 
+		margin-bottom: 10px;
+	}
+	.name-tag{
+		display: inline-block;
+		margin: 0 2px 10px 0;
+	}
+	.name-tag i{
+		position: relative;
+		left: -20px;
+		top:-5px;
+	}
+	.tag-user-name{
+		position: relative; 
+		left: -70px; 
+		bottom: -30px; 
+		font-weight: 500;
+	}
+	/* 대화방 생성 Modal 네임태그 End */
+	
+	/* 대화방 생성 Modal 참여자 선택 라디오박스 Start */
+	.chat-radio-group{
+		margin-bottom: 10px;
+	}
+	.chat-radio-group-header{
+		margin-bottom: 10px;
+	}
+	.chat-radio-user-choice{
+		overflow-y: scroll; 
+		height:230px; 
+		padding:20px;
+	}
+	.chat-radio-group-name{
+		font-weight: bold; 
+		text-align: center;
+		
+	}
+	.chat-radio-user{
+		margin-bottom: 10px;
+		
+	}
+	.chat-radio-user-name{
+		font-weight: 500;
+		cursor: pointer;
+	}
+	.chat-radio-user-group{
+		font-weight: 500;
+		cursor: pointer;
+	}
+	.chat-radio-user i.helper{
+		left: 400px;
+	}
+	/* 대화방 생성 Modal 참여자 선택 라디오박스 End */
+	
+	
+	
+	
+	
+	
+	
+	
+	

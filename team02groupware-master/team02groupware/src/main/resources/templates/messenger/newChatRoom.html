@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+
+
+<div class="align-middle mb-25 chat-list-room" th:classappend="|chat-list-room-${roomInfo.roomCode}|">
+	               
+   	<img src="../messenger/img/pengsu2.jpg" alt="user image" class="rounded-circle img-40 align-top mr-15">	<!-- 대표 이미지 -->
+   
+   	<div class="d-inline-block chat-list-room-info">
+   
+       	<span class="chat-list-title" th:text="${roomInfo.roomName}"></span>		<!-- 대화방 제목 -->
+       	
+       	<span class="chat-list-room-user" th:text="${roomInfo.roomCount}"></span>	<!-- 대화방 인원수 -->
+       	
+       	<p class="text-muted mb-0"> 새로운 대화방입니다.	<!-- 대화방 최근 메시지 -->
+       		<span class="badge bg-success chat-list-room-badge new" >1</span>	<!-- 안읽은 메시지 개수 -->
+       	</p>
+       
+       	<span class="chat-list-time status deactive text-mute" th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd HH:mm')}">	<!-- 최근 메시지 시간 표시 -->
+       		
+       	</span>
+       	
+       	<input type="hidden" class="chat-room-code" th:value="${roomInfo.roomCode}">
+       
+   	</div>
+   
+</div>

@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="com.team02.groupware.mapper.ElectronicApprovalMapper"> 
+ 
+ <!-- 양식함관리 페이지 내 문서양식 테이블 dto map -->
+  <resultMap type="ElectronicApprovalDocument" id="eaDocumentFormResultMap">
+  	<result property="dFormCode" column="d_form_code"/>
+  	<result property="dSecurityLevel" column="d_security_level"/>
+  	<result property="dFormTypeCode" column="d_form_type_code"/>
+  	<result property="dApprovalFormatCode" column="d_approval_format_code"/>
+  	<result property="dFormName" column="d_form_name"/>
+  	<result property="dFormAbbreviation" column="d_form_abbreviation"/>
+  	<result property="dFormDetailExplanation" column="d_form_detail_explanation"/>
+  	<result property="dSecurityLevelChangeable" column="d_security_level_changeable"/>
+  	<result property="dExpiryDate" column="d_expiry_date"/>
+  	<result property="dExpiryDateChangeable" column="d_expiry_date_changeable"/>
+  	<result property="dFormDetailContent" column="d_form_detail_content"/>
+  	<result property="dFormType" column="d_form_type"/>
+  </resultMap>
+  
+   <!-- 양식함관리 페이지 내 분류설정 테이블 dto map -->
+  <resultMap type="ElectronicApprovalDocument" id="eaDocumentFormTypeResultMap">
+	<result property="dFormType" column="d_form_type"/>
+	<result property="dFormTypeCode" column="d_form_type_code"/>
+  </resultMap>
+  
+  <!-- 전자결재 기본설정 테이블 dto map -->
+  <resultMap type="ElectronicApprovalDocument" id="eaDocumentSettingResultMap">
+	<result property="dCompanyCodeUsage" column="d_company_code_usage"/>
+	<result property="dAbbreviationUsage" column="d_abbreviation_usage"/>
+	<result property="dUnitNameUsage" column="d_unit_name_usage"/>
+	<result property="dRegisterTimeFormat" column="d_register_time_format"/>
+	<result property="dSerialNumberFormat" column="d_serial_number_format"/>
+	<result property="dExpiredDateDelete" column="d_expired_date_delete"/>
+	<result property="dDecideFirstUsage" column="d_decide_first_usage"/>
+	<result property="dDecideInsteadUsage" column="d_decide_instead_usage"/>
+	<result property="dDecideAfterUsage" column="d_decide_after_usage"/>
+	<result property="dReferTime" column="d_refer_time"/>
+	<result property="dDraftCancelUsage" column="d_draft_cancel_usage"/>
+	<result property="dEaRule" column="d_ea_rule"/>
+  </resultMap>
+  
+
+  <!-- 양식함관리 페이지 내 문서양식 테이블 조회  -->
+  <select id="selectEaDocumentForm" resultMap="eaDocumentFormResultMap" parameterType="map">
+  /* 문서양식 테이블 조회 쿼리문 실행 */  
+	SELECT 
+		*
+	FROM 
+		ea_document_form AS edf INNER JOIN ea_document_form_type AS edft 
+		
+		ON edf.d_form_type_code = edft.d_form_type_code
+		<if test="sk neq '항목선택' and sv neq null and sv neq ''.toString() ">
+		WHERE ${sk} LIKE CONCAT('%', #{sv} ,'%')
+		</if>
+		ORDER BY d_form_code ASC LIMIT #{startRowPerPage},#{rowPerPage};
+  </select>
+  
+  <!-- 양식함관리 페이지 내 문서양식 전체 개수 조회  -->
+  <select id="selectEaDocumentFormCount" resultType="int" parameterType="map">
+  /* 문서양식 전체 개수 조회 */ 
+ 	SELECT 
+		COUNT(1)
+	FROM 
+		ea_document_form AS edf INNER JOIN ea_document_form_type AS edft 
+	ON 
+		edf.d_form_type_code = edft.d_form_type_code
+		<if test="sk neq '항목선택' and sv neq null and sv neq ''.toString() ">
+		WHERE ${sk} LIKE CONCAT('%', #{sv} ,'%')
+		</if>
+  </select>
+ 	
+  <!-- 양식함관리 페이지 내 분류설정 테이블 조회  -->
+  <select id="selectEaDocumentFormType" resultMap="eaDocumentFormTypeResultMap">
+  /* 문서양식 분류설정 테이블 조회 쿼리문 실행 */  
+	SELECT 
+		*
+	FROM 
+		ea_document_form_type;
+  </select>
+  
+  <!-- 전자결재 기본설정 테이블 조회  -->
+  <select id="selectEaDocumentSetting" resultMap="eaDocumentSettingResultMap">
+  /* 전자결재 기본설정 테이블 조회 쿼리문 실행 */  
+	SELECT 
+		*
+	FROM 
+		ea_document_setting;
+  </select>
+  
+  <!-- 전자결재 사내 전자결재 규정 UPDATE  -->
+  <update id="updateEaRule" parameterType="String">
+  /* 전자결재 사내 전자결재 규정 UPDATE 쿼리문 실행 */  
+	UPDATE 
+		ea_document_setting 
+	SET
+		d_ea_rule=#{eaRuleVal};
+
+  </update>
+  
+  <!-- 문서 양식 분류 코드 최대값 구하는 쿼리문  -->
+  <select id="selectEaDocumentFormTypeMaxCode" resultType="int">
+  /*문서 분류 코드 최대값 구하는 method */  
+	SELECT 
+		MAX(RIGHT(d_form_type_code,3)) 
+	FROM 
+		ea_document_form_type
+  </select>
+  
+  <!-- 문서 양식 분류 insert 쿼리문  -->
+  <insert id="insertDocumentFormType" parameterType="ElectronicApprovalDocument">
+  /*문서 분류 insert method */  
+  	INSERT INTO ea_document_form_type
+		(d_form_type_code, d_form_type)
+	VALUES 
+		(#{dFormTypeCode}, #{dFormType})
+  </insert>
+  
+   <!-- 문서 양식 분류 delete 쿼리문 -->
+  <delete id="deleteDocumentFormType" parameterType="String">
+  /* 문서 분류 delete 쿼리문 쿼리문 실행 */  
+	DELETE 
+		FROM 
+			ea_document_form_type 
+		WHERE 
+			d_form_type_code=#{deleteFormTypeCode}
+  </delete>
+  
+    <!-- 문서 양식 분류 삭제시 해당 분류를 사용하는 문서 양식 수 조회 쿼리문  -->
+  <select id="selectDocumentFormForDeleteDocumentFormType" resultType="int" parameterType="String">
+  /* 문서 양식 분류 삭제시 해당 분류를 사용하는 문서 양식 수 조회 쿼리문  */  
+	SELECT 
+		COUNT(1)
+	FROM
+		ea_document_form
+	WHERE
+		d_form_type_code=#{deleteFormTypeCode}
+  </select>
+  
+    <!-- 문서 양식 분류 삭제시 해당 양식 분류를 사용하는 문서 양식 존재 시 문서 양식 분류를 공통 분류로 update 쿼리문  -->
+  <update id="updateDocumentFormForDeleteDocumentFormType" parameterType="String">
+  /* 문서 양식 분류 삭제시 해당 양식 분류를 사용하는 문서 양식 존재 시 문서 양식 분류를 공통 분류로 update 쿼리문 실행 */  
+	UPDATE ea_document_form
+	SET
+		d_form_type_code='EATY001'
+	WHERE
+		d_form_type_code=#{deleteFormTypeCode}
+  </update>
+  
+   <!-- 문서 양식 분류 UPDATE  -->
+  <update id="updateDocumentFormType" parameterType="ElectronicApprovalDocument">
+  /*  문서 양식 분류 UPDATE 쿼리문 실행 */  
+	UPDATE ea_document_form_type
+	SET
+		d_form_type=#{dFormType}
+	WHERE 
+	d_form_type_code=#{dFormTypeCode}
+
+  </update>
+  
+    <!-- 문서 양식 생성 insert 쿼리문  -->
+  <insert id="insertDocumentForm" parameterType="ElectronicApprovalDocument">
+  /* 문서 양식 생성 insert method */  
+  	INSERT INTO ea_document_form
+		(d_form_code, d_security_level, d_form_type_code, d_approval_format_code, d_form_name, d_form_abbreviation,
+		 d_form_detail_explanation, d_security_level_changeable, d_expiry_date, d_expiry_date_changeable, 
+		 d_form_detail_content)
+	VALUES 
+		(#{dFormCode}, #{dSecurityLevel}, #{dFormTypeCode}, #{dApprovalFormatCode}, #{dFormName},
+		 #{dFormAbbreviation}, #{dFormDetailExplanation}, #{dSecurityLevelChangeable}, #{dExpiryDate},
+		 #{dExpiryDateChangeable}, #{dFormDetailContent})
+  </insert>
+  
+  <!-- 문서 양식 코드 최대값 구하는 쿼리문  -->
+  <select id="selectEaDocumentFormMaxCode" resultType="int">
+  /*문서 양식 코드 최대값 구하는 method */  
+	SELECT 
+		MAX(RIGHT(d_form_code,3)) 
+	FROM 
+		ea_document_form
+  </select>
+  
+ <!-- 문서 양식 삭제 delete 쿼리문  -->
+  <delete id="deleteDocumentForm" parameterType="List">
+  /* 문서 양식 삭제 delete method */  
+	DELETE FROM ea_document_form WHERE d_form_code 
+	<foreach collection="list" item="ea" open="IN (" close=")" separator=",">
+		#{ea}
+	</foreach>
+  </delete>
+  
+ <!-- 양식함관리 페이지 내 문서양식 미리보기 위한 1개 정보조회 -->
+  <select id="selectDocumentFormForDetail" resultType="ElectronicApprovalDocument" parameterType="string">
+  /* 문서양식 미리보기 위한 1개 정보조회 쿼리문 실행 */  
+	SELECT 
+		d_form_code AS dFormCode,
+		d_security_level AS dSecurityLevel,
+		EDF.d_form_type_code AS dFormTypeCode,
+		d_approval_format_code AS dApprovalFormatCode,
+		d_form_name AS dFormName,
+		d_form_abbreviation AS dFormAbbreviation,
+		d_form_detail_explanation AS dFormDetailExplanation,
+		d_security_level_changeable AS dSecurityLevelChangeable,
+		d_expiry_date AS dExpiryDate,
+		d_expiry_date_changeable AS dExpiryDateChangeable,
+		d_form_type AS dFormType,
+		d_form_detail_content AS dFormDetailContent
+	FROM
+		ea_document_form AS EDF 
+	INNER JOIN 
+		ea_document_form_type AS EDFT
+	ON 
+		EDF.d_form_type_code = EDFT.d_form_type_code
+	WHERE
+		d_form_code=#{dFormCode}
+  </select>
+  
+  <!-- 양식함관리 페이지 내 문서양식 미리보기 위한 1개 정보중 포맷양식 조회-->
+  <select id="selectApprovalFormatInDocumentFormForDetail" resultType="string" parameterType="string">
+  /* 문서양식 미리보기 위한 1개 정보중 포맷양식 조회 */  
+	SELECT 
+		d_approval_format_detail_content
+	FROM
+		ea_approval_format
+	WHERE
+		d_approval_format_code=#{dApprovalFormatCode}
+  </select>
+  
+  <!-- 문서 양식 수정 update 쿼리문  -->
+  <insert id="updateDocumentForm" parameterType="ElectronicApprovalDocument">
+  /* 문서 양식 수정 update method */  
+	UPDATE 
+		ea_document_form
+	SET
+		d_security_level=#{dSecurityLevel},
+		d_form_type_code=#{dFormTypeCode},
+		d_approval_format_code=#{dApprovalFormatCode},
+		d_form_name=#{dFormName},
+		d_form_abbreviation=#{dFormAbbreviation},
+		d_form_detail_explanation=#{dFormDetailExplanation},
+		d_security_level_changeable=#{dSecurityLevelChangeable},
+		d_expiry_date=#{dExpiryDate},
+		d_expiry_date_changeable=#{dExpiryDateChangeable},
+		d_form_detail_content=#{dFormDetailContent}
+	WHERE 
+		d_form_code=#{dFormCode}
+  </insert>
+  
+  <!--문서 기안하기 페이지에서 문서 양식 종류 선택시 해당하는 분류들 가져오는 쿼리문-->
+  <select id="selectDocumentFormTypeForInsertDocumentDraft" resultMap="eaDocumentFormResultMap" parameterType="string">
+  /*문서 기안하기 페이지에서 문서 양식 종류 선택시 해당하는 분류들 가져오는 쿼리문 */  
+	SELECT 
+		*
+	FROM
+		ea_document_form
+	WHERE
+		d_form_type_code=#{dFormTypeCode}
+	LIMIT 
+		0,10;
+  </select>  
+  </mapper>

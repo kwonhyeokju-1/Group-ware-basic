@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
+<!--
+   @file documentFormDetail.html
+   @brief 양식 상세보기 view
+   @author 김건훈
+ -->	
+		<!-- CSS custom -->
+		<th:block layout:fragment="customCss">
+			<link rel="stylesheet" href="/dist/css/electronicApproval/electronicApproval.css">
+		</th:block>
+		
+		<th:block layout:fragment="customTitle">
+		<title>양식 상세보기</title>
+		</th:block>
+	
+		<!--  Script custom -->
+		<th:block layout:fragment="customScript">
+			<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+			<script type="text/javascript">
+			$(function(){
+				 $('#delete-document-form-btn').on('click',function(){
+					   swal({
+				           title: "선택한 항목을 삭제하시겠습니까?",
+				           text: "선택한 양식을 삭제하시겠습니까?",
+				           icon: "warning",
+				           buttons: ["취소", "삭제"],
+				           dangerMode: true,
+				       })
+				       .then((willDelete) => {
+				           if (willDelete) {
+				        	   var eaDocumentFormListCodeArr = [];
+				        	   var dFormCode = '[[${eaDto.dFormCode}]]';
+				        	   
+				        	   
+				        	   eaDocumentFormListCodeArr.push(dFormCode);
+				        		
+				        	   console.log(eaDocumentFormListCodeArr);
+				        	   
+				        	   var request = $.ajax({
+								    url: "/deleteDocumentFormPro",
+								    method: "POST",
+								    data: JSON.stringify(eaDocumentFormListCodeArr),
+								    dataType: "json",
+								    contentType : 'application/json'
+								  });
+								   
+								  request.done(function(data) {
+								  	//console.log(data.result);
+									  
+									 swal({
+						                   title: "삭제되었습니다.",
+						                   text: "선택한 양식이	 삭제되었습니다.",
+						                   icon: "success",
+						                 })
+						                 .then((value) => {
+						                	 location.href="/selectDocumentFormList";
+											  });
+								  });
+								   
+					           }else{
+					               swal("삭제가 취소되었습니다.");
+					            }
+								  request.fail(function( jqXHR, textStatus ) {
+								    alert( "Request failed: " + textStatus );
+								  }); 
+				        	   
+				       });
+					   
+				   });
+			});
+			</script>
+		</th:block>
+		<th:block layout:fragment="customContents">
+				       <div class="page-header">
+					       <div class="row align-items-end">
+					           <div class="col-lg-8">
+					             <div class="page-header-title">
+								  <i class="ik ik-eye bg-blue"></i>
+								   <div class="d-inline">
+										<h5>문서 양식 상세보기</h5>
+										<span>생성한 문서 양식을 상세하게 볼 수 있는 곳입니다.</span>
+								   </div>
+								</div>
+					           </div>
+					           <div class="col-lg-4">
+					               <nav class="breadcrumb-container" aria-label="breadcrumb">
+					                   <ol class="breadcrumb">
+					                       <li class="breadcrumb-item">
+					                           <a th:href="@{/index}"><i class="ik ik-home"></i></a>
+					                       </li>
+					                       <li class="breadcrumb-item">전자결재 설정</li>
+					                       <li class="breadcrumb-item" aria-current="page"><a th:href="@{/selectDocumentFormList}">양식함 관리</a></li>
+					                       	<li class="breadcrumb-item active" aria-current="page">양식 상세보기</li>
+					                   </ol>
+					               </nav>
+					           </div>
+					       </div>
+					   </div>                     
+		               <div class="card">
+			               <!-- 양식 상세보기 테이블 상단 메뉴탭 Start-->
+			                 <div class="card-header ea-card-header">
+			                 	<h3>양식 상세보기</h3>
+			                 </div>
+			                 <ul class="nav document-form-list-top-nav">
+	                                    <li class="nav-item">
+	                                        <a class="nav-link text-primary" th:href="@{/updateDocumentForm(dFormCode=${eaDto.dFormCode})}">양식 수정</a>
+	                                    </li>
+	                                    <li class="nav-item">
+	                                        <a class="nav-link text-primary" id="delete-document-form-btn">양식 삭제</a>
+	                                    </li> 
+	                                </ul>
+	                      	<!-- 양식 상세보기 테이블 상단 메뉴탭 End-->
+	                           <div class="electronic-approval-form">   
+	                                                  
+                               <!-- 양식 상세보기 기본설정 테이블 Start -->
+                                    <div class="card-header d-block">
+                                        <h6>기본설정</h6> 
+                                    <div class="card-body p-0 table-border-style">
+                                        <div class="table-responsive">
+                                            <table class="table document-form-table ea-table">                                          
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="table-active document-form-table-td">분류</td>
+                                                        <td th:text="${eaDto.dFormType}"></td>
+                                                        <td class="table-active document-form-table-td">양식명</td>
+                                                        <td th:text="${eaDto.dFormName}"></td>
+                                                    </tr>
+                                                     <tr>
+                                                        <td class="table-active document-form-table-td">약칭</td>
+                                                        <td th:text="${eaDto.dFormAbbreviation}"></td>
+                                                        <td class="table-active document-form-table-td">설명</td>
+                                                        <td th:text="${eaDto.dFormDetailExplanation}"></td>
+                                                    </tr>
+                                                     <tr>
+                                                        <td class="table-active document-form-table-td">보존 연한</td>
+                                                        <td th:text="${eaDto.dExpiryDate}"></td>
+                                                        <td class="table-active document-form-table-td">보안 등급</td>
+                                                        <td th:text="|${eaDto.dSecurityLevel}등급|"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    </div>
+                                
+                                 <!-- 양식 상세보기 기본설정 테이블  End -->
+                                 
+                                 <!-- 양식 상세보기 결재라인 상세보기 Start -->  
+                                    <div class="card-header d-block">                                   
+                                       
+                                        <h6>결재 양식</h6>
+                                   		
+                                   		<!-- 결재라인 포맷 상세보기 Start -->
+                                       <div class="table-responsive">
+											<div th:utext="${eaDto.dApprovalFormatDetailContent}"></div>
+										</div>
+                                       <!-- 결재라인 포맷 상세보기 End -->
+                                    </div>
+                                 <!-- 양식 상세보기 결재라인 상세보기 End -->
+                                 
+                                 <!-- 양식 상세보기 상세내용  -->    
+                                    <div class="card-body  table-border-style">
+                                    	<h6>상세 내용 </h6>                                   
+                                        <div th:utext="${eaDto.dFormDetailContent}"></div>      
+                                    </div>                      		
+                                <!-- 양식 상세보기 상세내용  -->	    
+                        		</div>                         		                                	 
+                        		</div>
+                        		
+                                		
+                        		
+		</th:block>
+
+	<th:block layout:fragment="customJs">        
+        <script>window.jQuery || document.write('<script src="../src/js/vendor/jquery-3.3.1.min.js"><\/script>')</script>
+        <script src="/plugins/popper.js/dist/umd/popper.min.js"></script>
+        <script src="/plugins/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="/plugins/perfect-scrollbar/dist/perfect-scrollbar.min.js"></script>
+        <script src="/plugins/screenfull/dist/screenfull.js"></script>
+        <script src="/plugins/sweetalert/dist/sweetalert.min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.8/summernote.js"></script>
+        <script src="/summernote/lang/summernote-ko-KR.js"></script>
+        <script src="dist/js/theme.js"></script>
+        <script src="/js/layouts.js"></script>
+	</th:block>
+</html>

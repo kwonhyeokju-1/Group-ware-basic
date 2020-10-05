@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/default}">
+<!-- 사용자css -->
+<th:block layout:fragment="customCss">
+	<link rel="stylesheet" href="dist/css/project/project.css">
+	<link rel="stylesheet" href="dist/css/project/modal.css">
+	<link rel="stylesheet" href="/plugins/select2/dist/css/select2.min.css">
+	<link rel="stylesheet" href="/plugins/datedropper/datedropper.min.css">
+	<link rel="stylesheet"
+		href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/css/tempusdominus-bootstrap-4.min.css" />
+</th:block>
+<th:block layout:fragment="customTitle">
+	<title>프로젝트 리스트</title>
+</th:block>
+<th:block layout:fragment="customScript">
+
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+	<script src="dist/js/project/projectList.js"></script>
+
+</th:block>
+<th:block layout:fragment="customContents">
+
+	<!--------------------------새 프로젝트 추가 버튼 --------------------------->
+
+	<div class="page-header">
+		<div class="row align-items-end">
+			<div class="col-lg-8">
+				<div class="page-header-title">
+					<i class="ik ik-folder bg-blue"></i>
+					<div class="d-inline">
+						<h5>프로젝트</h5>
+						<span>프로젝트를 생성하고 수정할 수 있습니다.</span>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-4">
+				<nav class="breadcrumb-container" aria-label="breadcrumb">
+					<ol class="breadcrumb">
+						<li class="breadcrumb-item"><a href="/index"><i
+								class="ik ik-home"></i></a></li>
+						<li class="breadcrumb-item active" aria-current="page">프로젝트</li>
+					</ol>
+				</nav>
+			</div>
+		</div>
+	</div>
+	<div class="pr-wrap">
+		<div class="pr-wrap-content">
+			<th:block th:if="${session.userCode} eq 'EE001' or ${session.userCode} eq 'EE004'">
+				<div class="pr-btn-wrap">
+					<button type="button" class="btn btn-success btn-rounded"
+						data-toggle="modal" data-target="#exampleModalCenter">새 프로젝트 추가</button>
+					<span class="info">기존 데이터는 수정 또는 삭제하실 수 없습니다.</span>	
+					<div class="collapse d-md-block display-options" id="displayOptions">
+						<span
+							class="mr-3 d-inline-block float-md-left dispaly-option-buttons">
+							<a href="#" class="mr-1 view-grid active"> <i
+								class="ik ik-grid view-icon"></i>
+						</a><a href="#" class="mr-1 view-list"> <i
+								class="ik ik-menu view-icon"></i>
+						</a>
+						</span>
+					</div>
+				</div>
+			</th:block>
+						<!--------------------------프로젝트 리스트 start --------------------------->
+			<div class="project-card card-group mb-4">
+				<div class="project-list-wrap" th:each="pl : ${projectList}">
+					<div class="project-list card">
+						<div class="card-body">
+							<div class="pr-header justify-content-between align-items-center">
+								<div class="state">
+									<input type="hidden" class="project-code-input" th:value="${pl.projectCode}">
+									<h3 class="pr-title text-success" th:text="${#strings.abbreviate(pl.projectTitle,30)}"></h3>
+									<p class="pr-card-subtitle card-subtitle text-muted fw-500" th:text="${#strings.abbreviate(pl.projectDesc,28)}"></p>
+								</div>
+
+								<div class="pr-ikon icon">
+									<label for="pr-setting-btn">
+										<button type="button" class="pr-setting-btn btn btn-icon btn-outline-secondary">
+											<i class="ik ik-settings" id="pr-setting-btn"></i>
+										</button>
+									</label>
+								</div>
+							</div>
+							<div class="pr-progress">
+								<div class="pr-status">
+									<a href="#" class="badge badge-primary mb-1">진행중</a>
+								</div>
+								<div class="progress" style="height: 6px;">
+									<div class="progress-bar bg-success" role="progressbar"
+										style="width: 83%;" aria-valuenow="25" aria-valuemin="0"
+										aria-valuemax="100"></div>
+								</div>
+								<div class="text-muted f12">
+									<span class="float-left">83% 완료</span> <span
+										class="float-right">0/0개 업무</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+	<div class="card list-card">
+	<div class="pr-table-list">
+	<input type="hidden" name="pr-table-list" value="list">
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th>제목</th>
+					<th>설명</th>
+					<th>공개범위</th>
+					<th>상태</th>
+					<th>시작일</th>
+					<th>마감일</th>
+					<th>실제완료일</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="l : ${projectList}" style="cursor: pointer" class="project-list-tr"
+				th:data-projectCode="${l.projectCode}" th:data-projectTitle="${l.projectTitle}">
+					<td th:text="${l.projectTitle}"></td>
+					<td th:text="${#strings.abbreviate(l.projectDesc,15)}"></td>
+					<td th:text="${#strings.abbreviate(l.projectAccess,15)}"></td>
+					<td th:text="${#strings.abbreviate(l.projectStatus,15)}"></td>
+					<td th:text="${#strings.abbreviate(l.projectStart, 15)}"></td>
+					<td th:text="${#strings.abbreviate(l.projectDeadline, 15)}"></td>
+					<td th:text="${#strings.abbreviate(l.projectEnd, 15)}"></td>
+				</tr>
+			</tbody>
+		</table>
+			<div class="card-body">
+				<nav aria-label="Page navigation example">
+					<ul class="pagination mb-0">
+						<li class="page-item">
+							<a class="page-link first" href="#">
+								<i class="ik ik-chevrons-left"></i>
+							</a>
+						</li>
+						<li class="page-item">
+							<a class="page-link prev" href="#">
+								<i class="ik ik-chevron-left"></i>
+							</a>
+						</li>
+						<th:block th:each="num:${#numbers.sequence(startPageNum,endPageNum)}" th:unless="${num>lastPage}">
+							<li class="page-item">
+								<a class="page-link" th:if="${currentPage == num}" th:text="${num}"></a>
+								<a class="page-link" th:unless="${currentPage == num}" th:text="${num}" th:href="@{/projectList(currentPage=${num})}"></a>
+							</li>
+						</th:block>
+						
+						<li class="page-item">
+							<a class="page-link next" href="#" aria-label="Next"> <i class="ik ik-chevron-right"></i>
+							</a>
+						</li>
+						<li class="page-item">
+							<a class="page-link last" href="#">
+								<i class="ik ik-chevrons-right"></i>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>
+		</div>
+		</div>
+	</div>
+	</div>
+	<!--------------------------프로젝트 리스트 end --------------------------->
+
+
+
+
+	<!------------------새 프로젝트 추가 버튼 클릭시 모달창 start --------------------->
+	<div class="modal fade" id="exampleModalCenter" tabindex="-1"
+		role="dialog" aria-labelledby="exampleModalCenterLabel"
+		aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalCenterLabel">새 프로젝트</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+
+				<div class="pr-add-modal modal-body">
+					<form name="projectAddForm" method="post"
+						onsubmit="return checkInput()">
+						
+						<div class="form-group">
+							<label for="add-projectTitle">프로젝트 제목</label> <input type="text"
+								id="add-projectTitle" name="projectTitle" class="form-control"
+								placeholder="예) 웹사이트 개발">
+						</div>
+						<div class="form-group">
+							<label for="projectDesc">프로젝트 설명(선택사항)</label> <input type="text"
+								id="projectDesc" name="projectDesc" class="form-control">
+						</div>
+						<div class="form-group">
+							<label>공개 범위 설정</label>
+							<div class="pr-form-radio form-radio">
+								<div class="access-picker privacy-btn btn-light" role="button"
+									tabindex="0">
+									<label class="first-label" for="privacyProject">
+										<div class="radio radio-inline">
+											<div class="radio-btn">
+												<input type="radio" checked="checked" name="projectAccess"
+													value="비공개" id="privacyProject"> <i class="helper"></i>
+											</div>
+											<div class="btn-text">
+												<div class="btn-value">비공개</div>
+												<div class="btn-desc">(추가된 멤버만 액세스 가능)</div>
+											</div>
+										</div>
+									</label>
+								</div>
+								<div class="access-picker public-btn btn-light" role="button"
+									tabindex="0">
+									<label class="first-label" for="publicProject">
+										<div class="radio radio-inline">
+											<div class="radio-btn">
+												<input type="radio" name="projectAccess" value="공개"
+													id="publicProject"> <i class="helper"></i>
+											</div>
+											<div class="btn-text">
+												<div class="btn-value">공개</div>
+												<div class="btn-desc">(모든 멤버 액세스 가능)</div>
+											</div>
+										</div>
+									</label>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label>마감일(선택사항)</label>
+							<input type="text" name="projectDeadline" class="form-control datetimepicker-input" id="datepicker"
+									data-toggle="datetimepicker" data-target="#datepicker">
+						</div>
+						<div class="form-group">
+							<label>프로젝트 멤버(선택사항)</label>
+							<div>
+									<div class="add-btn-wrap">
+										<img class="member-add-btn"
+											src="/img/project/member_plus_btn.png">
+									</div>
+									<div class="member-select-wrap form-group">
+										<select class="form-control select2" id="add-select2"
+											multiple="multiple" name="employeeCode">
+										<th:block th:each="el:${employeeList}">
+											<option th:value="${el.employeeCode}" th:text="${el.employeeName}"></option>
+										</th:block>
+										</select>
+									</div>
+							</div>
+						</div>
+					</form>
+				</div>
+
+
+				<div class="project-add-btn modal-footer">
+					<button type="button" class="btn btn-light"
+						data-dismiss="modal">취소</button>
+					<button type="submit" class="pr-submit-btn btn btn-primary">추가하기</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!--------------------------새 프로젝트 추가 버튼 클릭시 모달창 end --------------------------->
+
+</th:block>
+<th:block layout:fragment="customJs">
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+	<script>
+		window.jQuery
+				|| document
+						.write(
+								'<script src="src/js/vendor/jquery-3.3.1.min.js"><\/script>')
+	</script>
+	<script src="plugins/popper.js/dist/umd/popper.min.js"></script>
+	<script src="plugins/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script src="plugins/perfect-scrollbar/dist/perfect-scrollbar.min.js"></script>
+	<script src="plugins/screenfull/dist/screenfull.js"></script>
+	<script src="plugins/datatables.net/js/jquery.dataTables.min.js"></script>
+	<script
+		src="plugins/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+	<script
+		src="plugins/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+	<script
+		src="plugins/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
+	<script src="plugins/summernote/dist/summernote-bs4.min.js"></script>
+	<script src="plugins/moment/moment.js"></script>
+	<script src="plugins/d3/dist/d3.min.js"></script>
+	<script src="plugins/c3/c3.min.js"></script>
+	<script src="js/tables.js"></script>
+	<script src="js/charts.js"></script>
+	<script src="js/form-picker.js"></script>
+	<script src="dist/js/theme.js"></script>
+	
+	<script src="plugins/datedropper/datedropper.min.js"></script>
+
+	<!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+	<script>
+		(
+								function(b, o, i, l, e, r) {
+									b.GoogleAnalyticsObject = l;
+									b[l] || (b[l] = function() {
+										(b[l].q = b[l].q || []).push(arguments)
+									});
+									b[l].l = +new Date;
+									e = o.createElement(i);
+									r = o.getElementsByTagName(i)[0];
+									e.src = 'https://www.google-analytics.com/analytics.js';
+									r.parentNode.insertBefore(e, r)
+								}(window, document, 'script', 'ga'));
+		ga('create', 'UA-XXXXX-X', 'auto');
+		ga('send', 'pageview');
+	</script>
+	<script src="plugins/select2/dist/js/select2.min.js"></script>
+	<script src="plugins/sweetalert/dist/sweetalert.min.js"></script>
+	<script type="text/javascript"
+		src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
+	<script>
+		$(function() {
+
+			$('.select2').select2();
+		});
+	</script>
+</th:block>
+</html>

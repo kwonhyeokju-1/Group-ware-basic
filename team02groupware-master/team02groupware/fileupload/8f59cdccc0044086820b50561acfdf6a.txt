@@ -1,0 +1,136 @@
+SQL 활용 시험
+
+
+사용자 생성(로컬)
+create user userid@localhost identified by '비밀번호';
+
+사용자 생성(외부 접근권한 부여)
+create user 'userid'@'%' identified by '비밀번호';
+
+사용자 삭제
+drop user '사용자ID'@localhost;
+
+데이터베이스 생성
+create database DB명; 
+
+권한 부여(ALL)
+GRANT ALL PRIVILEGES ON DB명.테이블명 TO 계정아이디@host IDENTIFIED BY '비밀번호';
+
+권한 부여(select,insert,update)
+grant select, insert, update on test.* to user@localhost identified by '비밀번호';
+
+
+사용자에게 데이터베이스 사용권한 제거
+
+revoke all on DB명.테이블명 from 사용자ID; 
+
+
+트랜잭션
+
+start transaction;
+
+rollback;
+
+commit;
+
+select @@autocommit
+
+set autocommit = false or true;
+
+
+
+
+
+사용자 생성(로컬)
+create user userid@localhost identified by 'userpw'
+
+
+사용자 생성(외부 접근권한 부여)
+create user userid@'%' identified by 'userpw'
+
+
+사용자 삭제
+drop user userid@localhost
+
+
+데이터베이스 생성
+create database db명
+
+
+권한 부여(ALL)
+grant all on db명.테이블명 to userid@localhost identified by 'userpw'
+
+
+권한 부여(select,insert,update)
+grant select, insert, update on db명.테이블명 to userid@localhost identified by 'userpw'
+
+
+사용자에게 데이터베이스 사용권한 제거
+revoke all on db명.테이블명 from userid
+
+
+
+트랜잭션
+
+start transaction
+
+rollback
+
+commit
+
+select @@autocommit
+
+set autocommit = false or true
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

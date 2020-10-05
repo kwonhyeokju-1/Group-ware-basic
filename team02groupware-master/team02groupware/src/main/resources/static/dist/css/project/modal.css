@@ -1,0 +1,135 @@
+@charset "UTF-8";
+/*---------------------------------------------- 프로젝트 추가 modal start---------------------------------------------- */
+
+.pr-add-modal{
+	font-size:16px;
+}
+.project-date{
+	position:relative;
+	top:10px;
+	margin-left:10px;
+	color:#818182;
+}
+.form-group label{
+	font-weight:500;
+	font-size:14px;
+}
+.form-radio{
+	display:flex;
+}
+.access-picker{
+	min-height:60px;
+	border:1px solid #eaeaea;
+	border-radius:3px;
+	margin:0 5px;
+	width:100%;
+}
+
+.privacy-btn{
+	margin-left:0px;
+}
+.public-btn{
+	margin-right:0px;
+}
+.first-label{
+	height:100%;
+	cursor:pointer;
+}
+
+.radio-btn{
+	margin-top:5px;
+	position:absolute;
+	top:8px;
+	left:5px;
+	margin-left:10px;
+}
+
+.btn-text{
+	float:left;
+	margin-left:20px;
+	padding-top:15px;
+}
+.btn-value{
+	font-size:14px;
+	line-height: 18px;
+}
+
+.btn-desc{
+	font-size:12px;
+	line-height: 16px;
+	color:#6c757d;
+}
+.add-btn-wrap{
+	display:block;
+	flex-shrink:0;
+	float:left;
+}
+
+.member-add-btn {
+	display:flex;
+	width:25px;
+	height:25px;
+	cursor: pointer;
+	float:left;
+	margin-right:10px;
+}
+.select2-selection--multiple{
+	border:0 !important;
+	margin-bottom:5px;
+	
+}
+.select2-selection__choice{
+	margin-top: 0 !important;
+	margin: 5px 0;
+	
+}
+.select2-search{
+	width:100px;
+}
+.member-select-wrap{
+	over-flow-x: hidden;
+	over-flow-y: auto;
+	max-height:90px;
+	display:flex;
+
+}
+.pr-add-btn{	
+	float:left;
+	height:50px;
+	font-size:14px;
+	font-weight:400;
+	margin-left:5px;
+}
+
+
+/*---------------------------------------------- 프로젝트 수정 modal start---------------------------------------------- */
+
+@media only screen and (min-width: 560px) { .edit-layout-modal .modal-dialog { max-width: 40%; } }
+
+
+.pr-update-modal{
+	font-size:16px;
+	width:100%;
+	padding-top:0px !important;
+}
+.pr-update-modal>.form-sample{
+	width:100%;
+}
+
+.member-update-btn{
+	cursor:pointer;
+}
+.update-member-select{
+	over-flow-y: auto;
+	max-height:90px;
+	display:flex;
+	flex-direction:row;
+}
+.select2-selection__rendered{
+	width:300px;
+}
+
+/*---------------------------------------------- 프로젝트 추가 modal end---------------------------------------------- */
+
+
+

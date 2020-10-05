@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
+<!--
+   @file eaGeneralSettings.html
+   @brief 전자결재 관리자용 기본설정 view
+   @author 김건훈
+ -->	
+		<!-- CSS custom -->
+		<th:block layout:fragment="customCss">
+			<link rel="stylesheet" href="/dist/css/electronicApproval/electronicApproval.css">
+			<link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.8/summernote.css" rel="stylesheet">
+		</th:block>
+		
+		<th:block layout:fragment="customTitle">
+		<title>전자결재 설정</title>
+		</th:block>
+	
+		<!--  Script custom -->
+		<th:block layout:fragment="customScript">
+			<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+			<script type="text/javascript">
+				$(function(){
+				
+					/*
+					  * @brief 옵션 선택 드롭다운 키워드 변경 이벤트
+					  * @author 김건훈
+					  */	
+					$('.dropdown-item').on('click',function(){
+						//console.log('드롭다운버튼클릭');
+						var searchType = $(this).text();
+						var tag = "<i class=\"ik ik-chevron-down mr-0 align-middle\"></i>";
+						//console.log(searchType);
+						$(this).parent().siblings('.dropdown-toggle').text(searchType);
+						$(this).parent().siblings('.dropdown-toggle').append(tag);
+					});
+					
+					
+					/*
+					  * @brief 각각 체크박스 체크 이벤트
+					  * @author 김건훈
+					  */
+					  
+					$('.ea-checkbox').on('click',function(){
+						//console.log('체크박스클릭');
+						if($(this).siblings('input:checkbox').is(":checked")==false){	
+												$(this).siblings('input:checkbox').attr("checked", true);
+						}else{			
+												$(this).siblings('input:checkbox').attr("checked", false);
+						};	
+					});
+					
+					 
+					 /*
+					  * @brief 관리자용 전자결재 기본설정 물음표 아이콘 Modal Event
+					  * @author 김건훈
+					  */	
+					$('.ik-help-circle').on('mouseover',function(e){
+						//console.log('마우스오버');
+						var ruleTipType = $(this).siblings().text()
+						//console.log(ruleTipType)
+						
+						var divLeft = e.pageX - 150
+						var divTop = e.pageY - 50
+						
+						if(ruleTipType=='보안 등급별 열람 설정'){
+							$('#modal-content-type').text('결재가 완료된 후 열람할 수 있는 직위 등급을 설정합니다.');	
+						}else if(ruleTipType=='지연 문서 표시'){
+							$('#modal-content-type').text('지연 문서 표시 기간을 선택하면 그 기간 후 관련자의 문서 목록에 빨간색으로 나타납니다.');
+						}else if(ruleTipType=='회사 코드 설정'){
+							$('#modal-content-type').text('문서 번호에 사용할 회사 코드를 설정 하세요.');
+						}else if(ruleTipType=='보존 연한 만료 후 삭제 설정'){
+							$('#modal-content-type').text('결재 완료된 문서가 보존 연한이 만료된 후 임시삭제 상태로 변경되는  것의 허용 여부를 설정합니다.');
+						}else if(ruleTipType=='같은 결재선 내에서 선결재'){
+							$('#modal-content-type').text('같은 결재선 내에서 예정 상태인 결재자의 선결재 허용 여부를 설정합니다.');
+						}else if(ruleTipType=='대결'){
+							$('#modal-content-type').text('하위 결재자가 최종 결재자 대신 결재하여 문서를 승인하는 방식의 허용 여부를 설정합니다.');
+							 divLeft = e.pageX - 90
+						}else if(ruleTipType=='후결'){
+							$('#modal-content-type').text('최종 결재자가 부재 시 우선적으로 기안을 집행하고 이후 최종 결재자의 승인 또는 반려를 받는 방식의 허용 여부를 설정합니다.');
+							divLeft = e.pageX - 90
+						}else if(ruleTipType=='참조 열람 시기 설정'){
+							$('#modal-content-type').text('참조자의 문서 열람 가능 시기를 설정합니다. \'결재 시작\' 을 선택하면 문서가 등록됨과 동시에 \'진행 중인 문서 - 예정\' 에서 확인할 수 있으며, \'결재 완료\' 를 선택하면 문서의 모든 결재가 승인되었을 때 \'진행 중인 문서 - 확인\'에서만 확인 가능합니다.');
+						}else if(ruleTipType=='기안 취소 설정'){
+							$('#modal-content-type').text('기안자가 기안 취소한 문서의 처리 방법을 설정합니다.');
+						}
+		
+						$('.ruletip').css({display:"block", "top": divTop, "left": divLeft});
+						
+						$(this).css("color","black");
+						
+					});
+				
+					$('.ik-help-circle').on('mouseleave',function(){
+						
+						$('.ruletip').css("display","none");
+						$(this).css("color","#bcc8d8");
+					});
+					
+					
+					 /*
+					  * @brief 관리자용 전자결재 기본설정 문서번호 조합 Event
+					  * @author 김건훈
+					  */
+					  var companyCode = $('#companyCode').val();
+					  var companyCodeRadioVal = $('.companyCodeRadio').find('input:checked').val();
+					  var unitRadioVal = $('.unitRadio').find('input:checked').val();
+					  var registerDateRadioVal = $('.registerDateRadio').find('input:checked').val();
+					  var serialNumRadioVal = $('.serialNumRadio').find('input:checked').val();
+					  var checkRadioMap = null;
+					  
+					  $('#companyCode').keyup(function() {
+					  companyCode = $('#companyCode').val();
+					  //console.log(companyCode);
+					   
+					   checkRadioMap = {};
+					  
+					   checkRadioMap.companyCode = companyCode;
+					   checkRadioMap.companyCodeRadioVal = companyCodeRadioVal;
+					   checkRadioMap.unitRadioVal = unitRadioVal;
+					   checkRadioMap.registerDateRadioVal = registerDateRadioVal;
+					   checkRadioMap.serialNumRadioVal = serialNumRadioVal;
+						
+					   
+					   var request = $.ajax({
+						    url: "/ajaxSetDocumentCodeFormat",
+						    contentType: 'application/json',
+						    method: "POST",
+						    data: JSON.stringify(checkRadioMap),
+						    dataType: "json"
+						  });
+						   
+						  request.done(function(data) {
+						  	//console.log(data.result);
+						  	var documentCodeFormatResult = data.result;
+						  	$('#showCompanyCode').val(documentCodeFormatResult);
+						  });
+						   
+						  request.fail(function( jqXHR, textStatus ) {
+						    alert( "Request failed: " + textStatus );
+						  }); 
+						  
+					  });
+					 
+					  $('.checkRadio').click(function(){
+						  //console.log('문서번호 설정 테이블 라디오박스 실행')
+						  //console.log(companyCode);
+
+						 companyCodeRadioVal = $('.companyCodeRadio').find('input:checked').val();
+						 unitRadioVal = $('.unitRadio').find('input:checked').val();
+						 registerDateRadioVal = $('.registerDateRadio').find('input:checked').val();
+						 serialNumRadioVal = $('.serialNumRadio').find('input:checked').val();
+						  
+						   checkRadioMap = {};
+					  
+						   checkRadioMap.companyCode = companyCode;
+						   checkRadioMap.companyCodeRadioVal = companyCodeRadioVal;
+						   checkRadioMap.unitRadioVal = unitRadioVal;
+						   checkRadioMap.registerDateRadioVal = registerDateRadioVal;
+						   checkRadioMap.serialNumRadioVal = serialNumRadioVal;
+
+						   //console.log(checkRadioMap);
+						   //console.log(JSON.stringify(checkRadioMap));
+						
+
+						  var request = $.ajax({
+						    url: "/ajaxSetDocumentCodeFormat",
+						    contentType: 'application/json',
+						    method: "POST",
+						    data: JSON.stringify(checkRadioMap),
+						    dataType: "json"
+						  });
+						   
+						  request.done(function(data) {
+						  	//console.log(data.result);
+						  	var documentCodeFormatResult = data.result;
+						  	$('#showCompanyCode').val(documentCodeFormatResult);
+						  });
+						   
+						  request.fail(function( jqXHR, textStatus ) {
+						    alert( "Request failed: " + textStatus );
+						  }); 
+						  
+					  });
+				});
+			</script>
+		</th:block>
+		<th:block layout:fragment="customContents">
+						<div class="page-header">
+					       <div class="row align-items-end">
+					           <div class="col-lg-8">
+					           <div class="page-header-title">
+							   	<i class="ik ik-settings bg-blue"></i>
+								   <div class="d-inline">
+									 <h5>전자결재 기본설정</h5>
+									 <span>전자결재에 관한 기본적인 설정을 하는 곳입니다.</span>
+								   </div>
+								</div>
+					           </div>
+					           <div class="col-lg-4">
+					               <nav class="breadcrumb-container" aria-label="breadcrumb">
+					                   <ol class="breadcrumb">
+					                       <li class="breadcrumb-item">
+					                           <a th:href="@{/index}"><i class="ik ik-home"></i></a>
+					                       </li>
+					                       <li class="breadcrumb-item">전자결재 설정</li>
+					                       <li class="breadcrumb-item active" aria-current="page">기본 설정</li>
+					                   </ol>
+					               </nav>
+					           </div>
+					       </div>
+					   </div>                    
+		               <div class="card">
+		              	  <!-- 테이블 상단 메뉴탭 Start-->
+			                 <div class="card-header ea-card-header">
+			                 	<h3>기본 설정</h3>
+			                 </div>
+	                           <!-- 테이블 상단 메뉴탭 End-->
+	                           <div class="electronic-approval-form">                       
+                               <!-- 관리자용 전자결재 기본설정 테이블 Start -->
+                                    <div class="card-header d-block">
+                                        <h6><span>보안 등급별 열람 설정</span><i class="ik ik-help-circle"></i></h6> 
+                                    <div class="card-body p-0 table-border-style">
+                                        <div class="table-responsive">
+                                            <table class="table document-form-table">                                          
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="table-active document-form-table-td">S등급</td>
+                                                        <td>          
+                                                        	기안 상에 설정된 관련자들만 문서 열람
+                                              		  </td>                     
+                                                    </tr>
+                                                     <tr>
+                                                        <td class="table-active document-form-table-td">A등급</td>
+                                                        <td>
+                                                        	결재완료후 직위
+                                                        	<button class="btn btn-outline-dark btn-xs dropdown-toggle col-sm-2" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    		직위 선택<i class="ik ik-chevron-down mr-0 align-middle"></i>
+                                               				</button>
+			                                                <div class="dropdown-menu">
+			                                                	<a class="dropdown-item">1등급(대표이사)</a>
+			                                                    <a class="dropdown-item">2등급(이사)</a>
+			                                                    <a class="dropdown-item">3등급(부장)</a>
+			                                                    <a class="dropdown-item">4등급(차장)</a>
+			                                                    <a class="dropdown-item">5등급(과장)</a>
+			                                                    <a class="dropdown-item">6등급(대리)</a>
+			                                                    <a class="dropdown-item">7등급(사원)</a>
+			                                                </div>
+			                                              	 이상 기본열람
+			                                            </td>
+                                                        
+                                                    </tr>
+                                                     <tr>
+                                                        <td class="table-active document-form-table-td">B등급</td>
+                                                        <td>
+                                                   			 결재완료후 직위
+                                                        	<button class="btn btn-outline-dark btn-xs dropdown-toggle col-sm-2" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    		직위 선택<i class="ik ik-chevron-down mr-0 align-middle"></i>
+                                               				</button>
+			                                                <div class="dropdown-menu">
+			                                                	<a class="dropdown-item">1등급(대표이사)</a>
+			                                                    <a class="dropdown-item">2등급(이사)</a>
+			                                                    <a class="dropdown-item">3등급(부장)</a>
+			                                                    <a class="dropdown-item">4등급(차장)</a>
+			                                                    <a class="dropdown-item">5등급(과장)</a>
+			                                                    <a class="dropdown-item">6등급(대리)</a>
+			                                                    <a class="dropdown-item">7등급(사원)</a>
+			                                                </div>
+			                                               	 이상 기본열람   
+			                                            </td>             
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="table-active document-form-table-td">C등급</td>
+                                                        <td>          
+                                                        	모든 임직원이 문서 열람
+                                              		  </td>                     
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    </div>
+                                
+                                 <!--관리자용 전자결재  기본설정 테이블  End -->
+                                 
+                                 <!--지연 문서 표시 설정 Start -->  
+                                    <div class="card-header d-block">                                   
+                                       
+                                        <h6>
+                                       		<span>지연 문서 표시</span><i class="ik ik-help-circle"></i>
+                                    	</h6>
+                                   		 <div class="form-radio">
+                                   		  <form>
+	                                		  <div class="radio radio-inline">
+		                                		<label>
+	                                                   <input type="radio" name="radio">
+	                                                   <i class="helper"></i>3일 후
+	                                             </label>
+	                                           </div>                                     	                                     	
+	                                		  <div class="radio radio-inline">
+		                                		<label>
+	                                                   <input type="radio" name="radio">
+	                                                   <i class="helper"></i>7일 후
+	                                             </label>
+	                                           </div>                                     	                                     	
+	                                		  <div class="radio radio-inline">
+		                                		<label>
+	                                                   <input type="radio" name="radio">
+	                                                   <i class="helper"></i>15일 후
+	                                             </label>
+	                                           </div>
+	                                           <div class="radio radio-inline">
+		                                		<label>
+	                                                   <input type="radio" name="radio">
+	                                                   <i class="helper"></i>표시 안 함
+	                                             </label>
+	                                           </div>
+                                           </form>
+                                     	</div>
+                                    </div>
+                                 <!-- 지연 문서 표시 설정 End -->
+                                 
+                              	 <!-- 회사 코드 설정 Start -->    
+                                   <div class="card-header d-block">
+                                  	<h6>
+										<span>회사 코드 설정</span><i class="ik ik-help-circle"></i>
+                                  	</h6>                                   
+                                       <input type="text" class="form-control company-code-title col-sm-3" id="companyCode" value="TEAM02" >
+                                  </div>                      		                        		                      		                                	 
+                              	 <!-- 회사 코드 설정 End -->
+                                 
+                                 <!-- 문서 번호 설정 Start -->    
+                                   <div class="card-header d-block">
+                                  	<h6>
+										문서 번호 설정
+                                  	</h6>                                   
+                                    <div class="table-responsive">
+                                            <table class="table mb-0 document-code-setting-table" id="setDocumentCodeTable">
+                                                <thead>
+                                                    <tr>
+                                                    	<th>1.회사 코드</th>
+                                                        <th>2.약칭 및 소속</th>
+                                                        <th>3.문서 등록 시점</th>
+                                                        <th>4.일련 번호</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                      <td>
+                                                       	<div class="form-radio">
+                                                       	 <form class="companyCodeRadio">
+				                                		   <div class="radio">
+					                                		  <label>
+	 				                                           <input type="radio" name="radio" checked="checked" value="A" class="checkRadio">
+				                                               <i class="helper"></i>사용
+				                                              </label>
+				                                            </div>
+				                                            <div class="radio">
+					                                		  <label>
+	 				                                           <input type="radio" name="radio" value="B" class="checkRadio">
+				                                               <i class="helper"></i>사용 안 함
+				                                              </label>
+				                                            </div>
+				                                           </form>
+				                                          </div>                                         
+                                           			  </td>
+                                                       <td>
+                                                       	<div class="form-radio">
+                                                       	 <form class="unitRadio">
+				                                		  <div class="radio">
+					                                		<label>
+	 				                                          <input type="radio" name="radio" value="A" class="checkRadio">
+				                                              <i class="helper"></i>등록자 소속명
+				                                             </label>
+				                                           </div>
+				                                           <div class="radio">
+					                                		<label>
+	 				                                          <input type="radio" name="radio" value="B" class="checkRadio">
+				                                              <i class="helper"></i>약칭
+				                                            </label>
+				                                           </div>
+				                                           <div class="radio">
+					                                		<label>
+	 				                                          <input type="radio" name="radio" checked="checked" value="C" class="checkRadio">
+				                                              <i class="helper"></i>둘 다 사용
+				                                            </label>
+				                                            </div>
+				                                            <div class="radio">
+					                                		 <label>
+	 				                                          <input type="radio" name="radio" value="D" class="checkRadio">
+				                                              <i class="helper"></i>둘 다 사용 안 함
+				                                             </label>
+				                                           </div>
+				                                           </form>
+				                                          </div>
+                                                       </td>
+                                                       <td>
+                                                       	<div class="form-radio">
+                                                       	 <form class="registerDateRadio">
+				                                		  <div class="radio">
+					                                		 <label>
+	 				                                          <input type="radio" name="radio" checked="checked" value="A" class="checkRadio">
+				                                              <i class="helper"></i>연, 월, 일 8자(YYYYMMDD)
+				                                             </label>
+				                                           </div>
+				                                           <div class="radio">
+					                                		 <label>
+	 				                                          <input type="radio" name="radio" value="B" class="checkRadio">
+				                                              <i class="helper"></i>연, 월, 일 6자(YYMMDD)
+				                                             </label>
+				                                           </div>
+				                                           <div class="radio">
+					                                		 <label>
+	 				                                          <input type="radio" name="radio" value="C" class="checkRadio">
+				                                              <i class="helper"></i>연, 월 6자(YYYYMM)
+				                                             </label>
+				                                           </div>
+				                                           <div class="radio">
+					                                		 <label>
+	 				                                          <input type="radio" name="radio" value="D" class="checkRadio">
+				                                              <i class="helper"></i>연, 월 4자(YYMM)
+				                                             </label>
+				                                           </div>
+				                                           <div class="radio">
+					                                		 <label>
+	 				                                          <input type="radio" name="radio" value="E" class="checkRadio">
+				                                              <i class="helper"></i>연 4자(YYYY)
+				                                             </label>
+				                                           </div>
+				                                		   <div class="radio">
+					                                		<label>
+	 				                                          <input type="radio" name="radio" value="F" class="checkRadio">
+				                                              <i class="helper"></i>연 2자(YY)
+				                                             </label>
+				                                           </div>
+				                                           </form>
+				                                          </div> 
+                                                       </td>
+                                                       <td>
+                                                       	<div class="form-radio">
+                                                       	 <form class="serialNumRadio">
+				                                		  <div class="radio">
+					                                		 <label>
+	 				                                          <input type="radio" name="radio" value="A" class="checkRadio">
+				                                              <i class="helper"></i>2자리(ex. 01)
+				                                             </label>
+				                                           </div>
+				                                           <div class="radio">
+					                                		 <label>
+	 				                                          <input type="radio" name="radio" value="B" class="checkRadio">
+				                                              <i class="helper"></i>3자리(ex. 001)
+				                                             </label>
+				                                           </div>			                                         
+				                                		   <div class="radio">
+					                                		 <label>
+	 				                                          <input type="radio" name="radio" checked="checked" value="C" class="checkRadio">
+				                                              <i class="helper"></i>4자리(ex. 0001)
+				                                             </label>
+				                                           </div>
+				                                           </form>
+				                                          </div>
+                                                       </td>
+                                                    </tr>                                                                                                              
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                       	<span>문서 번호 결과 미리보기</span>
+                                       	<input type="text" class="form-control col-sm-4" readonly="readonly" id="showCompanyCode" value="TEAM02-개발-프로젝트사업-20200317-0001">  
+                                  </div>                      		                        		                      		                                	 
+                              	 <!-- 문서 번호 설정 End -->
+                              	 <!--보존 연한 만료 후 삭제 설정 Start -->  
+                                    <div class="card-header d-block">                                   
+                                        <h6>
+                                       		<span>보존 연한 만료 후 삭제 설정</span><i class="ik ik-help-circle"></i>
+                                    	</h6>
+                                   		 <div class="form-radio">
+                                   		  <form>
+	                                		  <div class="radio radio-inline">
+		                                		<label>
+	                                                   <input type="radio" name="radio">
+	                                                   <i class="helper"></i>허용 함
+	                                             </label>
+	                                           </div>                                     	                                     	
+	                                		  <div class="radio radio-inline">
+		                                		<label>
+	                                                   <input type="radio" name="radio">
+	                                                   <i class="helper"></i>허용 안 함
+	                                             </label>
+	                                           </div>                                     	                                     	      		
+                                           </form>
+                                     	</div>
+                                    </div>
+                                 <!-- 보존 연한 만료 후 삭제 설정 End -->
+                                 <!-- 선결재 여부 설정 Start -->  
+                                    <div class="card-header d-block">                                   
+                                        <h6>
+                                       		<span>같은 결재선 내에서 선결재</span><i class="ik ik-help-circle"></i>
+                                    	</h6>
+                                   		 <div class="form-radio">
+                                   		  <form>
+	                                		  <div class="radio radio-inline">
+		                                		<label>
+	                                                   <input type="radio" name="radio">
+	                                                   <i class="helper"></i>허용 함
+	                                             </label>
+	                                           </div>                                     	                                     	
+	                                		  <div class="radio radio-inline">
+		                                		<label>
+	                                                   <input type="radio" name="radio">
+	                                                   <i class="helper"></i>허용 안 함
+	                                             </label>
+	                                           </div>                                     	                                     	      		
+                                           </form>
+                                     	</div>
+                                    </div>
+                                 <!-- 선결재 여부 설정 End -->
+                                 <!-- 대결 여부 설정 Start -->  
+                                    <div class="card-header d-block">                                   
+                                        <h6>
+                                       		<span>대결</span><i class="ik ik-help-circle"></i>
+                                    	</h6>
+                                   		 <div class="form-radio">
+                                   		  <form>
+	                                		  <div class="radio radio-inline">
+		                                		<label>
+	                                                   <input type="radio" name="radio">
+	                                                   <i class="helper"></i>허용 함
+	                                             </label>
+	                                           </div>                                     	                                     	
+	                                		  <div class="radio radio-inline">
+		                                		<label>
+	                                                   <input type="radio" name="radio">
+	                                                   <i class="helper"></i>허용 안 함
+	                                             </label>
+	                                           </div>                                     	                                     	      		
+                                           </form>
+                                     	</div>
+                                    </div>
+                                 <!-- 대결 여부 설정 End -->
+                                 <!-- 후결 여부 설정 Start -->  
+                                    <div class="card-header d-block">                                   
+                                        <h6>
+                                       		<span>후결</span><i class="ik ik-help-circle"></i>
+                                    	</h6>
+                                   		 <div class="form-radio">
+                                   		  <form>
+	                                		  <div class="radio radio-inline">
+		                                		<label>
+	                                                   <input type="radio" name="radio">
+	                                                   <i class="helper"></i>허용 함
+	                                             </label>
+	                                           </div>                                     	                                     	
+	                                		  <div class="radio radio-inline">
+		                                		<label>
+	                                                   <input type="radio" name="radio">
+	                                                   <i class="helper"></i>허용 안 함
+	                                             </label>
+	                                           </div>                                     	                                     	      		
+                                           </form>
+                                     	</div>
+                                    </div>
+                                 <!-- 후결 여부 설정 End -->
+                                 <!-- 참조 열람 시기 설정 Start -->  
+                                    <div class="card-header d-block">                                   
+                                        <h6>
+                                       		<span>참조 열람 시기 설정</span><i class="ik ik-help-circle"></i>
+                                    	</h6>
+                                   		 <div class="form-radio">
+                                   		  <form>
+	                                		  <div class="radio radio-inline">
+		                                		<label>
+	                                                   <input type="radio" name="radio">
+	                                                   <i class="helper"></i>결재 시작
+	                                             </label>
+	                                           </div>                                     	                                     	
+	                                		  <div class="radio radio-inline">
+		                                		<label>
+	                                                   <input type="radio" name="radio">
+	                                                   <i class="helper"></i>결재 완료
+	                                             </label>
+	                                           </div>                                     	                                     	      		
+                                           </form>
+                                     	</div>
+                                    </div>
+                                 <!-- 참조 열람 시기 설정 End -->
+                                 <!-- 기안 취소 설정 Start -->  
+                                    <div class="card-header d-block">                                   
+                                        <h6>
+                                       		<span>기안 취소 설정</span><i class="ik ik-help-circle"></i>
+                                    	</h6>
+                                   		 <div class="form-radio">
+                                   		  <form>
+	                                		  <div class="radio radio-inline">
+		                                		<label>
+	                                                   <input type="radio" name="radio">
+	                                                   <i class="helper"></i>반려 처리
+	                                             </label>
+	                                           </div>                                     	                                     	
+	                                		  <div class="radio radio-inline">
+		                                		<label>
+	                                                   <input type="radio" name="radio">
+	                                                   <i class="helper"></i>문서 삭제
+	                                             </label>
+	                                           </div>                                     	                                     	      		
+                                           </form>
+                                     	</div>
+                                    </div>
+                                 <!-- 기안 취소 설정 End -->
+                                 <!-- 설정 저장 버튼 Start -->  
+                                    <div class="card-header d-block ea-submit-btn">                                   
+                                        <button type="button" class="btn btn-primary">저장</button>
+                                    </div>
+                                 <!-- 설정 저장 버튼  End -->
+                        			</div>
+                        		</div>
+
+                        		<!-- 관리자용 전자결재 기본설정 물음표 아이콘 Modal View Start --> 
+	                        	<div class="modal-dialog modal-sm mt-0 mb-0 ruletip" role="document">
+						        	<div class="modal-content">
+	                               		 <div class="modal-body">
+	                                   		 <p id="modal-content-type"></p>
+	                                	 </div>
+	                           		 </div>
+                           		</div>
+                        		<!-- 관리자용 전자결재 기본설정 물음표 아이콘 Modal View End -->         	
+	</th:block>
+
+	<th:block layout:fragment="customJs">        
+        <script>window.jQuery || document.write('<script src="../src/js/vendor/jquery-3.3.1.min.js"><\/script>')</script>
+        <script src="/plugins/popper.js/dist/umd/popper.min.js"></script>
+        <script src="/plugins/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="/plugins/perfect-scrollbar/dist/perfect-scrollbar.min.js"></script>
+        <script src="/plugins/screenfull/dist/screenfull.js"></script>
+        <script src="/plugins/sweetalert/dist/sweetalert.min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.8/summernote.js"></script>
+        <script src="/summernote/lang/summernote-ko-KR.js"></script>
+        <script src="dist/js/theme.js"></script>
+        <script src="/js/layouts.js"></script>
+	</th:block>
+</html>

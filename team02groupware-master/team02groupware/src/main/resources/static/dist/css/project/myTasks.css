@@ -1,0 +1,77 @@
+@charset "UTF-8";
+
+@media (min-width: 763px){
+	.task-row>.col-md-8 {
+		padding-right: 0px;
+	}
+	
+	.mytasklist{
+		height:60vmin;
+		overflow-y:scroll;
+		margin-bottom:0px;
+	  	padding-bottom:10px;
+	}
+ 
+	.mytasklist{
+		height:60vmin;
+	}
+}
+
+.task-add-btn{
+	margin-right:10px !important;
+}
+
+.task-charts-card{
+	height:100%;
+}
+.task-charts .c3-chart-arcs-title{
+	font-family:"Noto Sans KR", sans-serif;
+	font-size:1.5em;
+}
+
+
+.chart-data{
+	width:50%;
+	margin:0 auto;
+}
+
+.chart-legend{
+	width:90%;
+	margin:0 auto;
+	height:20px;
+}
+
+.chart-legend-name{
+	float:left;
+	width:70%;
+}
+
+.chart-legend-data{
+	float:right;
+	display:inline-block;
+	min-width:10px;
+}
+.mytask-card{
+	cursor:pointer;
+	border:0.5px solid white;
+	box-sizing:border-box;
+}
+.mytask-card:hover{
+	border:0.5px solid #2dce89;
+	transition:.01s;
+	right:3px;
+}
+.project-tasklist {
+	font-size:0.9em;
+	position:absolute;
+	top:5px;
+	left:57px;
+	color:#8d919a;
+	z-index:1;
+	cursor:pointer;
+}
+.project-tasklist:hover{
+	color:#2dce89;
+}
+
+

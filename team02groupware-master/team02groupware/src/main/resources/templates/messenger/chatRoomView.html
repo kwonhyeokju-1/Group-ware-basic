@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<!-- 채팅방 상세보기 Start-->
+	<div class="card chat-card col-md-6 chat-room" th:classappend="|chat-room-${roomCode}|" style="display:none">
+	
+		<!-- 채팅방 헤더 Start -->
+		<div class="chat-room-header card-header row">
+		
+			<!-- 채팅방 제목 -->	
+			<div class="col-md-8">
+			   	<span class="chat-room-title"><i class="ik ik-message-square"></i> </span>	
+				<a href="#">
+					<i class="ik ik-user f-16 text-secondary"></i>
+					<span class="chat-room-user"></span>
+				</a>		<!-- 인원 수 -->
+			</div>
+			
+			<input type="hidden" class="chat-room-view-code" th:value="${roomCode}">
+			
+			<th:block th:each="m:${chatRoomMember}">
+				<input type="hidden" class="chat-room-member" th:value="${m.chatRoomMember}">
+			</th:block>
+			<!-- 취소 버튼 -->
+			<div class="col-md-4" style="padding: 0;">
+			
+				<div style="float:right">
+					<a href="#" class="chat-room-close">
+						<i class="ik ik-x close-card f-18 text-secondary"></i>
+					</a>
+		   		</div>
+		   	</div>
+		
+		</div>
+		<!-- 채팅방 헤더 End -->
+	
+		<div class="row">
+		
+			<!-- 채팅방 body Start-->
+			<div class="chat-room-body card-block col-md-11">
+		    	<th:block th:each="room : ${chatRoomLog}">
+		    		<p th:if="${room.chatMsgType} == 'CREATE'" th:text="${room.chatMsgContent}" style="text-align:center; color:#1761e3"></p>
+		    		<th:block th:if="${room.chatMsgType} != 'CREATE'">
+			    		<th:block th:if="${userId} == ${room.chatMsgUserId}">   
+						
+							<!-- 보낸 메시지 Start -->
+							<div class="mb-20 send-chat">
+						
+							   	<div class="msg-user">
+							       	<img th:src="@{/img/users/}+${userId}+@{.jpg}" alt="user image" class="rounded-circle img-40">	<!-- 이미지 표시 -->
+								</div>
+						
+								<div class="msg-content">
+						
+									<div class="msg-text-wrap">
+								
+										<div class="msg chat-room-message" style="float: right; clear: both;">		<!-- 메시지 표시 -->
+							        		<p class="mb-0" th:text="${room.chatMsgContent}"></p>
+							    		</div>
+							    	
+									</div>
+						
+								  	<div class="text-muted mb-0 msg-time">
+								  		<i class="fa fa-clock-o mr-10"></i>[[${room.chatMsgDate}]]
+								  	</div>	<!-- 시간 표시 -->
+						
+						   		</div>
+						
+							</div>
+							<!-- 보낸 메시지 End -->
+						</th:block>
+						
+						<th:block th:if="${userId} != ${room.chatMsgUserId}">
+							<!-- 받은 메시지 Start -->
+							<div class="mb-20 received-chat">
+								<div class="col-sm-12">
+						
+							      	<div class="msg-user">
+							          	<img th:src="@{/img/users/}+${room.chatMsgUserId}+@{.jpg}" alt="user image" class="rounded-circle img-40">	<!-- 이미지 표시 -->
+									</div>
+					
+									<div class="msg-content">
+							
+										<div class="msg-text-wrap">
+								
+							     			<h6 class="chat-room-name f-14" th:text="${room.chatMsgUserNickName}"></h6>		<!-- 아이디 표시 -->
+							   
+										   	<div class="msg chat-room-message">				<!--  메시지-->
+										       	<p class="mb-0" th:text="${room.chatMsgContent}"></p>
+										   	</div>
+										   	
+										   		
+										   	<div class="text-muted mb-0 msg-time">
+										  		<i class="fa fa-clock-o mr-10"></i>[[${room.chatMsgDate}]]
+										   	</div>	<!-- 시간 표시 -->
+							           	
+							      		</div>
+							    
+							     	</div>
+						    
+								</div>		                    
+							</div>
+							<!-- 받은 메시지 End -->
+						</th:block>
+					</th:block>
+				</th:block>
+			
+			</div>
+			<!-- 채팅방 body End -->
+			
+			<!-- 채팅방 메뉴바 -->
+			<div class="col-md-1 chat-room-menu">
+			
+				<div class="col-md-12 chat-room-menu-item menu-btn">
+					<a href="#">
+						<i class="ik ik-align-justify f-20 text-secondary"></i>
+					</a>
+				
+				</div>
+				
+				<div class="menu-item" style="display: none;">
+					<div class="col-md-12 chat-room-menu-item">
+						<a href="#">
+							<i class="ik ik-search f-20 text-info"></i>
+						</a>
+					
+					</div>
+							            
+			       	<div class="col-md-12 chat-room-menu-item modal-request invite-user" ><a href="#"><i class="ik ik-user-plus f-20 text-primary"></i></a></div>
+			       	<div class="col-md-12 chat-room-menu-item" ><a href="#"><i class="ik ik-save f-20 text-success"></i></a></div>
+			    </div>
+			</div>
+		    	
+		</div>
+		   
+		   
+		<!-- 채팅 입력창 Start -->
+		<div class="chat-room-input right-icon-control cold-md-12">
+		
+		    <div class="input-group input-group-button">
+		    
+		        <input type="text" class="form-control chat-room-msg-input" placeholder="메시지를 입력하세요">
+		        
+		        <div class="input-group-append">
+		            <button class="btn btn-primary chat-room-input-btn" type="button"><i class="ik ik-message-square"></i></button>
+		        </div>
+		        
+		    </div>
+		    
+		</div>
+		<!-- 채팅 입력창 End -->
+		
+		<!-- 보낸 메시지 Clone Start -->
+		<div class="mb-20 send-chat send-chat-clone" style="display:none">
+	
+		   	<div class="msg-user">
+		       	<img th:src="@{/img/users/}+${userId}+@{.jpg}" alt="user image" class="rounded-circle img-40">	<!-- 이미지 표시 -->
+			</div>
+	
+			<div class="msg-content">
+	
+				<div class="msg-text-wrap">
+			
+					<div class="msg chat-room-message" style="float: right; clear: both;">		<!-- 메시지 표시 -->
+		        		<p class="mb-0"></p>
+		    		</div>
+		    	
+				</div>
+	
+			  	<div class="text-muted mb-0 msg-time">
+			  		<i class="fa fa-clock-o mr-10"></i>
+			  	</div>	<!-- 시간 표시 -->
+	
+	   		</div>
+	
+		</div>
+		<!-- 보낸 메시지 Clone End -->
+		
+		<!-- 받은 메시지 Clone Start -->
+		<div class="mb-20 received-chat received-chat-clone" style="display:none">
+			<div class="col-sm-12">
+	
+		      	<div class="msg-user">
+		          	<img src="/img/users/2.jpg" alt="user image" class="rounded-circle img-40">	<!-- 이미지 표시 -->
+				</div>
+	
+				<div class="msg-content">
+		
+					<div class="msg-text-wrap">
+			
+		     			<h6 class="chat-room-name f-14"></h6>		<!-- 아이디 표시 -->
+		   
+					   	<div class="msg chat-room-message">				<!--  메시지-->
+					       	<p class="mb-0"></p>
+					   	</div>
+					   	
+					   		
+					   	<div class="text-muted mb-0 msg-time">
+					  		<i class="fa fa-clock-o mr-10"></i>
+					   	</div>	<!-- 시간 표시 -->
+		           	
+		      		</div>
+		    
+		     	</div>
+	    
+			</div>		                    
+		</div>
+		<!-- 받은 메시지 Clone End -->
+		
+		
+		
+	</div>
+	<!-- 대화방 상세보기 End-->

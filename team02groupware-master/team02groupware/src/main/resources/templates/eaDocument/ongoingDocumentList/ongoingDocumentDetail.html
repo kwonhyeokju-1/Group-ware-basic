@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
+<!--
+   @file ongoingDocumentDetail.html
+   @brief 결재 진행 중인 문서 상세보기 view
+   @author 김건훈
+ -->	
+		<!-- CSS custom -->
+		<th:block layout:fragment="customCss">
+			<link rel="stylesheet" href="/dist/css/electronicApproval/electronicApproval.css">
+		</th:block>
+		
+		<th:block layout:fragment="customTitle">
+		<title>문서 상세보기</title>
+		</th:block>
+	
+		<!--  Script custom -->
+		<th:block layout:fragment="customScript">
+			<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+			<script type="text/javascript">
+			$(function(){
+				 
+				 /*
+				  * @brief comment textarea 높이 자동 조정 Event
+				  * @author 김건훈
+				  */	
+				$('.approval-comment-body').on( 'keyup', 'textarea', function (e){
+						$(this).css('height', 'auto' );
+				        $(this).height( this.scrollHeight);
+				      });
+				 
+				 /*
+				  * @brief 문서 상세보기 페이지 상단메뉴 내 내용수정, 기안취소 물음표 아이콘 Modal Event
+				  * @author 김건훈
+				  */	
+				$('.ik-help-circle').on('mouseover',function(e){
+					//console.log('마우스오버');
+					var ruleTipType = $(this).siblings().text()
+					console.log(ruleTipType)
+					if(ruleTipType=='내용 수정'){
+						$('#modal-content-type').text('기안자가 기안 내용 수정이 필요하다고 판단했을 경우 결재 진행 중에도 할 수 있습니다. 내용 수정이 완료되면, 기존 결재 내역은 모두 초기화됩니다.');
+					}else if(ruleTipType=='기안 취소'){
+						$('#modal-content-type').text('기안자가 기안 자체를 삭제하고 싶을 때 사용할 수 있습니다. 관리자의 설정에 따라 "반려처리" 또는 "삭제처리" 가 될 수 있습니다.("삭제처리" 시 기존 결재 내역 뿐만 아니라 문서 번호 자체가 없어지게 됩니다.)');
+					}
+					var divLeft = e.pageX - 150
+					var divTop = e.pageY - 50
+						
+					$('.ruletip').css({display:"block", "top": divTop, "left": divLeft});
+					
+					$(this).css("color","black");
+					
+				});
+			
+				$('.ik-help-circle').on('mouseleave',function(){
+					
+					$('.ruletip').css("display","none");
+					$(this).css("color","#bcc8d8");
+				});
+				
+				
+				 /*
+				  * @brief 문서 상세보기 페이지 댓글 삭제 아이콘 Event
+				  * @author 김건훈
+				  */	
+				$('.approval-comment').on('mouseover',function(e){
+					//console.log('마우스오버');
+					$(this).find('.approval-commenter-cancel-img').css('display','block');
+			 	});
+				
+				$('.approval-comment').on('mouseleave',function(e){
+					$(this).find('.approval-commenter-cancel-img').css('display','none');
+			 	});	
+			
+				
+				 /*
+				  * @brief 문서 상세보기 페이지 의견,이력 탭 Event
+				  * @author 김건훈
+				  */
+				$('.approval-comment-history-tabs').find('li').click(function(e){
+					//console.log($(this).text());
+					var tabType=$(this).text();
+					if(tabType=='의견'){
+						$('.approval-comment-body').css('display','block');
+						$('.approval-history-body').css('display','none');
+						$('#approval-comment-tab').addClass("approval-comment-history-tab-active");
+						$('#approval-history-tab').removeClass("approval-comment-history-tab-active");
+					}else if(tabType=='이력'){
+						$('.approval-history-body').css('display','block');
+						$('.approval-comment-body').css('display','none');
+						$('#approval-history-tab').addClass("approval-comment-history-tab-active");
+						$('#approval-comment-tab').removeClass("approval-comment-history-tab-active");
+					}
+				});
+		   	});
+			
+			
+			</script>
+		</th:block>
+		<th:block layout:fragment="customContents">
+				       <div class="page-header">
+					       <div class="row align-items-end">
+					           <div class="col-lg-8">
+					           <div class="page-header-title">
+							   	<i class="ik ik-eye bg-blue"></i>
+								   <div class="d-inline">
+									 <h5>문서 상세보기</h5>
+									 <span>선택한 문서를 상세하게 볼 수 있는 곳입니다.</span>
+								   </div>
+								</div>
+					           </div>
+					           <div class="col-lg-4">
+					               <nav class="breadcrumb-container" aria-label="breadcrumb">
+					                   <ol class="breadcrumb">
+					                       <li class="breadcrumb-item">
+					                           <a th:href="@{/index}"><i class="ik ik-home"></i></a>
+					                       </li>
+					                        <li class="breadcrumb-item">진행 중인 문서</li>
+					                       	<li class="breadcrumb-item active" aria-current="page">문서 상세보기</li>
+					                   </ol>
+					               </nav>
+					           </div>
+					       </div>
+					   </div>                     
+		               <div class="card">
+			               <!-- 결재 진행 중인 문서 상세보기  테이블 상단 메뉴탭 Start-->
+			                 <div class="card-header ea-card-header">
+			                 	<h3>문서 상세보기</h3>
+			                 </div>
+			                 <ul class="nav document-form-list-top-nav">
+			                 	<li class="nav-item"  th:if="${docType eq '결재' || docType eq '기안'}">
+                                    <a class="nav-link text-primary" th:href="@{#}">결재선 변경</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-primary" th:href="@{#}">합의자 변경</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-primary" th:href="@{#}">참조자 변경</a>
+                                </li>
+                                <li class="nav-item" th:if="${docType eq '회람'}">
+                                    <a class="nav-link text-primary" th:href="@{#}">회람자 변경</a>
+                                </li>
+                                <li class="nav-item" th:if="${docType eq '수신'}">
+                                    <a class="nav-link text-primary" th:href="@{#}">수신자 변경</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-primary" th:href="@{#}">보존 연한 변경</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-primary" th:href="@{#}">보안 등급 변경</a>
+                                </li>
+                                <li class="nav-item" th:if="${docType eq '기안'}">
+                                    <div class="nav-link"><span><a class="text-primary" href="#">내용 수정</a></span><i class="ik ik-help-circle"></i></div>
+                                </li>
+                                <li class="nav-item" th:if="${docType eq '기안'}">
+                                    <div class="nav-link"><span><a class="text-primary" href="#">기안 취소</a></span><i class="ik ik-help-circle"></i></div>
+                                </li>
+                             </ul>
+	                      	<!-- 결재 진행 중인 문서 상세보기  테이블 상단 메뉴탭 End-->
+	                           <div class="electronic-approval-form">   
+	                                    	<div class="detail-view-document-type">
+	                                    		프로젝트사업기획서
+	                                    	</div>              
+                               <!-- 결재 진행 중인 문서 상세보기  기본설정 테이블 Start -->
+                                    <div class="card-header d-block"> 
+                                    <div class="card-body p-0 table-border-style">
+                                        <div class="table-responsive">
+                                            <table class="table ea-table document-detail-view-top-table">                                          
+                                                <tbody>
+                                                	<tr>
+                                                        <td class="detail-view-table-active document-form-table-td">문서 종류</td>
+                                                        <td class="detail-view-table-inactive">프로젝트 > 프로젝트사업기획서</td>
+                                                        <td class="detail-view-table-active document-form-table-td detail-view-top-table-lg-td">문서 번호</td>
+                                                        <td>프로젝트사업기획-20200216-0001</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="detail-view-table-active document-form-table-td">기안 부서</td>
+                                                        <td class="detail-view-table-inactive">개발부</td>
+                                                        <td class="detail-view-table-active document-form-table-td detail-view-top-table-lg-td">기안자</td>
+                                                        <td>김건훈</td>
+                                                    </tr>
+                                                     <tr>
+                                                        <td class="detail-view-table-active document-form-table-td">보존 연한</td>
+                                                        <td class="detail-view-table-inactive">5년</td>
+                                                        <td class="detail-view-table-active document-form-table-td detail-view-top-table-lg-td">보안 등급</td>
+                                                        <td>B등급</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <table style="height: 300px; width: 100%; table-layout: fixed; text-align: center; border: 1px solid #cdcdcd;">
+												<tbody>
+													<tr style="height: 50px;">
+														<td style="width: 96px; height: 140px; background: #f9f9f9; border: 1px solid #cdcdcd; "
+															rowspan="3">
+															<div class="col-md-12">결재</div>
+														</td>
+														<td style="background: #f9f9f9; border-: 1px solid #cdcdcd;"></td>
+														<td style="background: #f9f9f9; border: 1px solid #cdcdcd;"></td>
+														<td style="background: #f9f9f9; border: 1px solid #cdcdcd;"></td>
+														<td style="background: #f9f9f9; border: 1px solid #cdcdcd;"></td>
+														<td style="background: #f9f9f9; border: 1px solid #cdcdcd;"></td>
+														<td style="background: #f9f9f9; border: 1px solid #cdcdcd;"></td>
+														<td style="background: #f9f9f9; border: 1px solid #cdcdcd;"></td>
+													</tr>
+													<tr style="height: 100px; border: 1px solid #cdcdcd;">
+														<td style="border: 1px solid #cdcdcd;"></td>
+														<td style="border: 1px solid #cdcdcd;"></td>
+														<td style="border: 1px solid #cdcdcd;"></td>
+														<td style="border: 1px solid #cdcdcd;"></td>
+														<td style="border: 1px solid #cdcdcd;"></td>
+														<td style="border: 1px solid #cdcdcd;"></td>
+														<td style="border: 1px solid #cdcdcd;"></td>
+													</tr>
+													<tr style="height: 50px; border: 1px solid #cdcdcd;">
+														<td style="border: 1px solid #cdcdcd;"></td>
+														<td style="border: 1px solid #cdcdcd;"></td>
+														<td style="border: 1px solid #cdcdcd;"></td>
+														<td style="border: 1px solid #cdcdcd;"></td>
+														<td style="border: 1px solid #cdcdcd;"></td>
+														<td style="border: 1px solid #cdcdcd;"></td>
+														<td style="border: 1px solid #cdcdcd;"></td>
+													</tr>
+													<tr style="height: 50px; border: 1px solid #cdcdcd;">
+														<td style="background: #f9f9f9; border: 1px solid #cdcdcd;">
+															<div class="col-md-12">합의</div>
+														</td>
+														<td></td>
+														<td></td>
+														<td></td>
+														<td></td>
+														<td></td>
+														<td></td>
+														<td></td>
+													</tr>
+													<tr style="height: 45px;">
+														<td style="background: #f9f9f9; border: 1px solid #cdcdcd;">
+														<div class="col-md-12">참조</div>
+														</td>
+														<td colspan="7"> 
+								 						 </td>
+													</tr>
+												</tbody>
+											</table>
+                                        </div>
+                                    </div>
+                                    </div>
+                                
+                                 <!-- 결재 진행 중인 문서 상세보기  기본설정 테이블  End -->
+                                   
+                                 <!-- 결재 진행 중인 문서 상세보기  상세내용 Start  -->    
+                                    <div class="card-body  table-border-style">
+                                    	<h3>그룹웨어 프로젝트 사업기획서 </h3>                                   
+                                                                                                   상세내용입니다.        
+                                    </div>                      		
+                                <!-- 결재 진행 중인 문서 상세보기  상세내용 End  -->
+                                
+                                <!-- 결재 진행 중인 문서 파일첨부 Start --> 
+		                                 <div class="card-header d-block">                                   
+		                                       <h6>파일 첨부</h6>
+		                                       <ul class="nav">
+				                                    <li class="nav-item add-file-nav">
+				                                        <a class="text-primary" th:href="@{#}">파일 첨부</a>
+				                                    </li>
+				                                    <li class="nav-item add-file-nav">I</li>
+				                                    <li class="nav-item">
+				                                        <a class="text-primary" th:href="@{#}">관련문서 첨부</a>
+				                                    </li>
+	                               			   </ul>
+		                                 </div>
+                                 <!-- 결재 진행 중인 문서 파일첨부 End -->
+                                
+                                <!-- 결재 진행 중인 문서 상세보기  문서 의견,이력 Start  -->  
+	                                <div class="card-header d-block">
+	                                	<div class="approval-comment-history-tabs">
+			                                <ul class="nav">
+			                                    <li class="nav-item approval-comment-tab approval-comment-history-tab-active" id="approval-comment-tab">의견</li>
+			                                    <li class="nav-item approval-history-tab" id="approval-history-tab">이력</li>
+			                            	</ul>
+		                            	</div>
+		                            	<!-- 의견관련 contents Start -->
+		                            	<div class="approval-comment-body">
+		                            		<p><span class="text-primary">0</span>개의 의견</p>
+
+			                                     <div class="align-middle mb-25 approval-comment">
+		                                            <img src="img/electronicApproval/user.png" class="rounded-circle img-40 align-top mr-15">
+		                                            <div class="d-inline-block">
+		                                               <ul class="nav approval-commenter-ul">
+	                                                	 <li class="nav-item">
+	                                                		김건훈
+	                                                	 </li>
+	                                                	 <li class="nav-item">
+	                                                		2020-03-24 10:48:47
+	                                                	 </li>
+	                                                	 <li class="nav-item">
+	                                                		<img src="img/electronicApproval/cancel.png" class="approval-commenter-cancel-img">
+	                                                	 </li>
+		                                                </ul>
+		                                                <p class="text-muted mb-0">기안했으니까 승인해주세요.</p>
+		                                            </div>        
+		                                         </div> 
+			                                   
+			                                     <div class="align-middle mb-25 approval-comment">
+		                                            <img src="img/electronicApproval/user.png" class="rounded-circle img-40 align-top mr-15">
+		                                            <div class="d-inline-block">
+		                                               <ul class="nav approval-commenter-ul">
+	                                                	 <li class="nav-item">
+	                                                		관리자
+	                                                	 </li>
+	                                                	 <li class="nav-item">
+	                                                		2020-03-24 11:48:47
+	                                                	 </li>
+	                                                	 <li class="nav-item">
+	                                                		<img src="img/electronicApproval/cancel.png" class="approval-commenter-cancel-img">
+	                                                	 </li>
+		                                                </ul>
+		                                                <p class="text-muted mb-0">승인해줄게</p>
+		                                            </div>
+		                                          </div> 
+	                            			<textarea class="approval-comment-text" placeholder="댓글을 남겨주세요."></textarea>
+	                            			<div class="approval-comment-btn">
+	                            				<button type="button" class="btn btn-primary">등록</button>
+	                            			</div>
+		                            	</div>
+		                            	<!-- 의견관련 contents End -->
+		                            	<!-- 이력관련 contents Start -->
+		                            	<div class="approval-history-body">
+		                            		<div class="align-middle mb-25">
+		                            			<img src="img/electronicApproval/user.png" class="rounded-circle img-40 align-top mr-15">
+	                                            <div class="d-inline-block">
+	                                               <ul class="nav approval-commenter-ul">
+	                                               	 <li class="nav-item">
+	                                               		김건훈
+	                                               	 </li>
+	                                               	 <li class="nav-item">
+	                                               		2020-03-24 10:40:30
+	                                               	 </li>
+	                                                </ul>
+	                                                <p class="text-muted mb-0">기안</p>
+	                                            </div>
+	                                         </div>
+	                                         <div class="align-middle mb-25">
+		                            			<img src="img/electronicApproval/user.png" class="rounded-circle img-40 align-top mr-15">
+	                                            <div class="d-inline-block">
+	                                               <ul class="nav approval-commenter-ul">
+	                                               	 <li class="nav-item">
+	                                               		관리자
+	                                               	 </li>
+	                                               	 <li class="nav-item">
+	                                               		2020-03-24 11:50:30
+	                                               	 </li>
+	                                                </ul>
+	                                                <p class="text-muted mb-0">승인</p>
+	                                            </div>
+	                                         </div>        
+		                            	</div>
+		                            	<!-- 이력관련 contents End -->
+	                                </div>
+	                            <!-- 결재 진행 중인 문서 상세보기  상세내용 End  -->    	    
+                        		</div>                         		                                	 
+                        	</div>
+                        		<!-- 문서 상세보기 페이지 상단메뉴 내 내용수정, 기안취소 물음표 아이콘 Modal View Start --> 
+	                        	<div class="modal-dialog modal-sm mt-0 mb-0 ruletip" role="document">
+						        	<div class="modal-content">
+	                               		 <div class="modal-body">
+	                                   		 <p id="modal-content-type"></p>
+	                                	 </div>
+	                           		 </div>
+                           		</div>
+                        		<!-- 문서 상세보기 페이지 상단메뉴 내 내용수정, 기안취소 물음표 아이콘 Modal View End -->  	
+                        	
+                                		
+                        		
+		</th:block>
+
+	<th:block layout:fragment="customJs">        
+        <script>window.jQuery || document.write('<script src="../src/js/vendor/jquery-3.3.1.min.js"><\/script>')</script>
+        <script src="/plugins/popper.js/dist/umd/popper.min.js"></script>
+        <script src="/plugins/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="/plugins/perfect-scrollbar/dist/perfect-scrollbar.min.js"></script>
+        <script src="/plugins/screenfull/dist/screenfull.js"></script>
+        <script src="/plugins/sweetalert/dist/sweetalert.min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.8/summernote.js"></script>
+        <script src="/summernote/lang/summernote-ko-KR.js"></script>
+        <script src="dist/js/theme.js"></script>
+        <script src="/js/layouts.js"></script>
+	</th:block>
+</html>

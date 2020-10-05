@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<style>
+.nav-container{
+	overflow: auto;
+  scroll-snap-type: y mandatory;
+}
+.nav-item{
+	scroll-snap-align: start;
+}
+</style>
+
+<div class="app-sidebar colored" th:fragment="leftFragment">
+	<div class="sidebar-header">
+		<a class="header-brand" href="/index">
+			<div class="logo-img">
+				<img src="src/img/brand-white.svg" class="header-brand-img"
+					alt="lavalite">
+			</div> 
+			<span class="text">그룹웨어</span>
+		</a>
+		<button type="button" class="nav-toggle">
+			<i data-toggle="expanded" class="ik ik-toggle-right toggle-icon"></i>
+		</button>
+		<button id="sidebarClose" class="nav-close">
+			<i class="ik ik-x"></i>
+		</button>
+	</div>
+
+	<div class="sidebar-content">
+		<div class="nav-container">
+			<nav id="main-menu-navigation" class="navigation-main">
+				<div class="nav-lavel">인사관리 </div>
+				
+				<div class="nav-lavel">전자결재 (김건훈)</div>
+					<div class="nav-item">
+						<a th:href="@{/insertDocumentDraft}"><i class="ik ik-edit"></i><span>기안하기</span> </a>
+					</div>
+				<div class="nav-item has-sub">
+					<a href="#"><i class="ik ik-file-text"></i><span>진행 중인 문서 </span></a>
+					<div class="submenu-content">
+						<a th:href="@{/selectAllOngoingDocumentList}" class="menu-item">전체 </a> 
+						<a th:href="@{/selectWaitOngoingDocumentList}" class="menu-item">대기</a>
+						<a th:href="@{/selectCheckOngoingDocumentList}" class="menu-item">확인</a>
+						<a th:href="@{/selectWillOngoingDocumentList}" class="menu-item">예정</a>
+						<a th:href="@{/selectAfterOngoingDocumentList}" class="menu-item">진행</a>
+					</div>
+				</div>
+				<div class="nav-item has-sub">
+					<a href="#"><i class="ik ik-inbox"></i><span>문서함 </span></a>
+					<div class="submenu-content">
+						<a th:href="@{/selectAllDoneDocumentList}" class="menu-item">전체 </a> 
+						<a th:href="@{/selectDraftDoneDocumentList}" class="menu-item">기안 </a>
+						<a th:href="@{/selectApprovalDoneDocumentList}" class="menu-item">결재 </a> 
+						<a th:href="@{/selectReceiveDoneDocumentList}" class="menu-item">수신 </a> 
+						<a th:href="@{/selectPassAndReferDoneDocumentList}" class="menu-item">회람/참조 </a>
+						<a th:href="@{/selectReturnDoneDocumentList}" class="menu-item">반려 </a>
+						<a th:href="@{/selectTemporarySaveDocumentList}" class="menu-item">임시 저장 </a>		
+					</div>
+				
+				</div>
+				<div class="nav-item has-sub">
+					<a href="#"><i class="ik ik-settings"></i><span>전자결재 설정</span></a>
+					<div class="submenu-content">
+						<a th:href="@{/insertEaGeneralSettings}" class="menu-item">기본 설정</a>
+						<a th:href="@{/selectDocumentFormList}" class="menu-item">양식함 관리</a>
+						<a th:href="@{/selectAllDocumentListForSupervisor}" class="menu-item">전체 문서 목록</a>
+						<a th:href="@{/deleteDocumentList}" class="menu-item">삭제 문서 목록</a>
+						
+					</div>
+				</div>
+
+				<div class="nav-lavel">프로젝트관리 (김연지) </div>
+				<div class="nav-item has-sub">
+					<a href="#"><i class="ik ik-folder"></i><span>프로젝트 </span></a>
+					<div class="submenu-content">
+						<a href="/projectList" class="menu-item">프로젝트 </a>
+						<a href="#" class="menu-item">타임라인 </a> 
+						<a href="/myTasks" class="menu-item">내 업무 </a>
+					</div>
+				</div>
+				<div class="nav-item">
+					<a href="/taskCalendar"><i class="ik ik-calendar"></i><span>캘린더 </span></a>
+				</div>
+				<div class="nav-lavel">게시판 (이원준) </div>
+				<div class="nav-item">
+					<a href="/boardList"><i
+						class="ik ik-edit"></i><span>게시판</span></a>
+				</div>
+				
+				<div class="nav-lavel">메신저 (이원준) </div>
+				<div class="nav-item" >
+					<a id="messenger-open" style="cursor: pointer;"><i class="ik ik-message-square"></i><span>메신저 </span>
+						</a>
+				</div>
+
+			</nav>
+		</div>
+	</div>
+<script type="text/javascript">
+$(function(){
+	$('#messenger-open').click(function(){
+		//console.log('메신져 버튼 클릭');
+		$('#messenger-icon').click();
+		
+	});
+});
+
+</script>
+</div>
+</html>

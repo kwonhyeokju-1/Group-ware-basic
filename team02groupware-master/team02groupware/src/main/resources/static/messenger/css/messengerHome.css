@@ -1,0 +1,82 @@
+@charset "UTF-8";
+
+/*** 대화방 리스트 ***/
+
+.chat-list{
+	padding: 0px;
+}
+.chat-list-header-title{
+	font-weight: bold;
+	font-size: 0.9rem;
+}
+.chat-list-body{
+	height: 500px;
+	overflow-y: scroll;
+	overflow-x: hidden;
+	-ms-overflow-style: none;
+}
+.chat-list-title{
+	font-weight: bold;
+}
+.chat-list-search{
+	margin-top: 10px;
+}
+.chat-list-search a{
+	width: 20px;
+	height: 20px;
+}
+.chat-list-time{
+	color: #979797;
+	font-size: 12px;
+}
+.chat-list-room{
+	border-radius: 5px / 5px;
+	
+}
+
+
+/*** 대화방 상세보기 ***/
+
+.chat-room-detail{
+	padding: 0px;
+	
+	height: 450px;
+}
+.chat-room-title{
+	font-weight: bold;
+	font-size: 0.9rem;
+}
+.chat-room-header{
+	
+	/* position: fixed; */
+	
+}
+.chat-room-body{
+	height: 430px;
+	overflow-y: scroll;
+	overflow-x: hidden;
+	-ms-overflow-style: none;
+}
+	
+
+.chat-room-sender-name{
+	font-size: 0.75rem;
+}
+
+.received-chat .chat-room-message{
+	display: block !important;
+	width: fit-content;
+}
+.send-chat .chat-room-message{
+	display: block;
+	width: fit-content;
+	text-align: right !important; 
+}
+.chat-card .send-chat {
+   text-align: right;
+   float: right;
+   }
+
+.chat-room-input{
+	padding: 10px 20px;
+}

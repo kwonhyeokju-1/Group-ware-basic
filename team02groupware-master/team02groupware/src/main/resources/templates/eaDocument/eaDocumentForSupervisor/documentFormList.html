@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
+<!--
+   @file documentFormList.html
+   @brief 양식함 관리 리스트 view
+   @author 김건훈
+ -->	
+		<!-- CSS custom -->
+		<th:block layout:fragment="customCss">
+			<link rel="stylesheet" href="dist/css/electronicApproval/electronicApproval.css">
+			<link rel="stylesheet" href="icheck/skins/square/blue.css">
+			<link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.8/summernote.css" rel="stylesheet">
+		</th:block>
+		
+		<th:block layout:fragment="customTitle">
+		<title>양식함 관리</title>
+		</th:block>
+	
+		<!--  Script custom -->
+		<th:block layout:fragment="customScript">
+			<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+			<script src="icheck/icheck.min.js"></script>
+			<script src="dist/js/electronicApproval/documentFormList.js"></script>
+		</th:block>
+		<th:block layout:fragment="customContents">
+						<div class="page-header">
+					       <div class="row align-items-end">
+					           <div class="col-lg-8">
+					              <div class="page-header-title">
+									<i class="ik ik-inbox bg-blue"></i>
+									<div class="d-inline">
+										<h5>문서 양식함</h5>
+										<span>문서 양식, 문서 양식 분류, 사내전자결재 규정을 설정할 수 있습니다.</span>
+									</div>
+								</div>
+					           </div>
+					           <div class="col-lg-4">
+					               <nav class="breadcrumb-container" aria-label="breadcrumb">
+					                   <ol class="breadcrumb">
+					                       <li class="breadcrumb-item">
+					                           <a th:href="@{/index}"><i class="ik ik-home"></i></a>
+					                       </li>
+					                       <li class="breadcrumb-item">전자결재 설정</li>
+					                       <li class="breadcrumb-item active" aria-current="page">양식함 관리</li>
+					                   </ol>
+					               </nav>
+					           </div>
+					       </div>
+					   </div>                    
+		               <div class="card">
+		              	  <!-- 테이블 상단 메뉴탭 Start-->
+			                 <div class="card-header ea-card-header">
+			                 	<h3>양식함 관리</h3>
+			                 </div>
+									<ul class="nav document-form-list-top-nav">
+	                                    <li class="nav-item">
+	                                        <a class="nav-link text-primary" th:href="@{/insertDocumentForm}">양식생성</a>
+	                                    </li>
+	                                    <li class="nav-item">
+	                                        <a class="nav-link text-primary" href="#" data-toggle="modal" data-target="#formTypeSetting" data-backdrop="static" data-keyboard="false">분류설정</a>
+	                                    </li>
+	                                    <li class="nav-item">
+	                                        <div class="nav-link"><span><a class="text-primary" href="#" data-toggle="modal" data-target="#eaRule" data-backdrop="static" data-keyboard="false">사내전자결재규정</a></span><i class="ik ik-help-circle"></i></div>
+	                                    </li>
+	                                </ul>
+	                            <!-- 테이블 상단 메뉴탭 End-->
+	                            
+                              	<!-- 테이블 상단 삭제 및 검색 탭 Start -->
+                                   <div class="card-block">
+                                   <div class="table-nav">
+                                   	<ul class="nav table-row-delete-nav" >
+	                                    <li class="nav-item">
+	                                      <button type="button" class="btn btn-outline-danger ea-document-form-delete">삭제</button> 
+	                                    </li>
+	                                </ul>
+                                    <div class="collapse d-md-block display-options float-md-right" id="displayOptions">
+                                        <div class="d-block d-md-inline-block">
+                                            <div class="btn-group float-md-left mr-1 mb-1">
+                                                <button class="btn btn-outline-dark btn-xs dropdown-toggle search-keyword-btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    		항목선택<i class="ik ik-chevron-down mr-0 align-middle"></i>
+                                                </button>
+                                                <div class="dropdown-menu">
+                                                    <a class="dropdown-item">분류</a>
+                                                    <a class="dropdown-item">양식명</a>
+                                                    <a class="dropdown-item">약칭</a>
+                                                </div>
+                                            </div>
+                                            <div class="search-sm d-inline-block float-md-left mr-1 mb-1 align-top">
+                                               
+                                                    <input type="text" id="document-form-search-input" class="form-control" placeholder="검색">
+                                                    <button class="btn btn-icon" id="document-form-search-btn"><i class="ik ik-search"></i></button>
+
+                                            </div>
+                                        </div>
+                                    </div>      
+                                   </div>
+                                   <!-- 테이블 상단 삭제 및 검색 탭 End --> 
+                                    <!-- 양식 리스트 테이블 Start -->
+                                        <div class="table-responsive">
+                                            <table class="table table-hover mb-0 ea-table">
+                                                <thead>
+                                                    <tr>
+                                                    	<th>
+                                                    		<input type="checkbox" class="ea-icheck" id="all-ea-checkbox">                                               	
+                                                    	</th>
+                                                        <th>분류</th>
+                                                        <th>양식명</th>
+                                                        <th>약칭</th>
+                                                        <th>설명</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr th:each="dfl:${eaDocumentFormList}" class="documentFormListTr">
+                                                    	<td> 
+                                                    		<input type="checkbox" class="ea-icheck ea-checkbox" th:value="${dfl.dFormCode}">
+                                                    	</td>
+                                                        <td data-toggle="modal" data-target="#editLayoutItem" th:text="${dfl.dFormType}"></td>
+                                                        <td data-toggle="modal" data-target="#editLayoutItem" th:text="${dfl.dFormName}"></td>
+                                                        <td data-toggle="modal" data-target="#editLayoutItem" th:text="${dfl.dFormAbbreviation}"></td>
+                                                     	<td data-toggle="modal" data-target="#editLayoutItem" th:text="${dfl.dFormDetailExplanation}">.</td>
+                                                    </tr>
+                                                    <tr th:if="${eaDocumentFormList.size()} eq 0">
+                                                    	<td colspan="5">검색된 문서 양식이 없습니다.</td>
+                                                    </tr>                                                                                                        
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <span class="contents-quantity" th:text="|양식 수 : ${eaDocumentFormListCount}|"></span>
+	                                 	<nav aria-label="Page navigation example">
+                                            <ul class="pagination mb-0 pagination-btn-group">
+                                                <li class="page-item" th:if="${currentPageNum > 1}">
+                                                    <a class="page-link first" th:href="@{/selectDocumentFormList}">
+                                                        <i class="ik ik-chevrons-left"></i>
+                                                    </a>
+                                                </li>
+                                                <li class="page-item" th:if="${currentPageNum > 1}">
+                                                    <a class="page-link prev" th:href="@{/selectDocumentFormList(currentPage=${currentPageNum-1},startPageNum=${startPageNum},endPageNum=${endPageNum})}">
+                                                        <i class="ik ik-chevron-left"></i>
+                                                    </a>
+                                                </li>
+                                                <th:block th:each="pageNum:${#numbers.sequence(startPageNum,endPageNum)}">
+                                                <li class="page-item" th:classappend="${currentPageNum}==${pageNum}? active">
+                                                    <a class="page-link" th:href="@{/selectDocumentFormList(currentPage=${pageNum},startPageNum=${startPageNum},endPageNum=${endPageNum})}" th:text="${pageNum}" ></a>
+                                                </li>
+                                                </th:block>
+                                                <li class="page-item" th:if="${currentPageNum < lastPage}">
+                                                    <a class="page-link next" th:href="@{/selectDocumentFormList(currentPage=${currentPageNum+1},startPageNum=${startPageNum},endPageNum=${endPageNum})}" aria-label="Next">
+                                                        <i class="ik ik-chevron-right"></i>
+                                                    </a>
+                                                </li>
+                                                <li class="page-item" th:if="${currentPageNum < lastPage}">
+                                                    <a class="page-link last" th:href="@{/selectDocumentFormList(currentPage=${lastPage})}">
+                                                        <i class="ik ik-chevrons-right"></i>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                 <!-- 양식 리스트 테이블 End -->                                                         
+                        		</div>	
+                        
+                        
+                        	<!-- 양식 리스트 테이블의 단일행 클릭시 Modal View Start -->
+					          <div class="modal fade edit-layout-modal" id="editLayoutItem" tabindex="-1" role="dialog" aria-labelledby="editLayoutItemLabel" aria-hidden="true">
+					            <div class="modal-dialog" role="document">
+					                <div class="modal-content">
+					                    <div class="modal-header">
+					                        <h5 class="modal-title" id="editLayoutItemLabel">문서양식  미리보기</h5>
+					                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					                    </div>
+					                    <div class="modal-body">
+					                      <h1 id=document-form-modal-view-title></h1>
+					                       
+			                              <div class="modal-body-document-form-approval-format">      
+			                             
+										 </div>
+										 
+										 <div class="modal-body-document-form-detail-content">
+										 
+										 </div>
+										     
+					                    </div>
+					                    <div class="modal-footer">
+					                        <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+					                        <a id="select-document-form-detail" class="btn btn-primary">상세보기</a>
+					                    </div>
+					                </div>
+					            </div>
+					        </div>
+	                      <!-- 양식 리스트 테이블의 단일행 클릭시 Modal View End -->
+	                      
+	                      <!-- 사내전자결재규정, 문서양식분류설정 물음표 아이콘 Modal View Start --> 
+	                        <div class="modal-dialog modal-sm mt-0 mb-0 ruletip" role="document">
+					        	<div class="modal-content">
+                               		 <div class="modal-body">
+                                   		 <p id="modal-content-type"></p>
+                                	 </div>
+                           		 </div>
+                           	</div>
+                           <!-- 사내전자결재규정, 문서양식분류설정 물음표 아이콘 Modal View End -->
+                          
+                           
+                           <!-- 양식함 페이지 분류설정 Modal View Start -->
+	                        <div class="modal fade show" id="formTypeSetting" tabindex="-1" role="dialog" aria-hidden="true">
+	                          <div class="modal-dialog modal-sm mt-0 mb-0 modal-dialog-centered" role="document">
+	                           <div class="modal-content">
+	                              <div class="modal-header">
+	                                  <h5 class="modal-title"><span>분류 설정</span><i class="ik ik-help-circle"></i></h5>
+	                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	                                      <span aria-hidden="true">&times;</span>
+	                                  </button>
+	                              </div>
+	                              <div class="modal-body">
+	                                  <div class="card-block widget-last-task">
+	                                  <ul class="list-group approverGroupList document-form-type-ul" style="overflow-y: inherit; overflow-x:hidden; max-height: 200px; -webkit-overflow-scrolling: touch;">
+	                                   	<li class="list-group-item list-group-item-action disabled">
+	                                        <div class="right-icon-control m-t-15">
+	                                            <div class="input-group input-group-button">
+	                                                <input type="text" class="form-control" placeholder="분류를 추가하십시오." id="add-document-form-type-input">
+	                                                <div class="input-group-append">
+	                                                    <button class="btn btn-primary" type="button" id="add-document-form-type-btn"><i class="ik ik-plus"></i></button>
+	                                                </div>
+	                                            </div>
+	                                        </div>
+	                                   	</li>
+	                                   	<li class="list-group-item document-form-type-clone document-form-type-li">
+	                                       	<p class="mb-10">
+	                                       		<span class="document-form-type-name"></span>
+	                                       		<span class="float-right document-form-type-update-delete-btn">
+	                                       			<a href="#">
+	                                       				<i class="ik ik-edit f-16 mr-15 text-green"></i>
+	                                       			</a>
+	                                       			<a href="#">
+	                                       				<i class="ik ik-trash-2 f-16 text-red"></i>
+	                                   				</a>
+	                                   			</span>
+	                                   			<span class="float-right document-form-type-update-done-btn">
+	                                   				<button class="btn btn-primary">수정</button>
+	                                   			</span>
+	                                   		</p>
+	                                   	</li>
+	                                   	<th:block th:each="dftl:${eaDocumentFormTypeList}">
+	                                   	<li class="list-group-item document-form-type-li">
+	                                       	<p class="mb-10">
+	                                       		<span th:text="${dftl.dFormType}" th:value="${dftl.dFormTypeCode}" class="document-form-type-name"></span>
+	                                       		<span class="float-right document-form-type-update-delete-btn" th:unless="${dftl.dFormTypeCode} eq EATY001">
+	                                       			<a href="#">
+	                                       				<i class="ik ik-edit f-16 mr-15 text-green"></i>
+	                                       			</a>
+	                                       			<a href="#">
+	                                       				<i class="ik ik-trash-2 f-16 text-red"></i>
+	                                   				</a>
+	                                   			</span>
+	                                   			<span class="float-right document-form-type-update-done-btn">
+	                                   				<button class="btn btn-primary">수정</button>
+	                                   			</span>
+	                                   		</p>
+	                                   	</li>	        
+	                                   	</th:block>
+	                                   </ul>
+	                               	 </div>
+	                              </div>
+	                          	</div>
+	                         </div>
+	                       </div>  
+	                      <!-- 양식함 페이지 분류설정 Modal View End -->
+	                      
+	                      <!-- 사내 전자결재 규정 Modal View Start -->
+	                        <div class="modal fade show" id="eaRule" tabindex="-1" role="dialog" aria-hidden="true">
+	                          <div class="modal-dialog modal-lg mt-0 mb-0 modal-dialog-centered" role="document">
+	                           <div class="modal-content">
+	                              <div class="modal-header">
+	                                  <h5 class="modal-title">사내 전자결재 규정</h5>
+	                              </div>
+	                              <div class="modal-body ea-rule-update-before">
+	                                  <pre id="ea-rule-contents" style="font-family:'noto sans CJK kr', 'sans-serif'; letter-spacing:-1.5px;"><th:block th:utext="${eaDocumentSetting.get(0).dEaRule}"></th:block></pre>
+	                              </div>
+	                              <div class="modal-body ea-rule-update-after">
+	                                 <textarea id="ea-rule-update-summernote" rows="10"></textarea>
+	                              </div>
+	                              <div class="modal-footer ea-rule-update-btn-before">
+	                                  <button type="button" class="btn btn-primary ea-rule-update-btn">규정 수정</button>
+	                                  <button type="button" class="btn btn-secondary ea-rule-cancel-btn" data-dismiss="modal">취소</button>
+	                              </div>
+	                              <div class="modal-footer ea-rule-update-btn-after">
+	                                  <button type="button" class="btn btn-primary" id="ea-rule-update-submit-btn" data-dismiss="modal">수정 완료</button>
+	                                  <button type="button" class="btn btn-secondary ea-rule-cancel-btn" data-dismiss="modal">취소</button>
+	                              </div>
+	                          	</div>
+	                         </div>
+	                       </div>
+	                     <!-- 전자결재 규정 Modal View End -->
+	                                                  	
+		</th:block>
+
+	<th:block layout:fragment="customJs">        
+        <script>window.jQuery || document.write('<script src="../src/js/vendor/jquery-3.3.1.min.js"><\/script>')</script>
+        <script src="/plugins/popper.js/dist/umd/popper.min.js"></script>
+        <script src="/plugins/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="/plugins/perfect-scrollbar/dist/perfect-scrollbar.min.js"></script>
+        <script src="/plugins/screenfull/dist/screenfull.js"></script>
+        <script src="/plugins/sweetalert/dist/sweetalert.min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.8/summernote.js"></script>
+        <script src="/summernote/lang/summernote-ko-KR.js"></script>
+        <script src="dist/js/theme.js"></script>
+        <script src="/js/layouts.js"></script>
+	</th:block>
+</html>

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/default}">
+<!-- 사용자css -->
+<th:block layout:fragment="customCss">
+	<link rel="stylesheet" href="dist/css/project/myTasks.css">
+	<link rel="stylesheet" href="dist/css/project/modal.css">
+	<link rel="stylesheet" href="plugins/select2/dist/css/select2.min.css">
+	<link rel="stylesheet" href="plugins/datedropper/datedropper.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/css/tempusdominus-bootstrap-4.min.css" />
+</th:block>
+<th:block layout:fragment="customTitle">
+	<title>내 업무</title>
+</th:block>
+<th:block layout:fragment="customScript">
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+	<script src="plugins/sweetalert/dist/sweetalert.min.js"></script>
+	<script src="dist/js/project/myTasks.js"></script>
+    
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript">
+	  
+	  
+		//멤버추가버튼 클릭시 셀렉트 활성화
+		$(function() {
+			$(".member-update-btn").click(function() {
+				$('#update-select2').select2('open');
+			})
+		})
+		//내 업무 차트 변수 선언
+		var taskSum = [[${taskSum}]];
+		var taskSuccess = [[${taskSuccess}]];
+		var taskNodeadline = [[${taskNodeadline}]];
+		var taskAfterDeadline = [[${taskAfterDeadline}]];
+		var taskPlanning = [[${taskPlanning}]];
+		  
+		  
+	</script>
+	<script src="dist/js/project/charts.js"></script>
+</th:block>
+<th:block layout:fragment="customContents">
+		<div class="page-header">
+			<div class="row align-items-end">
+				<div class="col-lg-8">
+					<div class="page-header-title">
+						<i class="ik ik-list bg-blue"></i>
+						<div class="d-inline">
+							<h5>내 업무</h5>
+							<span>나에게 배정된 업무를 관리할 수 있습니다.</span>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-4">
+					<nav class="breadcrumb-container" aria-label="breadcrumb">
+						<ol class="breadcrumb">
+							<li class="breadcrumb-item"><a href="/index"><i
+									class="ik ik-home"></i></a></li>
+							<li class="breadcrumb-item"><a href="/projectList">프로젝트</a></li>
+							<li class="breadcrumb-item active" aria-current="page">내 업무</li>
+						</ol>
+					</nav>
+				</div>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-md-12">
+				<div class="mb-2 clearfix">
+					<a class="btn pt-0 pl-0 d-md-none d-lg-none" data-toggle="collapse"
+						href="#displayOptions" role="button" aria-expanded="true"
+						aria-controls="displayOptions"> 옵션선택 <i
+						class="ik ik-chevron-down align-middle"></i>
+					</a>
+					<div class="collapse d-md-block display-options" id="displayOptions">
+					<div class="col-md-8" style="float:left; padding-left:0; padding-right:0;">
+						<button type="button" class="task-add-btn btn btn-success btn-rounded"
+								data-toggle="modal" data-target="#taskInsertModal" style="float:left;">새 업무 추가
+						</button>
+						<div class="d-block d-md-inline-block" style="float:right;">
+							<div class="search-sm d-inline-block float-md-left mr-1 mb-1 align-top">
+								<form action="">
+									<input type="text" class="form-control" placeholder="업무검색" required>
+									<button type="submit" class="btn btn-icon">
+										<i class="ik ik-search"></i>
+									</button>								
+								</form>
+							</div>
+							<div class="btn-group float-md-left mr-1 mb-1">
+								<button class="btn btn-outline-dark btn-xs dropdown-toggle"
+									type="button" data-toggle="dropdown" aria-haspopup="true"
+									aria-expanded="false">
+									업데이트순 <i class="ik ik-chevron-down mr-0 align-middle"></i>
+								</button>
+								<div class="dropdown-menu">
+									<a class="dropdown-item" href="#">마감일순</a>
+									<a class="dropdown-item" href="#">업데이트순</a>
+								</div>
+							</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="separator mb-20"></div>
+			
+				<div class="task-row row layout-wrap" id="layout-wrap">
+				
+				<div class="mytasklist col-md-8">
+					<th:block th:each="mtl : ${myTasklist}">
+						<div class="mytask-item list-item">
+							<div class="mytask-card card d-flex flex-row mb-3">
+								<div class="custom-control custom-checkbox pl-1 align-self-center" style="margin-left:10px;">
+									<label class="custom-control custom-checkbox mb-0">
+										<input type="checkbox" class="task-checkbox custom-control-input">
+										<input type="hidden" name="taskCode" th:value="${mtl.taskCode}">
+										<span class="custom-control-label"></span>
+									</label>
+								</div>
+								<div class="project-tasklist">
+									<input type="hidden" class="project-code-input" th:value="${mtl.projectCode}">
+									<a th:text="${mtl.projectTitle}"></a><i class="ik ik-chevron-right"></i>
+									<a th:text="${mtl.tasklistName}"></a>
+								</div>				
+								<div class="d-flex flex-grow-1 min-width-zero card-content">
+									<div class="task-card-body card-body align-self-center d-flex flex-column flex-md-row justify-content-between min-width-zero align-items-md-center">
+										<a class="task-title list-item-heading mb-1 truncate w-40 w-xs-100" style="cursor:pointer;" th:text="${mtl.taskTitle}">  </a>
+										<p class="mb-1 text-muted text-small category w-15 w-xs-100" style="cursor:pointer;" th:text="${mtl.taskDesc}"></p>
+										<span class="noDL mb-1 text-muted text-small date w-15 w-xs-100" th:if="${mtl.taskDeadline} eq null" th:text="'마감일 없음'"></span>
+										<span class="yesDL mb-1 text-small date w-15 w-xs-100" th:if="${mtl.taskDeadline} neq null" th:text="${#dates.format(mtl.taskDeadline,'MM/dd hh:mm')}" style="color:rgba(237, 28, 36);"></span>
+									</div>
+									<div class="list-actions">
+									<a href=# class="list-modal-btn"><i class=" ik ik-edit-2"></i></a>
+										<a href="#" class="list-delete-btn"><i class="ik ik-trash-2"></i></a>
+									</div>
+									
+								</div>
+							</div>
+						</div>
+						</th:block>
+					</div>
+					<div class= "col-md-4">
+						<div class="task-charts-card card" style="min-height: 422px;">
+							<div class="card-body">
+								<span th:text="${session.userNickName}"></span>님의 업무입니다
+								<div id="task-status-chart" class="task-charts"></div>
+								<div class="chart-data">
+									<div class="chart-legend">
+										<div class="chart-legend-name">
+											<div>완료</div>
+										</div>
+										<div class="taskSuccess chart-legend-data" >
+											<div th:text="${taskSuccess}"></div>
+										</div>
+									</div>
+									<div class="chart-legend">
+										<div class="chart-legend-name">
+											<div>마감일 지남</div>
+										</div>
+										<div class="taskAfterDeadline chart-legend-data">
+											<div th:text="${taskAfterDeadline}"></div>
+										</div>
+									</div>
+									<div class="chart-legend">
+										<div class="chart-legend-name">
+											<div>계획됨</div>
+										</div>
+										<div class="taskPlanning chart-legend-data">
+											<div th:text="${taskPlanning}"></div>
+										</div>
+									</div>
+									<div class="chart-legend">
+										<div class="chart-legend-name">
+											<div>마감일 없음</div>
+										</div>
+										<div class="taskNodeadline chart-legend-data">
+											<div th:text="${taskNodeadline}"></div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	
+	<!------------------내 업무 추가 버튼 클릭시 모달창 start --------------------->
+	<div class="modal fade" id="taskInsertModal" tabindex="-1"
+		role="dialog" aria-labelledby="exampleModalCenterLabel"
+		aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalCenterLabel">새 업무</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+
+				<div class="pr-add-modal modal-body">
+					<form name="projectAddForm" method="post"
+						onsubmit="return checkInput()">
+						<div class="form-group">
+							
+						
+						</div>
+						<div class="form-group">
+							<label for="add-projectTitle">업무 제목</label> <input type="text"
+								id="add-projectTitle" name="projectTitle" class="form-control"
+								placeholder="예) 웹사이트 개발">
+						</div>
+						<div class="form-group">
+							<label for="projectDesc">업무 설명(선택사항)</label> <input type="text"
+								id="projectDesc" name="projectDesc" class="form-control">
+						</div>
+					
+						<div class="form-group">
+							<label for="date">마감일</label>
+							<div>
+								<div style="width:50%; float:left; display:inline-block; padding-right:5px;" >
+									<input type="text"
+									class="date-form-control form-control datetimepicker-input"
+									id="datepicker" data-toggle="datetimepicker"
+									data-target="#datepicker" >
+								</div>
+								<div style="width:50%; display:inline-block;">
+									<input type="text" 
+									class="date-form-control form-control datetimepicker-input" 
+									id="timepicker" data-toggle="datetimepicker" 
+									data-target="#timepicker" >
+								</div>
+                        	</div>
+                        </div>
+                        
+						<div class="form-group">
+							<label>업무 멤버(선택사항)</label>
+							<div>
+								<div class="add-btn-wrap">
+									<img class="member-add-btn"
+										src="/img/project/member_plus_btn.png">
+								</div>
+								<div class="member-select-wrap form-group">
+									<select class="form-control select2" id="add-select2"
+										multiple="multiple">
+										<option value="김연지" selected>김연지</option>
+										<option value="김건훈">김건훈</option>
+										<option value="김정훈">김정훈</option>
+										<option value="이원준">이원준</option>
+										<option value="김연지">김영훈</option>
+										<option value="김건훈">김곤지</option>
+										<option value="김정훈">김상훈</option>
+										<option value="이원준">이원영</option>
+									</select>
+								</div>
+							</div>
+						</div>
+					</form>
+					
+				</div>
+
+
+				<div class="project-add-btn modal-footer">
+					<button type="button" class="btn btn-light"
+						data-dismiss="modal">취소</button>
+					<button type="submit" class="pr-submit-btn btn btn-primary">추가하기</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!-------------------------내 업무 추가 버튼 클릭시 모달창 end --------------------------->
+
+
+
+</th:block>
+<th:block layout:fragment="customJs">
+	
+	<script>
+		window.jQuery
+				|| document
+						.write(
+								'<script src="src/js/vendor/jquery-3.3.1.min.js"><\/script>')
+	</script>
+	<script src="plugins/popper.js/dist/umd/popper.min.js"></script>
+	<script src="plugins/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script src="plugins/perfect-scrollbar/dist/perfect-scrollbar.min.js"></script>
+	<script src="plugins/screenfull/dist/screenfull.js"></script>
+	<script src="plugins/datatables.net/js/jquery.dataTables.min.js"></script>
+	<script
+		src="plugins/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+	<script
+		src="plugins/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+	<script
+		src="plugins/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
+	<script src="plugins/moment/moment.js"></script>
+	<script src="plugins/d3/dist/d3.min.js"></script>
+	<script src="plugins/c3/c3.min.js"></script>
+	<script src="js/tables.js"></script>
+
+	
+	<script src="dist/js/theme.min.js"></script>
+
+	<script src="js/form-picker.js"></script>
+	<script src="plugins/datedropper/datedropper.min.js"></script>
+        <script src="plugins/summernote/dist/summernote-bs4.min.js"></script>
+	<!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+	<script>
+		(
+								function(b, o, i, l, e, r) {
+									b.GoogleAnalyticsObject = l;
+									b[l] || (b[l] = function() {
+										(b[l].q = b[l].q || []).push(arguments)
+									});
+									b[l].l = +new Date;
+									e = o.createElement(i);
+									r = o.getElementsByTagName(i)[0];
+									e.src = 'https://www.google-analytics.com/analytics.js';
+									r.parentNode.insertBefore(e, r)
+								}(window, document, 'script', 'ga'));
+		ga('create', 'UA-XXXXX-X', 'auto');
+		ga('send', 'pageview');
+	</script>
+	<script src="plugins/select2/dist/js/select2.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
+	<script>
+		$(function() {
+
+			$('.select2').select2();
+		});
+	</script>
+	
+</th:block>
+</html>

@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  		
+	
+<mapper namespace="com.team02.groupware.mapper.MessengerMapper">
+	
+	<!-- 채팅방 리스트 resultMap  -->
+	<resultMap id="selectChatRoomList" type="map">
+	
+    	<result property="chatRoomCode" column="chat_room_code"/>
+    	<result property="chatRoomTitle" column="chat_room_title"/>
+    	<result property="chatRoomUserCount" column="chat_room_user_count"/>
+    	<result property="chatMsgDate" column="chat_message_date"/>
+    	<result property="chatMsgContent" column="chat_message_content"/>
+    	<result property="chatMsgCode" column="chat_message_code"/>
+    	<result property="unReadMsgCount" column="unReadMsgCount"/>
+    	
+  	</resultMap>
+	
+	<!-- 채팅방 리스트 select -->
+	<select id="selectChatRoomList" resultMap="selectChatRoomList" parameterType="String">
+		
+		SELECT
+			crl.chat_room_code,
+			crl.chat_room_title,
+			crl.chat_room_user_count,
+			date_format(msg.chat_message_date,'%Y-%m-%d %H:%i') as chat_message_date,
+			msg.chat_message_content,
+			msg.chat_message_code,
+			(msg.chat_message_code - tb1.last_chat_message_code) as unReadMsgCount
+		FROM
+			(SELECT
+				*
+			FROM
+				chat_room_per_user AS cru
+			WHERE
+				cru.chat_user_id = #{userId}) AS tb1
+				
+			INNER join
+			
+			(SELECT
+				cc.chat_message_code,
+				cc.chat_message_date,
+				cc.chat_message_user_id,
+				cc.chat_message_content,
+				cc.chat_room_code,
+				cc.chat_message_user_nickname
+			FROM
+				chat_message_log AS cc
+				
+				INNER JOIN
+				
+				(SELECT 
+					MAX(chat_message_code) AS msc,
+					chat_room_code
+					FROM chat_message_log
+					GROUP by
+						chat_room_code) AS ccc
+					on
+					cc.chat_message_code
+					=
+					ccc.msc) AS msg
+					
+					on
+					tb1.chat_room_code
+					=
+					msg.chat_room_code
+					
+					INNER join
+					
+					chat_room_list AS crl
+					on
+					tb1.chat_room_code
+					=
+					crl.chat_room_code
+			
+	</select>
+	
+	
+	<!-- 채팅방 마지막 읽은 메시지
+	<select id="selectUnReadMessageCount" resultType="String" parameterType="String">
+	
+		SELECT 
+			(count(cl.chat_message_code)-1) AS unReadMessageCount
+		FROM 
+			chat_message_log AS cl
+		WHERE
+			cl.chat_room_code = ${chatRoomCode} 
+			AND 
+			cl.chat_message_code >= ${chatMsgCode}
+	
+	</select> -->
+	
+	
+	<!-- 채팅방 상세보기 resultMap -->
+	<resultMap id="selectChatRoomView" type="map">
+	
+    	<result property="chatMsgCode" column="chat_message_code"/>
+    	<result property="chatMsgDate" column="chat_message_date"/>
+    	<result property="chatMsgUserId" column="chat_message_user_id"/>
+    	<result property="chatMsgUserNickName" column="chat_message_user_nickname"/>
+    	<result property="chatMsgContent" column="chat_message_content"/>
+    	<result property="chatMsgType" column="chat_message_type"/>
+  	</resultMap>
+  	
+	<!-- 채팅방 상세보기 select -->
+	<select id="selectChatRoomView" resultMap="selectChatRoomView" parameterType="String">
+		SELECT 
+			chat_message_code
+			,date_format(chat_message_date,'%Y-%m-%d %H:%i') as chat_message_date
+			,chat_message_user_id
+			,chat_message_content
+			,chat_message_user_nickname
+			,chat_message_type
+			
+		FROM 
+			chat_message_log
+		WHERE
+			chat_room_code = ${roomCode}
+	
+	</select>
+	
+	<!-- 채팅 메시지 insert -->
+	<insert id="insertChatMessage" parameterType="ChatMessage">
+		
+		INSERT 
+			INTO chat_message_log
+			
+			(chat_message_code, 
+			chat_message_date, 
+			chat_message_user_id, 
+			chat_message_content, 
+			chat_room_code,
+			chat_message_user_nickname,
+			chat_message_type)
+			
+		VALUES 
+			(NULL, 
+			NOW(), 
+			#{userId}, 
+			#{content}, 
+			${chatRoomCode},
+			#{userNickName},
+			'CHAT')
+		
+	</insert>		
+
+	<!-- 유저 리스트 resultMap  -->
+	<resultMap id="selectUserList" type="map">
+	
+    	<result property="groupCode" column="group_code"/>
+    	<result property="groupName" column="group_name"/>
+    	<result property="userId" column="employee_id"/>
+    	<result property="userNickName" column="employee_nickname"/>
+    	<result property="userName" column="employee_name"/>
+    	
+  	</resultMap>
+  	
+	<!-- 유저 리스트 select -->
+	<select id="selectUserList" resultMap="selectUserList" parameterType="String">
+		SELECT
+			eg.group_code,
+			eg.group_name,
+			sub1.employee_id,
+			sub1.employee_nickname,
+			sub1.employee_name
+			
+		FROM
+			employee_group AS eg
+			INNER join
+			(SELECT
+				e.employee_id,
+				e.employee_code,
+				e.employee_nickname,
+				e.employee_name,
+				ebg.group_code
+			FROM
+				employee AS e
+				INNER join
+				employee_by_group AS ebg
+				on
+				e.employee_code
+				=
+				ebg.employee_code) AS sub1
+			on
+			eg.group_code
+			=
+			sub1.group_code
+			
+		WHERE
+			sub1.employee_id != #{userId}
+			
+		ORDER BY 
+			sub1.group_code, 
+			sub1.employee_nickname asc
+	
+	</select>
+	
+	<!-- 새 대화방 등록 -->
+	<insert id="createChatRoom" parameterType="map">
+		
+		INSERT INTO 
+			chat_room_list
+			(chat_room_title, chat_room_user_count, chat_room_date)
+		VALUES 
+			(#{roomName}, ${roomCount}, NOW());
+		<selectKey resultType="int" keyProperty="roomCode" order="AFTER">
+			SELECT 
+				max(chat_room_code) as roomCode
+			FROM 
+				chat_room_list
+		</selectKey>
+		
+		
+	</insert>
+	
+	<!-- 채팅방 참여 유저 등록 -->
+	<insert id="insertUserChatRoom" parameterType="map">
+		
+		INSERT INTO 
+			chat_room_per_user
+			(chat_user_id, chat_room_code)
+		VALUES 
+			<foreach collection="roomMember" item="item" separator=",">
+			(
+				#{item},
+				${roomCode}
+			)
+			</foreach>
+		
+		
+	</insert>	
+	
+	<!-- 새 대화방 생성시 메시지 -->
+	<insert id="insertCreateChatMessage" parameterType="map">
+		INSERT INTO 
+			chat_message_log
+			(chat_message_code, 
+			chat_message_date, 
+			chat_message_content, 
+			chat_room_code, 
+			chat_message_type)
+		VALUES 
+			(NULL, NOW(), '', ${roomCode}, 'CREATE');
+			
+		INSERT INTO 
+			chat_message_log
+			(chat_message_code, 
+			chat_message_date, 
+			chat_message_content, 
+			chat_room_code, 
+			chat_message_type)
+		VALUES 
+			(NULL, NOW(), '새로운 대화방입니다.', ${roomCode}, 'CREATE');
+		
+		
+	</insert>
+	
+	<!-- 채팅방 멤버 select -->
+	<select id="chatRoomMember" parameterType="String" resultMap="chatRoomMember">
+		SELECT 
+			chat_user_id
+		FROM 
+			chat_room_per_user
+		WHERE 
+			chat_room_code = ${roomCode}
+	
+	</select>
+	
+	<!-- 채팅방 멤버 select -->
+	<resultMap id="chatRoomMember" type="map">
+	
+    	<result property="chatRoomMember" column="chat_user_id"/>
+    	
+    	
+  	</resultMap>
+  	
+  	<!-- 마지막으로 읽은 메시지 update -->
+  	<update id="updateLastChatMessage" parameterType="String">
+  		UPDATE 
+  			chat_room_per_user AS cr
+		SET
+			last_chat_message_code
+			= 
+			(SELECT
+				MAX(chat_message_code)
+			FROM 
+				chat_message_log AS cml
+			WHERE
+				cml.chat_room_code = ${chatRoomCode})
+		WHERE
+			cr.chat_user_id = #{userId}
+			and
+			cr.chat_room_code = ${chatRoomCode}
+  	
+  	</update>
+  	
+  	<!-- 마지막으로 읽은 메시지 update 채팅방 생성시 -->
+  	<update id="updateNewChatRoomMsg" parameterType="String">
+  		UPDATE 
+  			chat_room_per_user AS cr
+		SET
+			last_chat_message_code
+			= 
+			(SELECT
+				MAX(chat_message_code) -1
+			FROM 
+				chat_message_log AS cml
+			WHERE
+				cml.chat_room_code = ${chatRoomCode})
+		WHERE
+			cr.chat_user_id = #{userId}
+			and
+			cr.chat_room_code = ${chatRoomCode}
+  	
+  	</update>
+  	
+  	<!-- selectNewChatRoom -->	
+	<select id="selectNewChatRoom" resultMap="selectNewChatRoom" parameterType="String">
+		SELECT 
+			chat_room_code, chat_room_title, chat_room_user_count, chat_room_date
+		FROM 
+			chat_room_list AS cl
+		WHERE
+			cl.chat_room_code = ${chatRoomCode}
+	
+	</select>
+	
+	<resultMap type="map" id="selectNewChatRoom">
+		<result property="roomCode" column="chat_room_code"/>
+		<result property="roomName" column="chat_room_title"/>
+		<result property="roomCount" column="chat_room_user_count"/>
+		
+	</resultMap>
+
+</mapper>

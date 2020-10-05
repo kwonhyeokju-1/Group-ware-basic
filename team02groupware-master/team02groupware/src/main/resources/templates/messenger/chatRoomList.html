@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+
+	<div class="sidebar-chat" data-plugin="chat-sidebar">
+		<div class="sidebar-chat-info">
+			
+			<h6 class="f-13">
+	            <a href="#!" class="chat-list-create-room modal-request" ><i class="ik ik-plus-square f-18 text-secondary"></i></a>				
+				대화방 리스트					
+			</h6>
+
+			<form class="mr-t-10">
+				<div class="form-group">
+					<input type="text" class="form-control" placeholder="대화방, 참여자 검색"> 
+					<i class="ik ik-search"></i>
+				</div>
+			</form>
+		</div>
+
+		<div class="chat-list">
+		
+			<div class="col-xs-12 chat-list-div">
+				
+				<th:block th:each="cl : ${chatRoomListMap}">		
+	            	<!-- 대화방리스트 div Start-->
+	               	<div class="align-middle mb-25 chat-list-room"  th:classappend="|chat-list-room-${cl.chatRoomCode}|">
+	               
+	                   	<img src="../messenger/img/pengsu2.jpg" alt="user image" class="rounded-circle img-40 align-top mr-15">	<!-- 대표 이미지 -->
+	                   
+	                   	<div class="d-inline-block chat-list-room-info">
+	                   
+	                       	<span class="chat-list-title" th:text="${cl.chatRoomTitle}"></span>		<!-- 대화방 제목 -->
+	                       	
+	                       	<span class="chat-list-room-user" th:text="${cl.chatRoomUserCount}"></span>	<!-- 대화방 인원수 -->
+	                       	
+	                       	<p class="text-muted mb-0" th:text="${cl.chatMsgContent}">	<!-- 대화방 최근 메시지 -->
+                        	</p>
+                        	
+                        	<span class="badge bg-success chat-list-room-badge" 
+		                        	th:classappend="${cl.unReadMsgCount} == 0 ? '' : new" 
+		                        	th:text="${cl.unReadMsgCount} == 0 ? '' : ${cl.unReadMsgCount}"></span>	<!-- 안읽은 메시지 개수 -->
+	                       	<input type="hidden" class="unread-message-count" th:value="${cl.unReadMsgCount}">
+	                       	<span class="chat-list-time status deactive text-mute" th:text="${cl.chatMsgDate}">	<!-- 최근 메시지 시간 표시 -->
+	                       		
+	                       	</span>
+	                       	
+	                       	<input type="hidden" class="chat-room-code" th:value="${cl.chatRoomCode}">
+	                       
+	                   	</div>
+	                   
+	               	</div>
+	                <!-- 대화방리스트 div End -->
+               </th:block>    
+                  	
+			</div>
+			
+		</div>	
+
+	</div>
+
+	

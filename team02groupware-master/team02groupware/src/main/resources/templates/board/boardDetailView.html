@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
+
+<th:block layout:fragment="customTitle">
+	<title>boardDetailView</title>
+</th:block>
+
+<th:block layout:fragment="customCss">
+	<link rel="stylesheet" href="boardcss/main.css">
+	<style>
+		
+		/* 댓글 전체 폼 */
+		.commentFormDiv{	
+			background-color:#f9f9f9; /* #b3d4fc; */
+			padding:0px 20px 0px 20px;
+			
+		}
+
+		.commentContent p{
+			margin: 1px 0 1px 5px;
+		}	
+		.commentListInnerDiv{
+			margin: 10px 0 0 0;
+		}
+		.commentTop{
+			margin-bottom: 5px;
+		}
+		.commentNick{
+			font-weight:bold;
+		}
+		/* 댓글창 밑줄 */
+		.commentUnderLine{		
+			margin-top: 10px;
+			color:#d6d6d6; 	/* #F6F7FB */
+			border-bottom-width: 1px; 
+			border-bottom-style: solid;
+		}
+		pre{
+			white-space: pre-line;
+		}
+		.download_opt a{
+			color:#919191;
+		}
+		
+	</style>
+</th:block>
+
+
+<th:block layout:fragment="customScript">
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+<script type="text/javascript" th:inline="javascript">
+	
+		/* 페이지 로드시 파라미터값 저장 */
+	/*<![CDATA[*/ 		
+		var boardList = [[${boardList}]];
+		var commentList = [[${commentList}]];
+		var pagingDto = [[${pagingDto}]];
+		var searchDto = [[${searchDto}]];
+		var boardAttachFileList = [[${boardAttachFileList}]];
+		
+		
+	/*]]>*/
+		console.log('boardList',boardList)
+		console.log('searchDto',searchDto)
+		console.log('commentList',commentList)
+		console.log('pagingDto',pagingDto)
+		console.log('boardAttachFileList',boardAttachFileList)
+		console.log(boardList[0].boardNum)
+		
+		var boardNum = boardList[0].boardNum
+		var viewNum = pagingDto.viewNum;
+		var selectPage = pagingDto.selectPage;
+		var boardCategory = searchDto.boardCategory
+		var isSearchCheck = searchDto.isSearchCheck
+		var searchBy = searchDto.searchBy
+		var searchDate = searchDto.searchDate
+		var searchInput = searchDto.searchInput
+		
+		console.log(viewNum)
+		console.log(selectPage)
+		console.log(boardCategory)
+		console.log(isSearchCheck)
+		console.log(searchBy)
+		console.log(searchDate)
+		console.log(searchInput)
+		console.log(boardNum)
+		
+		
+			
+		$(function(){
+
+			// 게시글 삭제
+			$('#boardDeleteBtn').click(function(){
+				var input = confirm('게시글을 삭제 하시겠습니까?');
+				
+				console.log(viewNum)
+				console.log(selectPage)
+				console.log(boardCategory)
+				console.log(isSearchCheck)
+				console.log(searchBy)
+				console.log(searchDate)
+				console.log(searchInput)
+				console.log(boardNum)
+				
+				if(input == true){
+					location.href='/boardDelete?boardNum='+boardNum+'&viewNum='+viewNum+'&selectPage='+selectPage+'&boardCategory='+boardCategory+'&isSearchCheck='+isSearchCheck+'&searchBy='+searchBy+'&searchDate='+searchDate+'&searchInput='+searchInput+''
+					
+				}
+			})
+			
+			// 댓글 등록
+			$('#commentInputBtn').click(function(){
+				
+				var commentContent = $('#commentInputText').val()
+				
+				if(commentContent == ''){
+					alert('내용을 입력해주세요.');
+				}else{
+					
+					var request = $.ajax({
+						  url: "/commentInsert",
+						  method: "POST",
+						  data: { commentContent : commentContent
+							  		,boardNum : boardNum},
+						  dataType: "json"
+						});
+						 
+						request.done(function(data) {
+						 	$('#commentInputText').val("")
+						 	var commentNum = data.commentNum
+						 	var commentContent = data.commentDto.commentContent
+						 	var currentTime = data.currentTime.substring(0,16)
+						 	var commentList = $('.commentListHidden').eq(0).clone()
+						 	
+						 	console.log(commentNum)
+						 	
+						 	// 댓글창에 댓글 추가
+						 	commentList.css('display', 'block')
+						 	commentList.find('.commentNick').text('관리자')
+						 	commentList.find('.commentDate').text(currentTime)
+						 	commentList.find('.commentContent pre').text(commentContent)
+						 	commentList.find('.commentNum').val(commentNum)
+						 	commentList.find('.commentNum').attr('commentText',''+commentContent+'')
+						 	$('#commentUl').append(commentList)
+						 	
+						 	// 게시글 총 댓글 수 +1
+						 	var currentCommentCount = $('#commentCount').text();
+						 	var addCommentCount = Number(currentCommentCount) + 1;
+						 	$('#commentCount').text(addCommentCount);
+						});
+						 
+						request.fail(function( jqXHR, textStatus ) {
+						  alert( "Request failed: " + textStatus );
+						});
+				}
+			})
+			
+			//댓글 수정폼으로 전환
+			$(document).on('click','.commentUpdateFormBtn', function(e){
+				e.preventDefault();
+				var commentContentDiv = $(this).parent().parent().siblings('.commentContent');
+				var commentContentText = $(this).parent().parent().siblings('.commentContent').find('pre').text().trim();
+				$(this).closest('li.commentList').find('input.commentNum').attr('commentText',''+commentContentText+'')
+				console.log(commentContentText)
+				// 버튼 클릭시 html 생성
+				var commentContentHtml = '<div class="commentInputDiv col-sm-11 col-md-11 col-xs-10" style="padding:5px 5px 5px 5px">';
+				commentContentHtml += '<textarea rows="3" class="commentInputText form-control">'+commentContentText+'</textarea></div>';
+				commentContentHtml += '<div class="col-sm-1 col-md-1 col-xs-2" style="padding:5px 5px 5px 5px">';
+				commentContentHtml += '<button class="commentUpdateBtn btn btn-default btn-block" style="height: 80px;">수정</button></div>';
+				commentContentDiv.html(commentContentHtml);
+				
+				commentContentDiv.find('#commentInputText').focus();
+				
+				var commentTop = commentContentDiv.siblings('.commentTop');
+				commentTop.find('.commentUpDelLine').html('<a class="commentUpdateCancleBtn" href="#" style="color:red;">수정취소</a>')
+				
+			})
+			
+			
+			// 댓글 업데이트 Ajax
+			$(document).on('click','.commentUpdateBtn', function(e){
+				e.preventDefault();
+
+				var commentNum = $(this).closest('li.commentList').find('input.commentNum').val()
+				var commentContent = $(this).parent().prev().find('.commentInputText').val()
+				console.log(commentNum)
+				console.log(commentContent)
+				var commentContentUpdateDiv = $(this).parent().parent();
+				
+				
+				var request = $.ajax({
+					  url: "/commentUpdate",
+					  method: "POST",
+					  data: { commentNum : commentNum
+						  		,commentContent : commentContent},
+					  dataType: "json"
+					});
+					 
+					request.done(function(data) {
+						var dbCommentContent = data.commentDto.commentContent
+						console.log(dbCommentContent)
+						var commentTopUpdate = commentContentUpdateDiv.siblings('.commentTop');
+						commentContentUpdateDiv.html('<pre>'+dbCommentContent+'</pre>');
+						
+						var commentHtml = '<a class="commentUpdateFormBtn" href="#">수정 </a>';
+						commentHtml += '<span> ㅣ</span> ';
+						commentHtml += '<a class="commentDeleteBtn" href="#">삭제</a>';
+						
+						commentTopUpdate.find('.commentUpDelLine').html(commentHtml);
+						
+					});
+					 
+					request.fail(function( jqXHR, textStatus ) {
+					  alert( "Request failed: " + textStatus );
+					});
+			})
+				
+				
+			// 댓글 수정취소
+			$(document).on('click','.commentUpdateCancleBtn', function(e){
+				e.preventDefault();
+				var commentText = $(this).closest('li.commentList').find('input.commentNum').attr('commentText')
+				var commentContentCancleDiv= $(this).parent().parent().siblings('.commentContent');
+				var check = confirm('내용 입력을 취소하시겠습니까?')
+				if(check == true){
+					
+					commentContentCancleDiv.html('<pre>'+commentText+'</pre>');
+					var commentCancleHtml = '<a class="commentUpdateFormBtn" href="#">수정</a>';
+					commentCancleHtml += '<span>ㅣ</span> ';
+					commentCancleHtml += '<a class="commentDeleteBtn" href="#">삭제</a>';
+					
+					var commentTopUpdate = commentContentCancleDiv.siblings('.commentTop');
+					commentTopUpdate.find('.commentUpDelLine').html(commentCancleHtml);
+				}
+			})
+			
+
+			// 댓글 삭제
+			$(document).on('click','.commentDeleteBtn', function(e){
+				
+				e.preventDefault();
+				
+				var commentNum = $(this).closest('li.commentList').find('input.commentNum').val()
+				console.log(commentNum)
+				var commentList = $(this).closest('li.commentList')
+				var currentCommentCount = $('#commentCount').text();
+				var minusCommentCount = Number(currentCommentCount) - 1;
+				
+				if(confirm('댓글을 삭제하시겠습니까?')){
+					var request = $.ajax({
+						  url: "/commentDelete",
+						  method: "POST",
+						  data: { commentNum : commentNum
+							  		,boardNum : boardNum},
+						  dataType: "json"
+						});
+					
+						request.done(function(data) {
+							
+							// 댓글 삭제
+							commentList.remove();
+							// 게시글 총 댓글 수 -1
+						 	$('#commentCount').text(minusCommentCount);
+							
+						});
+						 
+						request.fail(function( jqXHR, textStatus ) {
+						  alert( "Request failed: " + textStatus );
+						});
+				}
+			})
+			
+		
+       		$("#fileTag").click(function(){
+       			$("#attachLayer").show();
+       		})
+       		
+       		$("#fileTagClose").click(function(){
+       			$("#attachLayer").hide();
+       		})
+         	
+			
+			
+
+		})
+	
+</script>
+</th:block>
+
+
+
+<th:block layout:fragment="customContents">
+	
+<div class="col-md-12">
+	<!-- 페이지 헤더 Start -->
+	<div class="page-header" >
+       <div class="row align-items-end">
+           <div class="col-lg-8">
+               <div class="page-header-title">
+                   <i class="ik ik-credit-card bg-blue"></i>
+                   <div class="d-inline">
+                       <h5>그룹웨어</h5>
+                       <span>(주)한국 스마트 정보 교육원</span>
+                   </div>
+               </div>
+           </div>
+           <div class="col-lg-4">
+               <nav class="breadcrumb-container" aria-label="breadcrumb">
+                   <ol class="breadcrumb">
+                       <li class="breadcrumb-item">
+                           <a href="/"><i class="ik ik-home"></i></a>
+                       </li>
+                       <li class="breadcrumb-item">
+                           <a href="/boardList">게시판</a>
+                       </li>
+                       <li class="breadcrumb-item active" aria-current="page">상세보기</li>
+                   </ol>
+               </nav>
+           </div>
+       </div>
+	</div>
+	<!-- 페이지 헤더 End -->
+	
+    <!--  디테일 메인 폼 Start -->
+	<div class="col-md-12" style="padding: 0">
+      <div class="card" style="min-height: 400px;">
+      	<th:block th:each="b:${boardList}">
+          <div class="card-header">
+          	<div class="col-md-8" style="padding:0">
+          		<span style="font-weight:bold">[[${b.boardTitle}]]</span> ㅣ <span>[[${b.boardCategory}]]</span>
+          	</div>
+          	<div class="col-md-4" style="text-align:right; padding:0;">
+	          	<span class="badge badge-secondary">전체공개</span>
+	          	<span th:text="${#strings.substring(b.boardWriteDate,0,16)}"></span>
+          	</div>
+          </div>
+          
+          <div class="card-body" style="position:relative; min-height: 300px;">
+	       	<div class="form-group row">
+	       		
+	         	<div class="col-md-9" style="padding:0 0 0 25px;">
+	             	<i class="ik ik-user"></i>
+	              	<label for="exampleInputUsername2" class="col-sm-3 col-form-label" style="padding:0; font-weight:bold;">[[${b.boardWriter}]]</label>
+	             </div>
+	             
+	             <!-- 첨부파일 리스트 -->
+	             
+	             <div class="col-md-3">
+	             	<!-- 첨부파일이 있을경우 실행 -->
+	             	<th:block th:if="${boardAttachFileList.size() != 0}">
+	             	
+	             	<!-- 첨부파일 유무,개수  -->
+	              	<div id="attachFileCheck" style="float:right; display:block;">
+		              	<a id="fileTag" href="#" onclick="$(''#attachLayer').show(); return false;" style="text-align:right">첨부파일
+		              	<span class="m-tcol-p">([[${boardAttachFileList.size()}]])</span></a>
+	              	</div>
+	              	
+	              	<div style="clear:both;"></div>
+	              	<div id="attachLayer" class="ly_atch_file" style="display:none; border: 1px solid #919191; padding: 10px 10px 5px 10px;">
+                       <ul>
+                       		<th:block th:each="f:${boardAttachFileList}">
+							<li>
+								<i class="ik ik-file"></i>
+								<span class="file_name" th:text="${f.boardFileOriginalName}"></span>
+								<div id="attahc" class="download_opt" style="float:right;">
+									<a th:href="@{board/file(fileName=${f.boardFileStoredName},fileOriginalName=${f.boardFileOriginalName})}" th:value="${f.boardFileNum}">내PC 저장</a>
+								</div>
+							</li>
+							</th:block>
+							
+	                       <li>	<!-- 첨부파일 닫기 버튼 -->
+		                       	<div style="float:right; margin-top:3px;"><a id="fileTagClose" href="#" onclick="$(''#attachLayer').hide();return false;" class="clse">
+		                       		<span class="blind"><i class="ik ik-x"></i></span></a>
+		                       	</div>
+	                       </li>
+                       </ul>
+                   </div>
+                   </th:block>
+                     
+	             </div>
+	             
+	        </div>
+	        <!-- 게시글 내용 -->
+            <div style="padding: 0 30px; margin: 40px 0 20px; 0;">
+            	<th:block th:utext="${b.boardContentText}">
+            	</th:block>
+
+            </div>
+            
+            <div class="col-md-6" style="padding:0; margin: 30px 0 10px 0; position:absolute; bottom:0px;">
+
+            	<span style="font-weight:bold;">댓글</span>
+            	<span id="commentCount">[[${b.boardCommentCount}]]</span>
+            	ㅣ 
+            	<span style="font-weight:bold;">조회수</span>
+            	<span>[[${b.boardViewCount}]]</span>
+            </div>
+	      </div>
+	      </th:block>
+	      <!-- 댓글 전체 폼 Start -->
+		  <div class="commentFormDiv">
+		  	<div style="padding:10px;">
+		  	
+		  	<ul id="commentUl" style="margin-bottom:0px;">
+		  		<!-- 댓글 li Start-->
+		  		<th:block th:each="c:${commentList}">
+			  		<li class="commentList">
+			  			<div class="commentListInnerDiv">
+			  				<div class="commentTop">
+			  					<span class="commentNick" th:text="${c.commentWriter}"></span>
+			  					<span th:text="${#strings.substring(c.commentDate,0,16)}"></span>
+			  					<p class="commentUpDelLine" style="float:right;"> 
+				  					<a class="commentUpdateFormBtn" href="#">수정</a>
+				  					<span>ㅣ</span> 
+				  					<a class="commentDeleteBtn" href="#">삭제</a>
+				  					
+				  				</p>
+				  				
+			  				</div>
+			  				<div class="commentContent row">
+			  					<pre>
+				  				<th:block th:utext="${c.commentContent}">
+	            				</th:block>
+	            				</pre>
+            				</div>
+			  			</div>
+			  			<div class="commentUnderLine" ></div>
+			  			<input class = "commentNum" type="hidden" th:value="${c.commentNum}">
+			  		</li>
+		  		</th:block>
+		  		<!-- 댓글 li End-->
+		  		
+		  		<!-- ajax 생성용 히든 댓글 -->
+		  		<li class="commentListHidden commentList" style="display:none">
+			  			<div class="commentListInnerDiv">
+			  				<div class="commentTop">
+			  					<span class="commentNick"></span>
+			  					<span class="commentDate"></span>
+			  					<p class="commentUpDelLine" style="float:right;">
+			  				 		
+				  					<a class="commentUpdateFormBtn" href="#">수정</a>
+				  					<span>ㅣ</span> 
+				  					<a class="commentDeleteBtn" href="#">삭제</a>
+				  					
+				  				</p>
+				  				
+			  				</div>
+			  				<div class="commentContent row">
+				  				<pre></pre>
+            				</div>
+			  			</div>
+			  			<div class="commentUnderLine"></div>
+			  			<input class = "commentNum" type="hidden">
+			  	</li>
+		  		
+		  	</ul>
+		  	<div style="clear:both; height:0px;"></div>
+		  		<!-- 댓글 입력창 Start -->
+		  		<div class="row" style="padding:10px 10px 0 10px; margin-bottom: 0;">
+			  		<div class="col-sm-11 col-xs-10" style="padding:5px 5px 5px 5px">
+			  			<textarea rows="3" class="form-control" id="commentInputText"></textarea>
+			  		</div>
+			  		<div class="col-sm-1 col-xs-1" style="padding:5px 5px 5px 5px">
+			  			<button id="commentInputBtn" class="btn btn-default btn-block" style="height: 80px;">등록</button>
+			  		</div>
+			  	</div>
+			  	<!-- 댓글 입력창 End-->
+		  </div>
+	  	<!-- 댓글 전체폼 End -->  
+	   </div>
+	</div>
+ 	 <!-- 디테일 메인 폼 End -->
+  
+  	<!-- 글쓰기, 목록 버튼 리스트 Start --> 
+  	<div style="float:right">
+      <a href="/boardWriteForm"><button class="btn btn-outline-dark"><i class="ik ik-edit-1 "></i>글쓰기</button></a>
+      <th:block th:each="b:${boardList}">
+      <a th:href=
+      		"@{/boardUpdateForm
+	      (boardNum=${b.boardNum}
+	      ,selectPage=${pagingDto.selectPage}
+	      ,viewNum=${pagingDto.viewNum}
+	      ,boardCategory=${searchDto.boardCategory}
+	      ,isSearchCheck=${searchDto.isSearchCheck}
+	      ,searchBy=${searchDto.searchBy}
+	      ,searchDate=${searchDto.searchDate}
+	      ,searchInput=${searchDto.searchInput})}"><button class="btn btn-outline-dark">수정</button></a>
+      </th:block>
+      
+      <th:block th:each="b:${boardList}">
+	      <!-- <a th:href=
+	      		"@{/boardDelete
+		      (boardNum=${b.boardNum}
+		      ,selectPage=${pagingDto.selectPage}
+		      ,viewNum=${pagingDto.viewNum}
+		      ,boardCategory=${searchDto.boardCategory}
+		      ,isSearchCheck=${searchDto.isSearchCheck}
+		      ,searchBy=${searchDto.searchBy}
+		      ,searchDate=${searchDto.searchDate}
+		      ,searchInput=${searchDto.searchInput})}"> --><button id="boardDeleteBtn" class="btn btn-outline-dark">삭제</button>
+      </th:block>
+      <a th:href=
+      		"@{/boardList
+	      (selectPage=${pagingDto.selectPage}
+	      ,viewNum=${pagingDto.viewNum}
+	      ,boardCategory=${searchDto.boardCategory}
+	      ,isSearchCheck=${searchDto.isSearchCheck}
+	      ,searchBy=${searchDto.searchBy}
+	      ,searchDate=${searchDto.searchDate}
+	      ,searchInput=${searchDto.searchInput})}"><button class="btn btn-outline-dark">목록</button></a>
+  	
+  	</div>
+  	<!-- 글쓰기, 목록 버튼 리스트 End --> 
+
+</div>
+</div>
+
+
+
+
+
+</th:block>
+<th:block layout:fragment="customJs">
+	
+	<script>window.jQuery || document.write('<script src="src/js/vendor/jquery-3.3.1.min.js"><\/script>')</script>
+	<script src="plugins/popper.js/dist/umd/popper.min.js"></script>
+	<script src="plugins/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script src="plugins/perfect-scrollbar/dist/perfect-scrollbar.min.js"></script>
+	<script src="plugins/screenfull/dist/screenfull.js"></script>
+	<script src="plugins/datatables.net/js/jquery.dataTables.min.js"></script>
+	<script src="plugins/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+	<script
+		src="plugins/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+	<script
+		src="plugins/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
+	<script src="plugins/jvectormap/jquery-jvectormap.min.js"></script>
+	
+	<script src="plugins/moment/moment.js"></script>
+	
+	<script src="plugins/d3/dist/d3.min.js"></script>
+	<script src="plugins/c3/c3.min.js"></script>
+	<script src="js/tables.js"></script>
+	<script src="js/widgets.js"></script>
+	<script src="js/charts.js"></script>
+	<script src="dist/js/theme.js"></script>
+	<script src="js/jquery-jvectormap-2.0.5.min.js"></script>
+	<!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+	<script>
+	    (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+	    function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+	    e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+	    e.src='https://www.google-analytics.com/analytics.js';
+	    r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+	    ga('create','UA-XXXXX-X','auto');ga('send','pageview');
+	</script>
+</th:block>
+
+
+</html>

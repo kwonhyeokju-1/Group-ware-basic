@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
+<!--
+   @file allOngoingDocumentList.html
+   @brief 결재 진행 중인 예정 문서 목록 view
+   @author 김건훈
+ -->	
+		<!-- CSS custom -->
+		<th:block layout:fragment="customCss">
+			<link rel="stylesheet" href="dist/css/electronicApproval/electronicApproval.css">
+			<link rel="stylesheet" href="icheck/skins/square/blue.css">
+		</th:block>
+		
+		<th:block layout:fragment="customTitle">
+		<title>결재 진행 중인 예정 문서 목록</title>
+		</th:block>
+	
+		<!--  Script custom -->
+		<th:block layout:fragment="customScript">
+			<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+			<script src="icheck/icheck.min.js"></script>
+			<script type="text/javascript">
+
+				$(function(){
+				
+					 /*
+					  * @brief 결재 진행 중인 예정 문서 목록 page 물음표 아이콘 Modal Event
+					  * @author 김건훈
+					  */	
+					$('.ik-help-circle').on('mouseover',function(e){
+			 
+						var divLeft = e.pageX - 150
+						var divTop = e.pageY - 50
+						
+						$('.ruletip').css({display:"block", "top": divTop, "left": divLeft});
+						
+						$(this).css("color","black");
+					});
+					
+					$('.ik').on('mouseleave',function(){
+						
+						$('.ruletip').css("display","none");
+						$(this).css("color","#bcc8d8");
+					});
+					
+					
+					/*
+					  * @brief 검색창 드롭다운 검색키워드 변경 이벤트
+					  * @author 김건훈
+					  */	
+					$('.dropdown-item').on('click',function(){
+						//console.log('드롭다운버튼클릭');
+						var searchType = $(this).text();
+						var tag = "<i class=\"ik ik-chevron-down mr-0 align-middle\"></i>";
+						//console.log(searchType);
+						$(this).parent().siblings('.dropdown-toggle').text(searchType);
+						$(this).parent().siblings('.dropdown-toggle').append(tag);
+					});
+					
+					/*
+					   * @brief 상세보기 화면으로 이동 Event
+					   * @author 김건훈
+					   */
+					   $('.ongoing-document-content').click(function(){
+						  //console.log('tr 클릭 이벤트'); 
+						  var docType = $(this).find('.ongoing-document-type').text();
+						  //console.log(docType);
+						  $(location).attr('href','/selectOngoingDocumentDetail?docType='+docType);
+					   });
+				});
+			</script>
+		</th:block>
+		<th:block layout:fragment="customContents">
+						<div class="page-header">
+					       <div class="row align-items-end">
+					           <div class="col-lg-8">
+					           <div class="page-header-title">
+							   	<i class="ik ik-file-text bg-blue"></i>
+								   <div class="d-inline">
+									 <h5>결재 중인 문서 예정</h5>
+									 <span>결재 진행 중인 문서 중 예정 상태의 문서가 쌓이는 곳입니다.</span>
+								   </div>
+								</div>
+					           </div>
+					           <div class="col-lg-4">
+					               <nav class="breadcrumb-container" aria-label="breadcrumb">
+					                   <ol class="breadcrumb">
+					                       <li class="breadcrumb-item">
+					                           <a th:href="@{/index}"><i class="ik ik-home"></i></a>
+					                       </li>
+					                       <li class="breadcrumb-item">진행 중인 문서</li>
+					                       <li class="breadcrumb-item active" aria-current="page">예정</li>
+					                   </ol>
+					               </nav>
+					           </div>
+					       </div>
+					   </div>                    
+		               <div class="card">
+		              	  <!--결재 진행 중인 예정 문서 목록 테이블 상단 메뉴탭 Start-->
+			                 <div class="card-header ea-card-header">
+				                 <h3>결재 진행 중인 예정 문서 목록
+				                 	<i class="ik ik-help-circle"></i>
+				                 </h3>
+			                 </div>
+	                      <!--결재 진행 중인 예정 문서 목록 테이블 상단 메뉴탭 End-->
+                                <!-- 결재 진행 중인 예정 문서 목록 검색창 Start -->
+                                   <div class="card-block">
+                                   <div class="table-nav">
+                                   		<ul class="nav table-row-delete-nav" >
+		                                    <li class="nav-item">
+		                                    	<button type="button" class="btn btn-outline-primary">##</button>
+		                                    </li>
+		                                </ul>
+                                   <div class="collapse d-md-block display-options float-md-right" id="displayOptions">
+                                        <div class="d-block d-md-inline-block">
+                                            <div class="btn-group float-md-left mr-1 mb-1">
+                                                <button class="btn btn-outline-dark btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    		문서 종류<i class="ik ik-chevron-down mr-0 align-middle"></i>
+                                                </button>
+                                                <div class="dropdown-menu">
+                                                	<a class="dropdown-item">프로젝트 사업기획서</a>
+                                                    <a class="dropdown-item">프로젝트 업무보고서</a>
+                                                    <a class="dropdown-item">프로젝트 완료보고서</a>
+                                                </div>
+                                            </div>
+                                            <div class="search-sm d-inline-block float-md-left mr-1 mb-1 align-top">
+                                                <form action="">
+                                                    <input type="text" class="form-control" placeholder="검색" required>
+                                                    <button type="submit" class="btn btn-icon"><i class="ik ik-search"></i></button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                     </div>
+                                    </div>
+                               <!-- 결재 진행 중인 예정 문서 목록 검색창 End -->
+                               <!-- 결재 진행 중인 예정 문서 목록 Start -->
+                                        <div class="table-responsive">
+                                            <table class="table mb-0 table-hover ea-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>문서 번호</th>
+                                                        <th>제목</th>
+                                                        <th>기안자</th>
+                                                        <th>기안일</th>
+                                                        <th>구분</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr class="ongoing-document-content">
+                                                        <td>프로젝트사업기획-20200516-0007</td>
+                                                        <td>PMS 개발 프로젝트 사업기획서</td>
+                                                        <td>김연지</td>
+                                                        <td>2020-05-16</td>
+                                                     	<td class="ongoing-document-type">결재</td>                                                                              
+                                                    </tr> 
+                                                    <tr class="ongoing-document-content">
+                                                        <td>프로젝트완료보고-20200616-0008</td>
+                                                        <td>PMS 개발 프로젝트  완료보고서</td>
+                                                        <td>김건훈</td>
+                                                        <td>2020-06-16</td>
+                                                     	<td class="ongoing-document-type">결재</td> 
+                                                    </tr>                                                                                                         
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <span class="contents-quantity">문서 수 : 2</span>
+                                        <nav aria-label="Page navigation example">
+                                            <ul class="pagination mb-0 pagination-btn-group">
+                                                <li class="page-item">
+                                                    <a class="page-link first" href="#">
+                                                        <i class="ik ik-chevrons-left"></i>
+                                                    </a>
+                                                </li>
+                                                <li class="page-item">
+                                                    <a class="page-link prev" href="#">
+                                                        <i class="ik ik-chevron-left"></i>
+                                                    </a>
+                                                </li>
+                                                <li class="page-item active">
+                                                    <a class="page-link" href="#">1</a>
+                                                </li>
+                                                <li class="page-item">
+                                                    <a class="page-link" href="#">2</a>
+                                                </li>
+                                                <li class="page-item">
+                                                    <a class="page-link" href="#">3</a>
+                                                </li>
+                                                <li class="page-item">
+                                                    <a class="page-link" href="#">4</a>
+                                                </li>
+                                                <li class="page-item">
+                                                    <a class="page-link" href="#">5</a>
+                                                </li>
+                                                <li class="page-item">
+                                                    <a class="page-link next" href="#" aria-label="Next">
+                                                        <i class="ik ik-chevron-right"></i>
+                                                    </a>
+                                                </li>
+                                                <li class="page-item">
+                                                    <a class="page-link last" href="#">
+                                                        <i class="ik ik-chevrons-right"></i>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                 <!-- 결재 진행 중인 예정 문서 목록 테이블 End -->                               
+                        		</div>	                              
+	                      
+	                      <!--결재 진행 중인 예정 문서 목록 page modal view Start --> 
+	                        <div class="modal-dialog modal-sm mt-0 mb-0 ruletip" role="document">
+					        	<div class="modal-content">
+                               		 <div class="modal-body">
+                                   		 <p>예정 문서함은 내가 받은 문서 중에서 내 결재 순서가 안된 문서(참조 포함)들이 쌓이는 곳 입니다. '구분' 은 결재,합의,참조 중 해야 할 일을 안내해주는 항목 입니다. </p>
+                                	 </div>
+                           		 </div>
+                           	</div>
+                           <!--결재 진행 중인 예정 문서 목록 page modal view End -->                                    	
+	</th:block>
+
+	<th:block layout:fragment="customJs">        
+        <script>window.jQuery || document.write('<script src="../src/js/vendor/jquery-3.3.1.min.js"><\/script>')</script>
+        <script src="/plugins/popper.js/dist/umd/popper.min.js"></script>
+        <script src="/plugins/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="/plugins/perfect-scrollbar/dist/perfect-scrollbar.min.js"></script>
+        <script src="/plugins/screenfull/dist/screenfull.js"></script>
+        <script src="/plugins/sweetalert/dist/sweetalert.min.js"></script>
+        <script src="/plugins/summernote/dist/summernote-bs4.min.js"></script>
+        <script src="dist/js/theme.js"></script>
+        <script src="/js/layouts.js"></script>
+	</th:block>
+</html>

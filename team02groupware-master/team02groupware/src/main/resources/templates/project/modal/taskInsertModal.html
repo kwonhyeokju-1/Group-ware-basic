@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!------------------내 업무 추가 버튼 클릭시 모달창 start --------------------->
+	<div class="modal fade" id="exampleModalCenter" tabindex="-1"
+		role="dialog" aria-labelledby="exampleModalCenterLabel"
+		aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalCenterLabel">새 업무</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+
+				<div class="pr-add-modal modal-body">
+					<form name="projectAddForm" method="post"
+						onsubmit="return checkInput()">
+						<div class="form-group">
+							
+						
+						</div>
+						<div class="form-group">
+							<label for="add-projectTitle">업무 제목</label> <input type="text"
+								id="add-projectTitle" name="projectTitle" class="form-control"
+								placeholder="예) 웹사이트 개발">
+						</div>
+						<div class="form-group">
+							<label for="projectDesc">업무 설명(선택사항)</label> <input type="text"
+								id="projectDesc" name="projectDesc" class="form-control">
+						</div>
+						
+					</form>
+					<div class="form-group">
+						<label>업무 멤버(선택사항)</label>
+						<div>
+							<form class="sample-form">
+								<div class="add-btn-wrap">
+									<img class="member-add-btn"
+										src="/img/project/member_plus_btn.png">
+								</div>
+								<div class="member-select-wrap form-group">
+									<select class="form-control select2" id="add-select2"
+										multiple="multiple">
+										<option value="김연지" selected>김연지</option>
+										<option value="김건훈">김건훈</option>
+										<option value="김정훈">김정훈</option>
+										<option value="이원준">이원준</option>
+										<option value="김연지">김영훈</option>
+										<option value="김건훈">김곤지</option>
+										<option value="김정훈">김상훈</option>
+										<option value="이원준">이원영</option>
+									</select>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+
+
+				<div class="project-add-btn modal-footer">
+					<button type="button" class="btn btn-light"
+						data-dismiss="modal">취소</button>
+					<button type="submit" class="pr-submit-btn btn btn-primary">추가하기</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!-------------------------내 업무 추가 버튼 클릭시 모달창 end --------------------------->

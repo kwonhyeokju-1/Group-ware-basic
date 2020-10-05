@@ -1,0 +1,282 @@
+@charset "UTF-8";
+@import url('https://fonts.googleapis.com/css?family=Noto+Sans+KR:100,300,400,500,700&display=swap');
+
+
+*{
+	font-family: 'Noto Sans KR', sans-serif;
+	letter-spacing: -0.1px;
+	margin:0px;
+	padding:0px;
+	list-style:none;
+}
+
+/* 게시판 리스트 댓글수 체크 색상 바꾸기*/
+.commentCount {
+	color : #ff0000;
+}
+
+#viewNum{
+	float:right;
+}
+#center-table{
+	width:950px;
+	float:right;
+}
+.pagination{
+	display:flex;
+	justify-content: center;
+}
+#writeFormUl li{
+	margin-bottom: 10px;
+}
+
+#wrap{
+	width:100%;
+}
+#content{
+	width:1200px;
+	margin:0 auto;
+}
+#top-button{
+	margin-top:30px;
+}
+
+#boardNav{
+	float:right;
+}
+
+#main-board{
+	margin-top:10px;
+}
+
+#main-board #number{
+	width:50px;
+}
+#main-board #category{
+	text-align: center;
+	width:200px;
+}
+
+#main-board #title{
+	text-align: center;
+	width: 600px;
+}
+#main-board #writer{
+	text-align: center;
+	width: 300px;
+}
+#main-board #date{
+	text-align: center;
+	width: 200px;
+}
+#main-board #view{
+	text-align: center;
+	width: 80px;
+}
+#main-board td{
+	text-align: center;
+}
+#writeBtnDiv{
+	width:1200px;
+	height:50px;
+	float:right;
+	clear:both;
+	}
+
+#writeBtn{
+	float:right;
+}
+
+#registerBtn {
+	float: right;
+}
+
+#dropDown{
+	width: 100px;
+	float:left;
+	margin-right:6px;
+}
+
+
+
+#bottom-content{
+	margin:0 auto;
+	clear:both;
+}
+#page-bar{
+	margin: 0 auto;
+	width:266px;
+}
+
+/*-------------검색창 시작---------*/
+#bottom{
+	height:100px;
+	margin:0 auto;
+	width:800px;
+}
+#bottom div{
+	display:inline-block;
+}
+
+.searchSelect{
+	width:25%;
+}
+#searchInput{
+	width:30%;	
+	
+}
+#searchBtn{
+	width:60px;
+}
+
+/*-------------검색창 끝---------*/
+
+.postSubject{
+	float:left;
+	margin-right: 20px;
+}
+
+#postSubjectInput{
+	margin-left: 15px;
+	float:left;
+	width: 400px;
+}
+
+#postContent{
+	width: 100%;
+	height: 400px;
+	resize:none;
+}
+
+#selectBoard{
+	float:left;
+}
+
+#inputSubject{
+	float: left;
+}
+
+.clear{
+	clear: both;
+}
+
+#writeForm{
+	text-align : center;
+	margin : 0 auto;
+	margin-top : 70px;
+	width: 800px;
+}
+
+/* writeForm끝 */
+
+/* view 시작 */
+
+#viewTitle{
+	text-align:left;
+}
+
+#viewCate{
+	text-align:left;
+}
+#viewContent{
+	padding:10px;
+	min-height:300px;
+	text-align:left;
+	border-top:1px solid #ddd;
+}
+
+#viewContent pre{
+	font-family: 'noto sans KR', 'sans-serif';
+	font-size:15px;
+	letter-spacing:-1px;
+	display: block;
+    padding: 0;
+    margin: 0 0 0px;
+    line-height: 1.42857143;
+    color: #333;
+    word-break: break-all;
+    word-wrap: break-word;
+    background-color: #fff;
+    border: 0;
+    overflow: auto;
+    white-space: pre-wrap;
+    
+}
+
+/* viewContent 끝 */
+
+/* Comment 시작 */
+.commentCont{
+	border-top:1px solid #ddd;
+	padding-top:10px;
+	text-align:left;
+}
+.commentEditBtn{
+	float:right;
+}
+
+.commentEditBtn a{
+	text-decoration:none;
+	color:#000;
+}
+
+#commentTxt{
+	margin-bottom:3px;
+}
+#commentTxt pre{
+	font-family: 'noto sans KR', 'sans-serif';
+	font-size:15px;
+	letter-spacing:-1px;
+	display: block;
+    padding: 0;
+    margin: 0 0 0px;
+    line-height: 1.42857143;
+    color: #333;
+    word-break: break-all;
+    word-wrap: break-word;
+    background-color: #fff;
+    border: 0;
+    overflow: auto;
+    white-space: pre-wrap;
+    
+}
+#commentTxt pre::-webkit-scrollbar {
+
+display:none;
+
+} 
+
+#commentForm textarea{
+	padding:0px;
+	height:70px;
+	resize:none;
+	line-height:18px;
+}
+
+#commentBtn{
+	float:right;
+	
+}
+#commentBtn button{
+	height:70px;
+}
+#writeComment td{
+	padding: 0px;
+	padding-top:10px;
+}
+
+#writeComment #td1{
+	width:990px;
+}
+
+#writeComment #td2{
+	width:90px;
+}
+
+#listBtn{
+	float:right;
+}
+#listBtn .btnGroup{
+	float:left;
+	margin-left:4px;
+}

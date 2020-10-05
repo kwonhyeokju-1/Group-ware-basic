@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<!-- 
+	스타일 적용
+	style="right: 240px;"
+ -->
+
+<th:block th:fragment="rightFragment">
+
+	<link rel="stylesheet" href="messenger/css/Messenger.css">	<!-- 채팅방 css -->
+	
+	<script type="text/javascript">
+	
+	</script>
+	
+	<aside class="right-sidebar">
+		<!-- <div class="sidebar-chat" data-plugin="chat-sidebar">
+			<div class="sidebar-chat-info">
+				
+				<h6 class="f-13">
+		            <a href="#!" class="chat-list-create-room modal-request" ><i class="ik ik-plus-square f-18 text-secondary"></i></a>				
+					대화방 리스트					
+				</h6>
+	
+				<form class="mr-t-10">
+					<div class="form-group">
+						<input type="text" class="form-control" placeholder="대화방, 참여자 검색"> 
+						<i class="ik ik-search"></i>
+					</div>
+				</form>
+			</div>
+	
+			<div class="chat-list">
+			
+				<div class="col-xs-12">
+							
+	            	대화방리스트 div Start
+                   	<div class="align-middle mb-25 chat-list-room">
+                   
+                       	<img src="../messenger/img/pengsu2.jpg" alt="user image" class="rounded-circle img-40 align-top mr-15">	대표 이미지
+                       
+                       	<div class="d-inline-block chat-list-room-info">
+                       
+                           	<span class="chat-list-title">경영팀 대화방</span>		대화방 제목
+                           	
+                           	<span class="chat-list-room-user">6</span>	대화방 인원수
+                           	
+                           	<p class="text-muted mb-0">
+	                           		넵								대화방 최근 메시지
+	                           		<span class="badge bg-success chat-list-room-badge" >2</span>	안읽은 메시지 개수
+	                           	</p>
+                           
+                           	<span class="chat-list-time status deactive text-mute">	최근 메시지 시간 표시
+                           		오전 11:54
+                           	</span>
+                           
+                       	</div>
+                       
+                   	</div>
+	                대화방리스트 div End
+	                   
+                   	대화방리스트 div Start
+                   	<div class="align-middle mb-25 chat-list-room">
+                   
+                       	<img src="../messenger/img/pengsu.jpg" alt="user image" class="rounded-circle img-40 align-top mr-15">	대표 이미지
+                       
+                       	<div class="d-inline-block chat-list-room-info">
+                       
+                           	<span class="chat-list-title">34기 대화방</span>		대화방 제목
+                           	
+                           	<span class="chat-list-room-user">10</span>	대화방 인원수
+                           
+                           	<p class="text-muted mb-0">
+                           		하하								대화방 최근 메시지
+                           		<span class="badge bg-success chat-list-room-badge" >1</span>	안읽은 메시지 개수
+                           	</p>		
+                           
+                           	<span class="status active"></span>			안읽은 메시지 갯수 
+                           
+                           	<span class="chat-list-time status deactive text-mute">	최근 메시지 시간 표시
+                           		오전 11:54
+                           	</span>
+                           
+                       	</div>
+                       
+                   	</div>
+                   	대화방리스트 div End
+	                   
+                   	대화방리스트 div Start
+                   	<div class="align-middle mb-25 chat-list-room">
+                   
+                       	<img src="../messenger/img/pengsu2.jpg" alt="user image" class="rounded-circle img-40 align-top mr-15">	대표 이미지
+                       
+                       	<div class="d-inline-block chat-list-room-info">
+                       
+                           	<span class="chat-list-title">2팀 대화방</span>		대화방 제목
+                           	
+                           	<span class="chat-list-room-user">3</span>	대화방 인원수
+                           
+                           	<p class="text-muted mb-0">
+                           		ㅎㅇ								대화방 최근 메시지
+                           		<span class="badge bg-success chat-list-room-badge" >100</span>
+                           	</p>		
+                           	
+                           
+                           	<span class="chat-list-time status deactive text-mute">	최근 메시지 시간 표시
+                           		오전 11:54
+                           	</span>
+                           
+                       	</div>
+                       
+                   	</div>
+                   	대화방리스트 div End
+				</div>
+				
+			</div>	
+	
+		</div> -->
+		
+	
+	</aside> 
+	
+	
+	
+	
+	
+<script src="/webjars/sockjs-client/sockjs.min.js"></script>
+<script src="/webjars/stomp-websocket/stomp.min.js"></script>	
+<script src="messenger/js/front.js"></script>	<!-- 메신저 화면 js -->
+<script src="messenger/js/socketChat.js"></script> <!-- 채팅 소켓 js -->
+
+	
+</th:block>
+
+
+
+</html>

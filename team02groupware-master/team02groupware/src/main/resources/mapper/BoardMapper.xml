@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="UTF-8"?>
+		
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  		
+<mapper namespace="com.team02.groupware.mapper.BoardMapper">
+	
+	<!-- 게시글 총 갯수 select -->
+	<select id="selectBoardCount" resultType="int" parameterType="map">
+		/* 게시글 총 개수 구하기  */
+		SELECT
+			COUNT(*)
+		FROM
+			board as b
+		<where>
+			board_category != '공지'
+		<if test="searchDto.boardCategory != null and searchDto.boardCategory != 'null' and searchDto.boardCategory != '전체'">
+			
+			and board_category = #{searchDto.boardCategory}
+		</if>
+		
+		<if test="searchDto.isSearchCheck == 'true'">
+			
+			
+			<if test="searchDto.searchBy == '제목내용'">
+				and (board_title LIKE '%${searchDto.searchInput}%' OR board_content_text LIKE '%${searchDto.searchInput}%')
+			</if>
+			<if test="searchDto.searchBy == '제목만'">
+				and board_title LIKE '%${searchDto.searchInput}%' 
+			</if>
+			<if test="searchDto.searchBy == '글작성자'">
+				and board_writer LIKE '%${searchDto.searchInput}%'
+			</if>
+					
+			
+			<if test="searchDto.searchDate != '전체기간'">
+				
+				and DATE(b.board_write_date) >= date(subdate(now(), INTERVAL ${searchDto.searchDate} DAY))
+			</if>
+		</if>
+		</where>
+	</select>
+	
+	<!-- 게시글 resultMap -->
+	<resultMap id="selectBoardResult" type="BoardDto">
+	
+    	<result property="boardCategory" column="board_category"/>
+    	<result property="boardNum" column="board_num"/>
+    	<result property="boardTitle" column="board_title"/>
+    	<result property="boardContentText" column="board_content_text"/>
+    	<result property="boardWriter" column="board_writer"/>
+    	<result property="boardWriteDate" column="board_write_date"/>
+    	<result property="boardViewCount" column="board_view_count"/>
+    	<result property="boardCommentCount" column="board_comment_count"/>
+    	<result property="boardTimeCheck" column="board_time_check"/>
+    	<result property="boardFileCheck" column="board_file_check"/>
+
+  	</resultMap>
+  	
+  	<!-- 부서 리스트 resultMap -->
+  	<resultMap id="selectDepartResult" type="PagingDto">
+	
+    	<result property="departList" column="group_name"/>
+
+  	</resultMap>
+  	
+  	<!-- 부서 리스트 select -->
+  	<select id="selectDepartList" resultMap="selectDepartResult">
+  		/* 부서 전체 셀렉트 */
+  		SELECT
+  			group_name
+  		FROM
+  			employee_group
+  		WHERE
+  			group_level != 1
+  	</select>
+  	
+  	<!-- 공지사항 리스트 select -->
+  	<select id="selectBoardNoticeList" resultMap="selectBoardResult">
+  		/* 공지사항 셀렉트 */
+  		SELECT
+			board_category, 
+			board_title, 
+			board_content_text, 
+			board_writer, 
+			board_write_date, 
+			board_view_count, 
+			board_num, 
+			board_comment_count,
+			TIMESTAMPDIFF(MINUTE, b.board_write_date, NOW()) AS board_time_check,
+			board_file_check 
+		FROM
+			board as b
+		WHERE
+			board_category = '공지'
+		ORDER BY 
+			board_num DESC
+  	</select>
+
+	<!-- 게시판 리스트 select -->
+	<select id="selectBoardList" resultMap="selectBoardResult" parameterType="map">
+		/* 게시판 리스트 셀렉트 */
+		SELECT
+			board_category, 
+			board_title, 
+			board_content_text, 
+			board_writer, 
+			board_write_date, 
+			board_view_count, 
+			board_num, 
+			board_comment_count,
+			TIMESTAMPDIFF(MINUTE, b.board_write_date, NOW()) AS board_time_check ,
+			board_file_check
+		FROM
+			board as b
+		
+		<where>
+			board_category != '공지'
+		<if test="searchDto.boardCategory != null and searchDto.boardCategory != 'null' and searchDto.boardCategory != '전체'">
+			and board_category = #{searchDto.boardCategory}
+		</if>
+		
+		<if test="searchDto.isSearchCheck == 'true'">
+			
+				
+			<if test="searchDto.searchBy == '제목내용'">
+				
+				and (board_title LIKE '%${searchDto.searchInput}%' OR board_content_text LIKE '%${searchDto.searchInput}%')
+			</if>
+			<if test="searchDto.searchBy == '제목만'">
+				
+				and board_title LIKE '%${searchDto.searchInput}%' 
+			</if>
+			<if test="searchDto.searchBy == '글작성자'">
+				
+				and board_writer LIKE '%${searchDto.searchInput}%'
+			</if>
+					
+			
+			<if test="searchDto.searchDate != '전체기간'">
+				
+				and DATE(b.board_write_date) >= date(subdate(now(), INTERVAL ${searchDto.searchDate} DAY))
+			</if>
+			
+		</if>
+		
+		</where>
+		
+		ORDER BY 
+			board_num DESC
+		LIMIT
+			${pagingDto.limitNum}, ${pagingDto.viewNum}
+		
+	</select>
+	
+	<!-- 게시글 insert 직후 해당 글 board_num select -->
+	<select id="selectMaxBoardNum" resultType="int">
+		SELECT 
+			max(board_num)
+		FROM 
+			board
+	</select>
+	
+	<!-- 게시글 insert -->
+	<insert id="insertBoard" parameterType="BoardDto">
+		INSERT 
+			INTO board
+				(board_category, 
+				board_title, 
+				board_content_text, 
+				board_writer, 
+				board_write_date, 
+				board_view_count, 
+				board_comment_count)
+				
+		VALUES (#{boardCategory}, #{boardTitle}, #{boardContentText}, '관리자', NOW(), 0, 0)
+
+	</insert>
+	
+	<!-- 첨부파일 insert -->
+	<insert id="boardFileInsert" parameterType="map">
+		INSERT 
+			INTO board_file
+				(board_num,
+				board_file_original_name,
+				board_file_stored_name,
+				board_file_size)
+				
+		VALUES (${boardNum}, #{originalFileName}, #{storedFileName}, ${fileSize})
+
+	</insert>
+	
+	<!-- 첨부파일 insert후 게시글 파일 유무 업데이트 -->
+	<update id="boardFileCheckUpdate" parameterType="map">
+		UPDATE 
+			board
+		SET
+			board_file_check='Y'
+		WHERE
+			board_num = ${boardNum} 
+
+	</update>
+	
+	<!-- 게시글 detailView -->
+	<select id="selectBoardDetailView" resultMap="selectBoardResult" parameterType="BoardDto">
+		SELECT
+			board_category, 
+			board_title, 
+			board_content_text, 
+			board_writer, 
+			board_write_date, 
+			board_view_count, 
+			board_num, 
+			board_comment_count,
+			board_file_check 
+		FROM
+			board as b
+		WHERE
+			board_num = ${boardNum}
+
+	</select>
+	
+	<!-- 첨부파일리스트 Select -->
+	<select id="selectBoardAttachFile" resultMap="selectBoardAttachFileResult" parameterType="BoardDto">
+		SELECT 
+		board_file_num, 
+		board_file_original_name, 
+		board_file_stored_name, 
+		board_file_size
+	FROM 
+		board_file 
+		INNER JOIN 
+		board 
+		on board.board_num = board_file.board_num
+	WHERE
+		board.board_num = ${boardNum}
+
+	</select>
+	
+	<!-- 첨부파일리스트 resultMap -->
+	<resultMap id="selectBoardAttachFileResult" type="map">
+	
+    	<result property="boardFileNum" column="board_file_num"/>
+    	<result property="boardFileOriginalName" column="board_file_original_name"/>
+    	<result property="boardFileStoredName" column="board_file_stored_name"/>
+    	<result property="boardFileSize" column="board_file_size"/>
+
+  	</resultMap>
+  	
+  	
+  	<!-- 실제 경로 첨부파일Name Select  -->
+  	<select id="selectBoardFileForDelete" resultMap="selectBoardAttachFileResult" parameterType="int">
+  	/* selectBoardFileForDelete */
+  		SELECT 
+		board_file_num, 
+		board_file_original_name, 
+		board_file_stored_name, 
+		board_file_size
+	FROM 
+		board_file 
+		
+	WHERE
+		board_file_num = ${integerFileDeleteNum}
+  	</select>
+  	
+  	
+  	
+  	
+  	<!-- 첨부파일 DB삭제 -->
+	<delete id="boardFileDelete" parameterType="int">
+		DELETE 
+		FROM 
+			board_file 
+		WHERE board_file_num = ${integerFileDeleteNum}
+	</delete>
+	
+	<!-- 파일 삭제 후 게시글 파일 유무 체크 -->
+	<update id="boardFileCheck" parameterType="BoardDto">
+		<![CDATA[ 
+		UPDATE
+			board AS B
+		SET
+			B.board_file_check = (
+				CASE
+				
+				WHEN 0 < (			
+					SELECT 
+						COUNT(*)
+					FROM 				
+						board_file AS BF 
+					WHERE 
+						B.board_num = BF.board_num			
+				)
+				
+				THEN 'Y'
+				ELSE 'N'
+				END
+			)
+		WHERE
+			B.board_num = ${boardNum}
+		]]>
+	</update>
+	
+	
+	
+	<!-- 게시글 조회수 증가 -->
+	<update id="updateBoardViewCount" parameterType="BoardDto">
+		UPDATE 
+			board
+		SET
+			board_view_count = board_view_count + 1
+
+		Where
+			board_num = ${boardNum}
+
+	</update>
+	
+	<!-- 게시글 update -->
+	<update id="updateBoard" parameterType="BoardDto">
+		UPDATE 
+			board
+		SET
+			board_category = #{boardCategory}
+			,board_title = #{boardTitle}
+			,board_content_text = #{boardContentText}
+		WHERE 
+			board_num = ${boardNum}
+
+	</update>
+	
+	<!-- 게시글 delete -->
+	<delete id="deleteBoard" parameterType="BoardDto">
+		DELETE 
+		FROM 
+			board 
+		WHERE board_num = ${boardNum}
+
+	</delete>
+	
+	<!-- 댓글 리스트 select -->
+	<select id="selectCommentList" resultMap="selectCommentResult" parameterType="BoardDto">
+		SELECT
+			comment_writer
+			,comment_date
+			,comment_content
+			,comment_num
+		FROM
+			board_comment
+		WHERE
+			board_num = ${boardNum}
+
+	</select>
+	
+	<!-- 댓글 리스트 result -->
+	<resultMap id="selectCommentResult" type="CommentDto">
+	
+    	<result property="commentWriter" column="comment_writer"/>
+    	<result property="commentDate" column="comment_date"/>
+    	<result property="commentContent" column="comment_content"/>
+    	<result property="commentNum" column="comment_num"/>
+
+  	</resultMap>
+  	
+  	<!-- 댓글 insert -->
+  	<insert id="insertComment" parameterType="map">
+		INSERT INTO 
+			board_comment
+			(board_num
+			,comment_date
+			,comment_content
+			,comment_writer)
+		VALUES (${boardDto.boardNum}, NOW(), #{commentDto.commentContent}, '관리자')
+
+	</insert>
+	
+	<!-- 댓글 insert 후 max 댓글번호 select -->
+	<select id="selectMaxCommentNum" resultType="int">
+		SELECT 
+			max(comment_num)
+		FROM 
+			board_comment
+	</select>
+	
+	<!-- 댓글 insert,delete시 게시판 댓글수 증감 -->
+	<update id="updateCommentCount" parameterType="map">
+		UPDATE 
+			board
+		SET
+			<if test="isCommentCount == 'true'">
+				board_comment_count = board_comment_count + 1
+			</if>
+			<if test="isCommentCount == 'false'">
+				board_comment_count = board_comment_count - 1
+			</if>
+		Where
+			board_num = ${boardDto.boardNum}
+
+	</update>
+	
+	<!-- 댓글 Update -->
+	<update id="updateComment" parameterType="CommentDto">
+		UPDATE 
+			board_comment
+		SET
+			comment_content = #{commentContent}
+		WHERE
+			comment_num = ${commentNum}
+
+	</update>
+	
+	<!-- 댓글 Delete -->
+	<update id="deleteComment" parameterType="CommentDto">
+		DELETE 
+		FROM 
+			board_comment 
+		WHERE 
+			comment_num = ${commentNum}
+
+	</update>
+	<!-- 게시글 댓글수 감소 -->
+	<update id="deleteCommentCount" parameterType="BoardDto">
+		UPDATE 
+			board
+		SET
+			
+			board_comment_count = board_comment_count - 1
+			
+		Where
+			board_num = ${boardNum}
+
+	</update>
+	
+
+</mapper>  

@@ -1,0 +1,111 @@
+@charset "UTF-8";
+
+
+
+/* ----------------프로젝트리스트로 이동----------------- */
+.ik-chevron-left{
+	cursor:pointer;
+}
+
+.pr-ikon{
+	user-select:none;
+}
+
+/* ----------------tasklist clone----------------- */
+
+
+.main-content {
+	padding-bottom: 0px !important;
+}
+
+.header-top>.container-fluid {
+	padding: 0 15px;
+}
+
+.container-fluid {
+	padding-right: 0px;
+}
+.task-page-header{
+	margin-right:20px;
+}
+.scroller-layout {
+	display:flex;
+	user-select: none;
+	cursor: url('/img/project/hand-move.png'), move;
+	align-items:stretch;
+	overflow-x:auto;
+	min-height:500px;
+}
+.task-row {
+	flex-wrap: nowrap;
+	margin-right:0px;
+}
+
+.task-card {
+	margin: 0 10px;
+	width: 280px;
+	height: fit-content;
+	overflow-y: auto;
+	cursor: pointer;
+	user-select: none;
+}
+
+.task-card-header {
+	cursor: move;
+	height: 60px;
+	line-height: -1px;
+	background-color: #26C281;
+	padding: 0;
+}
+
+.task-card-header h6 {
+	margin-top: .5rem;
+}
+.tasklist-delete-btn{
+	cursor:pointer;
+	list-style:none;
+	margin-left:10px;
+	}
+.tasklist-delete-btn .ik-x{
+	color:#8c8c8c;
+}
+
+.task-card-body {
+	-webkit-box-flex:0;
+	flex:0 1 auto;
+	max-height: 29rem;
+	overflow-y: auto;
+	cursor: default;
+}
+
+
+
+.task-dd-handle{
+	padding:12px 16px;
+}
+
+.task-dd-item {
+	cursor: move;
+}
+.task-dd-list{
+	  padding-top: 10px;
+}
+
+.tasklist-add-btn {
+	padding: 10px !important;
+}
+
+.tasklist-add-card .task-card-header {
+	cursor: pointer;
+	background-color: #dddddd;
+}
+
+.taskListInput {
+	font-size:14px;
+	margin: 3px 3px;
+	padding: 4px;
+	display: none;
+	border-radius: 4px;
+	width: 90%;
+	border: 1px solid white;
+}

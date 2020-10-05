@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
+
+<th:block layout:fragment="customTitle">
+	<title>boardList</title>
+</th:block>
+
+<!-- 검색 폼 가운데 정렬 css Start-->
+<th:block layout:fragment="customCss">
+<link rel="stylesheet" href="boardcss/main.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/xeicon@2.3.3/xeicon.min.css">
+	<style>
+	
+	/* 페이지네이션 css start */
+	.board-pagination{
+		text-align:center;
+	}
+
+	.searchLayer {
+		display: table;
+	} 
+	.searchInnerLayer {
+		display: table-cell;
+		text-align: center;
+		vertical-align: middle;
+	}
+	.searchForm {
+		display: inline-block;
+	}
+	.searchDateSelect {
+		text-align: center;
+		float: left;
+		padding: 1px;
+	}
+	.searchBySelect {
+		text-align: center;
+		float: left;
+		padding: 1px;
+	}
+	.searchInput {
+		text-align: center;
+		float: left;	
+		padding: 1px;
+	}
+	.searchWord {
+		color: #007bff;
+		font-style: normal;
+	}
+	.noticeCategory{
+		color: #ff4e59;
+		text-align: center;
+	}
+	.noticeTitle {
+		color: #ff4e59 !important;
+		text-align: center;
+	}
+	
+	</style>
+</th:block>
+<!-- 검색 폼 가운데 정렬 css End-->
+
+<th:block layout:fragment="customScript">
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript" th:inline="javascript">
+	
+		/* 페이지 로드시 파라미터값 저장 */
+	/*<![CDATA[*/ 		
+		var boardList = [[${boardList}]];
+		var pagingDto = [[${pagingDto}]];
+		var searchDto = [[${searchDto}]];
+		var departList = [[${departList}]];
+	/*]]>*/
+		console.log(boardList)
+		console.log(departList)
+		
+
+		var viewNum = pagingDto.viewNum;
+		var selectPage = pagingDto.selectPage;
+		var boardCategory = searchDto.boardCategory
+		var isSearchCheck = searchDto.isSearchCheck
+		var searchBy = searchDto.searchBy
+		var searchDate = searchDto.searchDate
+		var searchInput = searchDto.searchInput
+
+		console.log(selectPage);
+		console.log(viewNum);
+		console.log(boardCategory);
+		console.log(isSearchCheck);
+		console.log(searchBy);
+		console.log(searchDate);
+		console.log(searchInput);
+
+	function page(idx) {		// 페이지 클릭 함수
+
+	    selectPage = idx;
+	    location.href="/boardList?selectPage="+selectPage+"&viewNum="+viewNum+"&boardCategory="+boardCategory+"&isSearchCheck="+isSearchCheck+"&searchBy="+searchBy+"&searchDate="+searchDate+"&searchInput="+searchInput+"";
+
+	}
+
+	
+	$(function(){
+		//alert(JSON.stringify(boardList));
+		console.log(pagingDto);
+		console.log(boardList);
+		console.log(searchDto);
+		
+		/* 페이지 로드시 viewNum 드롭다운 개수 표시 */
+
+		$('#viewNumBtn').text(viewNum+"개씩");	
+
+		/* 게시글 뷰 개수 클릭시 */
+		$('.dropdown-item').click(function(){
+			viewNum = $(this).attr('value');
+		    location.href="/boardList?selectPage="+1+"&viewNum="+viewNum+"&boardCategory="+boardCategory+"&isSearchCheck="+isSearchCheck+"&searchBy="+searchBy+"&searchDate="+searchDate+"&searchInput="+searchInput+"";
+
+		})
+		 /* 페이지 로드시 선택된 카테고리 버튼 표시 */
+		/* $('.categoryBtn button[value='+boardCategory+']').attr("class","btn btn-primary"); */
+		
+		//$('[name="searchDate"] option[value='+searchDate+']').prop("selected", true);
+
+		/* 카테고리 클릭 이벤트 */
+		$('.categoryBtn button').click(function(){
+			console.log($(this).val())
+			boardCategory = $(this).val();
+		    location.href="/boardList?selectPage="+1+"&viewNum="+viewNum+"&boardCategory="+boardCategory+"&isSearchCheck="+isSearchCheck+"&searchBy="+searchBy+"&searchDate="+searchDate+"&searchInput="+searchInput+"";
+		})
+		
+		$('#selectCategory').change(function(){
+			console.log($(this).val())
+			boardCategory = $(this).val();
+			location.href="/boardList?selectPage="+1+"&viewNum="+viewNum+"&boardCategory="+boardCategory+"&isSearchCheck="+isSearchCheck+"&searchBy="+searchBy+"&searchDate="+searchDate+"&searchInput="+searchInput+"";
+		})
+		
+		
+		/* 검색 */
+		$('#searchBtn').click(function(){
+			
+			searchBy = $('#searchForm [name="searchBy"]').val();
+			searchDate = $('#searchForm [name="searchDate"]').val();
+			searchInput = $('#searchForm [name="searchInput"]').val();
+			console.log(searchBy);
+			console.log(searchDate);
+			console.log(searchInput);
+			if(searchInput == ""){
+				alert('검색어를 입력해주세요');
+			}else{
+				
+		    location.href="/boardList?selectPage="+1+"&viewNum="+viewNum+"&boardCategory="+boardCategory+"&isSearchCheck=true&searchBy="+searchBy+"&searchDate="+searchDate+"&searchInput="+searchInput+"";
+			}
+			
+		})
+	
+	})
+	
+	</script>
+</th:block>
+
+<th:block layout:fragment="customContents">
+	<!-- 게시판 페이지 헤더 Start -->
+	<div class="col-md-12">
+	<div class="page-header">
+       <div class="row align-items-end">
+           <div class="col-lg-8">
+               <div class="page-header-title">
+                   <i class="ik ik-credit-card bg-blue"></i>
+                   <div class="d-inline">
+                       <h5>그룹웨어</h5>
+                       <span>(주)한국 스마트 정보 교육원</span>
+                   </div>
+               </div>
+           </div>
+           <div class="col-lg-4">
+               <nav class="breadcrumb-container" aria-label="breadcrumb">
+                   <ol class="breadcrumb">
+                       <li class="breadcrumb-item">
+                           <a href="/index"><i class="ik ik-home"></i></a>
+                       </li>
+                       <li class="breadcrumb-item">
+                           <a href="/boardList">게시판</a>
+                       </li>
+                       <li class="breadcrumb-item active" aria-current="page">사원 게시판</li>
+                   </ol>
+               </nav>
+           </div>
+       </div>
+   </div>
+   <!-- 게시판 페이지 헤더 End -->
+	
+	
+	<div class="row">
+		<div class="col-md-12">
+			<!------ viewNum 드롭다운 Start ------>
+			<div class="float-md-right">
+				<button id="viewNumBtn"
+					class="btn btn-outline-dark btn-xs dropdown-toggle" type="button"
+					data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<i class="ik ik-chevron-down mr-0 align-middle"></i>
+				</button>
+				<div class="dropdown-menu dropdown-menu-right">
+					<a class="dropdown-item" value="10">10개씩</a> <a
+						class="dropdown-item" value="15">15개씩</a> <a
+						class="dropdown-item" value="20">20개씩</a> <a
+						class="dropdown-item" value="30">30개씩</a> <a
+						class="dropdown-item" value="40">40개씩</a> <a
+						class="dropdown-item" value="50">50개씩</a>
+
+				</div>
+			</div>
+			<!------ viewNum 드롭다운 End ----->
+			
+			<!-- 부서 카테고리 셀렉트박스 Start -->
+			<div class="col-md-2" style="padding-left : 0px;">
+				<select class="form-control" id="selectCategory">
+					<option value="전체">전  체</option>
+                	<th:block th:each="d:${departList}">
+                		<th:block th:if ="${#strings.equals(d.departList, searchDto.boardCategory)}">
+                			<option th:value="${d.departList}" selected="selected">[[${d.departList}]] </option>
+                		</th:block>
+                		<th:block th:unless ="${#strings.equals(d.departList, searchDto.boardCategory)}">
+                			<option th:value="${d.departList}">[[${d.departList}]] </option>
+                		</th:block>
+                	</th:block>
+            	</select>
+            </div>
+            <!-- 부서 카테고리 셀렉트박스 End -->
+            
+			<!-- 카테고리 버튼 Start -->
+			<!-- <div class="categoryBtn">
+				
+				<th:block th:each="b:${pagingDto.btnArr}">
+					<th:block th:if ="${#strings.equals(b, searchDto.boardCategory)}">
+						<button type="button" class="btn btn-primary" th:value="${b}">[[${b}]]</button>
+					</th:block>
+					<th:block th:unless ="${#strings.equals(b, searchDto.boardCategory)}">
+						<button type="button" class="btn btn-default" th:value="${b}">[[${b}]]</button>
+					</th:block>
+				</th:block>
+				
+			</div> -->
+			<!-- 카테고리 버튼 End -->
+			
+			<!-------------게시판 테이블 Start ------------->
+			<table class="table table-hover" id="main-board">
+				<tr>
+					<th id="number"></th>
+					<th id="category">구분</th>
+					<th id="title">제목</th>
+					<th id="writer">작성자</th>
+					<th id="date">작성일</th>
+					<th id="view">조회</th>
+				</tr>
+				
+				<!-- 등록된 게시글이 없을 경우 -->
+				<th:block th:if="${boardList.size() == 0}">
+					<tr><td colspan="6"><div style="padding: 100px 0;"><h6>등록된 게시글이 없습니다.</h6></div></td></tr>
+				</th:block>
+				
+				<!-- 등록된 게시글이 있을 경우 -->
+				<th:block th:if="${boardList.size() != 0}">
+				
+					<!-- 검색상태가 아닐 경우 -->
+					<th:block th:if="${searchDto.isSearchCheck != 'true'}">
+						
+						<!-- 공지사항 리스트 Start -->
+						<th:block th:each="b:${boardNoticeList}">
+						
+							<tr>
+							
+								<td style="color:#ff4e59"><i class="ik ik-volume-1"></i></td>
+								<th class="noticeCategory">[[${b.boardCategory}]]</th>
+								
+							<!-- 댓글이 있는 경우 -->	
+							<th:block th:if="${b.boardCommentCount !=0 }">
+							
+								<!-- 게시글 작성 시간이 24시간 이내일 경우 -->
+								<th:block th:if="${b.boardTimeCheck < 1440 }">
+								
+									<th class="noticeTitle" >	<!-- 공지사항 th태그 -->
+										<a class="noticeTitle" 
+											th:href="@{/boardDetailView(
+											
+													boardNum=${b.boardNum}
+													,selectPage=${pagingDto.selectPage}
+													,viewNum=${pagingDto.viewNum}
+													,boardCategory=${searchDto.boardCategory})}">	<!-- a태그 detailView로 전달할 파라미터값 설정 -->
+													
+										[[${b.boardTitle}]]		<!-- 공지 제목 -->
+									
+										<th:block th:if="${b.boardFileCheck == 'Y'}"> <!-- 파일 유무 체크 -->
+											<i class="ik ik-save"></i>
+										</th:block>
+										 
+										<span th:text="[+${b.boardCommentCount}+]" class="commentCount"></span>	<!-- 댓글 수 -->
+										<i class="xi-new" style="color: red;"></i></a>	<!-- 새 글 표시 -->
+									</th>
+									
+								</th:block>
+								
+								<!-- 게시글 작성 시간이 24시간 지났을 경우 -->
+								<th:block th:unless="${b.boardTimeCheck < 1440 }">
+								
+									<th class="noticeTitle">	<!-- 공지사항 th태그-->
+									
+										<a class="noticeTitle" 
+											th:href="@{/boardDetailView(
+											
+													boardNum=${b.boardNum}
+													,selectPage=${pagingDto.selectPage}
+													,viewNum=${pagingDto.viewNum}
+													,boardCategory=${searchDto.boardCategory})}">	<!-- a태그 detailView로 전달할 파라미터값 설정 -->
+													
+											[[${b.boardTitle}]]		<!-- 공지사항 제목 -->
+											
+											<th:block th:if="${b.boardFileCheck == 'Y'}">	<!-- 파일 유무 체크 -->
+												<i class="ik ik-file-text"></i>
+											</th:block>  
+											
+											<span th:text="[+${b.boardCommentCount}+]" class="commentCount"></span>	<!-- 댓글 수 -->
+										</a>
+										
+									</th>
+									
+								</th:block>
+								
+							</th:block>
+							
+							<!-- 댓글이 없는 경우 -->
+							<th:block th:if="${b.boardCommentCount == 0}">
+							
+								<!-- 게시글 작성 시간이 24시간 이내일 경우 -->
+								<th:block th:if="${b.boardTimeCheck < 1440 }">
+								
+									<th class="noticeTitle">	<!-- 공지사항 th태그 -->
+										<a class="noticeTitle" 
+											th:href="@{/boardDetailView(
+											
+													boardNum=${b.boardNum}
+													,selectPage=${pagingDto.selectPage}
+													,viewNum=${pagingDto.viewNum}
+													,boardCategory=${searchDto.boardCategory})}">	<!-- a태그 detailView로 전달할 파라미터값 설정 -->
+													
+											[[${b.boardTitle}]]		<!-- 공지사항 제목 -->
+										
+											<th:block th:if="${b.boardFileCheck == 'Y'}">	<!-- 파일 유무 체크 -->
+												<i class="ik ik-save"></i>
+											</th:block> 
+											
+											<i class="xi-new"style="color: red;"></i>	<!-- 신규 글 -->
+										 </a>
+									</th>
+									
+								</th:block>
+								
+								<!-- 게시글 작성 시간이 24시간 지났을 경우 -->
+								<th:block th:unless="${b.boardTimeCheck < 1440 }">
+								
+									<th class="noticeTitle">	<!-- 공지사항 th태그 -->
+									
+										<a class="noticeTitle" 
+											th:href="@{/boardDetailView(
+											
+													boardNum=${b.boardNum}
+													,selectPage=${pagingDto.selectPage}
+													,viewNum=${pagingDto.viewNum}
+													,boardCategory=${searchDto.boardCategory})}">	<!-- a태그 detailView로 전달할 파라미터값 설정 -->
+													
+											 [[${b.boardTitle}]]	<!-- 공지사항 제목 -->
+											 
+										 </a>
+									</th>
+									
+									<th:block th:if="${b.boardFileCheck == 'Y'}">	<!-- 파일 유무 체크 -->
+										<i class="ik ik-save"></i>	
+									</th:block> 
+									
+								</th:block>
+								
+							</th:block>
+	
+								<td th:text="${b.boardWriter}"></td>	<!-- 작성자 -->
+								
+								<!-- 작성일 표시 당일일 경우 시 분 표시 -->
+								<th:block
+									th:if="${#dates.format(#dates.createNow(), 'yyyy-MM-dd') == #strings.substring(b.boardWriteDate,0,10)}">
+									<td th:text="${#strings.substring(b.boardWriteDate,11,16)}"></td>
+								</th:block>
+								
+								<!-- 작성일 표시 당일 아닐 경우 연월일 표시 -->
+								<th:block
+									th:unless="${#dates.format(#dates.createNow(), 'yyyy-MM-dd') == #strings.substring(b.boardWriteDate,0,10)}">
+									<td th:text="${#strings.substring(b.boardWriteDate,0,10)}"></td>
+								</th:block>
+								
+								<td th:text="${b.boardViewCount}"></td>	<!-- 조회수 -->
+	
+							</tr>
+						</th:block>
+					</th:block>
+					<!-- 공지사항 End -->
+					
+					<!-- 일반 게시글 Start -->
+					<th:block th:each="b:${boardList}">
+						<tr>
+							<td th:text="${b.boardNum}"></td>
+							<td th:text="${b.boardCategory}"></td>
+							
+						<!-- 댓글이 있는 경우 -->
+						<th:block th:if="${b.boardCommentCount !=0 }">
+						
+							<!-- 게시글 작성 시간이 24시간 이내일 경우 -->
+							<th:block th:if="${b.boardTimeCheck < 1440 }">
+							
+								<!-- 검색 시 -->
+								<th:block th:if="${searchDto.isSearchCheck == 'true'}">
+
+									<td>
+									
+										<a th:href="@{/boardDetailView(
+										
+													boardNum=${b.boardNum}
+													,selectPage=${pagingDto.selectPage}
+													,viewNum=${pagingDto.viewNum}
+													,boardCategory=${searchDto.boardCategory}
+													,isSearchCheck=${searchDto.isSearchCheck}
+													,searchBy=${searchDto.searchBy}
+													,searchDate=${searchDto.searchDate}
+													,searchInput=${searchDto.searchInput})}">	<!-- a태그 detailView 파라미터값 설정 -->
+													
+											<th:block th:utext="${b.boardSearchWord}"></th:block>	<!-- 검색 단어 색으로 강조 표시 -->
+											
+											<th:block th:if="${b.boardFileCheck == 'Y'}">	<!-- 파일 유무 표시 -->
+												<i class="ik ik-save"></i>
+											</th:block> 
+											
+											<span th:text="[+${b.boardCommentCount}+]" class="commentCount"></span>	<!-- 댓글 수 -->
+											
+											<i class="xi-new" style="color: red;"></i>	<!-- 신규 표시 -->
+										</a>
+										
+									</td>
+									
+								</th:block>
+								
+								<!-- 검색 아닐 시 -->
+								<th:block th:if="${searchDto.isSearchCheck != 'true'}">
+								
+									<td>
+									
+										<a th:href="@{/boardDetailView(
+										
+													boardNum=${b.boardNum}
+													,selectPage=${pagingDto.selectPage}
+													,viewNum=${pagingDto.viewNum}
+													,boardCategory=${searchDto.boardCategory})}">	<!-- a태그 detailView 파라미터값 설정 -->
+											
+											[[${b.boardTitle}]]	<!-- 글 제목 -->
+											
+											<th:block th:if="${b.boardFileCheck == 'Y'}">	<!-- 파일 유무 체크 -->
+												<i class="ik ik-save"></i>
+											</th:block>  
+											
+											<span th:text="[+${b.boardCommentCount}+]" class="commentCount"></span>		<!-- 댓글 수  -->
+											
+											<i class="xi-new" style="color: red;"></i>	<!-- 신규 표시 -->
+											
+										</a>
+										
+									</td>
+									
+								</th:block>
+								
+							</th:block>
+							
+							<!-- 게시글 작성 시간이 24시간 지났을 경우 -->
+							<th:block th:unless="${b.boardTimeCheck < 1440 }">
+							
+								<!-- 검색 시-->
+								<th:block th:if="${searchDto.isSearchCheck == 'true'}">
+								
+									<td>
+									
+										<a th:href="@{/boardDetailView(
+										
+											boardNum=${b.boardNum}
+											,selectPage=${pagingDto.selectPage}
+											,viewNum=${pagingDto.viewNum}
+											,boardCategory=${searchDto.boardCategory}
+											,isSearchCheck=${searchDto.isSearchCheck}
+											,searchBy=${searchDto.searchBy}
+											,searchDate=${searchDto.searchDate}
+											,searchInput=${searchDto.searchInput})}">	<!-- a태그 detailView 파라미터값 설정 -->
+											
+											<th:block th:utext="${b.boardSearchWord}"></th:block>	<!-- 검색 단어 색으로 강조 표시 -->
+											
+											<span th:text="[+${b.boardCommentCount}+]" class="commentCount"></span>	<!-- 댓글수 -->
+										
+										</a>
+										
+									</td>
+								</th:block>
+								
+								<!-- 검색 아닐 시 -->
+								<th:block th:if="${searchDto.isSearchCheck != 'true'}">
+								
+									<td>
+									
+										<a th:href="@{/boardDetailView(
+										
+													boardNum=${b.boardNum}
+													,selectPage=${pagingDto.selectPage}
+													,viewNum=${pagingDto.viewNum}
+													,boardCategory=${searchDto.boardCategory})}">	<!-- a태그 detailView 파라미터값 설정 -->
+													
+											[[${b.boardTitle}]]		<!-- 글 제목 -->
+											
+											<th:block th:if="${b.boardFileCheck == 'Y'}">	<!-- 파일 유무 체크 -->
+												<i class="ik ik-save"></i>
+											</th:block>  
+											
+											<span th:text="[+${b.boardCommentCount}+]" class="commentCount"></span>	<!-- 댓글 수 -->
+											
+										</a>
+										
+									</td>
+									
+								</th:block>
+								
+							</th:block>
+							
+						</th:block>
+						
+						<!-- 댓글이 없는 경우 -->
+						<th:block th:if="${b.boardCommentCount == 0}">
+						
+							<!-- 게시글 작성 시간이 24시간 이내일 경우 -->
+							<th:block th:if="${b.boardTimeCheck < 1440 }">
+								
+								<!-- 검색 시 -->
+								<th:block th:if="${searchDto.isSearchCheck == 'true'}">
+								
+									<td>
+										
+										<a th:href="@{/boardDetailView(
+										
+													boardNum=${b.boardNum}
+													,selectPage=${pagingDto.selectPage}
+													,viewNum=${pagingDto.viewNum}
+													,boardCategory=${searchDto.boardCategory}
+													,isSearchCheck=${searchDto.isSearchCheck}
+													,searchBy=${searchDto.searchBy}
+													,searchDate=${searchDto.searchDate}
+													,searchInput=${searchDto.searchInput})}">	<!-- a태그 detailView 파라미터값 설정 -->
+													
+											<th:block th:utext="${b.boardSearchWord}"></th:block>	<!-- 검색 단어 색으로 강조 표시 -->
+											
+											<th:block th:if="${b.boardFileCheck == 'Y'}">	<!-- 파일 유무 체크 -->
+												<i class="ik ik-save"></i>
+											</th:block> 
+											
+											<i class="xi-new" style="color: red;"></i>		<!-- 신규 표시 -->
+											
+										</a>
+										
+									</td>
+									
+								</th:block>
+								
+								<!-- 검색 아닐 시 -->
+								<th:block th:if="${searchDto.isSearchCheck != 'true'}">
+								
+									<td>
+										<a th:href="@{/boardDetailView(
+										
+													boardNum=${b.boardNum}
+													,selectPage=${pagingDto.selectPage}
+													,viewNum=${pagingDto.viewNum}
+													,boardCategory=${searchDto.boardCategory})}"> 	<!-- a태그 detailView 파라미터값 설정 -->
+													
+											[[${b.boardTitle}]]		<!-- 글 제목 -->
+											
+											<th:block th:if="${b.boardFileCheck == 'Y'}">	<!-- 파일 유무 체크 -->
+												<i class="ik ik-save"></i>
+											</th:block> 
+											
+											<i class="xi-new" style="color: red;"></i>	<!-- 신규 표시 -->
+											
+										</a>
+										
+									</td>
+									
+								</th:block>
+								
+							</th:block>
+							
+							<!-- 게시글 작성 시간이 24시간 지났을 경우 -->
+							<th:block th:unless="${b.boardTimeCheck < 1440 }">
+							
+								<!-- 검색 시 -->
+								<th:block th:if="${searchDto.isSearchCheck == 'true'}">
+								
+									<td>
+										<a th:href="@{/boardDetailView(
+										
+													boardNum=${b.boardNum}
+													,selectPage=${pagingDto.selectPage}
+													,viewNum=${pagingDto.viewNum}
+													,boardCategory=${searchDto.boardCategory}
+													,isSearchCheck=${searchDto.isSearchCheck}
+													,searchBy=${searchDto.searchBy}
+													,searchDate=${searchDto.searchDate}
+													,searchInput=${searchDto.searchInput})}">	<!-- a태그 detailView 파라미터값 설정 -->
+													
+											<th:block th:utext="${b.boardSearchWord}"></th:block>	<!-- 검색 단어 색으로 강조표시 -->
+											
+											<th:block th:if="${b.boardFileCheck == 'Y'}">	<!-- 파일 유무 체크 -->
+													<i class="ik ik-save"></i>
+											</th:block> 
+										
+										</a>
+										
+									</td>
+								</th:block>
+								
+								<!-- 검색 아닐 시 -->
+								<th:block th:if="${searchDto.isSearchCheck != 'true'}">
+								
+									<td>
+										<a th:href="@{/boardDetailView(
+										
+													boardNum=${b.boardNum}
+													,selectPage=${pagingDto.selectPage}
+													,viewNum=${pagingDto.viewNum}
+													,boardCategory=${searchDto.boardCategory})}">	<!-- a태그 detailView 파라미터값 설정 --> 
+													
+											[[${b.boardTitle}]]		<!-- 글 제목 -->
+											
+										</a>
+									
+										<th:block th:if="${b.boardFileCheck == 'Y'}">	<!-- 파일 유무 체크 -->
+											<i class="ik ik-save"></i>
+										</th:block>
+										
+									</td>
+									
+								</th:block>
+								
+							</th:block>
+							
+						</th:block>
+
+						<td th:text="${b.boardWriter}"></td>		<!-- 작성자 -->
+						
+						<!-- 작성일 표시 당일일 경우 시 분 표시 -->
+						<th:block
+							th:if="${#dates.format(#dates.createNow(), 'yyyy-MM-dd') == #strings.substring(b.boardWriteDate,0,10)}">
+							<td th:text="${#strings.substring(b.boardWriteDate,11,16)}"></td>
+						</th:block>
+						
+						<!-- 작성일 표시 당일 아닐 경우 연월일 표시 -->
+						<th:block
+							th:unless="${#dates.format(#dates.createNow(), 'yyyy-MM-dd') == #strings.substring(b.boardWriteDate,0,10)}">
+							<td th:text="${#strings.substring(b.boardWriteDate,0,10)}"></td>
+						</th:block>
+						
+						<td th:text="${b.boardViewCount}"></td>		<!-- 조회수 -->
+
+					</tr>
+					
+					</th:block>
+					
+				</th:block>
+				
+			</table>
+
+			<!-- -------- 글쓰기 버튼------- -->
+			<div class="row">
+				<div class="col-sm-12 col-md-12">
+				<a href="/boardWriteForm">
+					<button id="writeBtn" type="button" class="btn btn-outline-dark"><i class="ik ik-edit-1 "></i>글쓰기</button>
+				</a>
+				</div>
+			</div>
+			
+			
+			<!-- 게시글이 있을 경우에만 페이지네이션 생성 -->
+			<th:block th:if="${boardList.size() != 0}">
+			<div class="row">
+				<div class="col-sm-12 col-md-12">
+				<!-- -------- 페이지네이션 Start----- -->
+				<nav aria-label="Page navigation example">
+					<ul class="board-pagination pagination mb-0">
+						<!-- <li class="page-item">	// 첫페이지
+                          <a class="page-link first" href="#">
+                              <i class="ik ik-chevrons-left"></i>
+                          </a>
+                      	</li>  -->
+                      	
+                      	<!-- 이전 버튼 유무 체크 -->
+						<th:block th:if="${pagingDto.isPrevBtn()}">
+							<li class="page-item"><a class="page-link prev"
+								th:onclick="|javascript:page('${pagingDto.getPageFirstNum()-1}')|">
+									<i class="ik ik-chevron-left"></i>
+							</a></li>
+						</th:block>
+						
+						<!-- 페이지 넘버 생성 -->
+						<th:block
+							th:each="num: ${#numbers.sequence(pagingDto.getPageFirstNum(),pagingDto.getPageLastNum())}">
+							<div class="btn-group" role="group" aria-label="Basic example">
+
+								<th:block
+									th:if="${pagingDto.getSelectPage() == numStat.current}">
+									<li class="page-item active"><a class="page-link"
+										th:onclick="|javascript:page(${numStat.current})|">[[${numStat.current}]]</a>
+									</li>
+								</th:block>
+
+								<th:block
+									th:unless="${pagingDto.getSelectPage() == numStat.current}">
+									<li class="page-item"><a class="page-link"
+										th:onclick="|javascript:page(${numStat.current})|">[[${numStat.current}]]</a>
+									</li>
+								</th:block>
+							</div>
+						</th:block>
+						
+						<!--  다음버튼 유무 체크 -->
+						<th:block th:if="${pagingDto.isNextBtn()}">
+
+							<li class="page-item"><a class="page-link next"
+								th:onclick="|javascript:page('${pagingDto.getPageLastNum()+1}')|"
+								aria-label="Next"> <i class="ik ik-chevron-right"></i>
+							</a></li>
+						</th:block>
+						
+						<!-- <li class="page-item">		// 마지막페이지
+                        <a class="page-link last" href="#">
+                            <i class="ik ik-chevrons-right"></i>
+                        </a>
+                       </li>
+                        -->
+					</ul>
+				</nav>
+				<!-- -------- 페이지네이션 End----- -->
+			</div>
+		</div>
+		</th:block>
+			
+			<!-- 검색창 Start -->	
+			<div class="searchLayer col-md-12">
+				<div class="searchInnerLayer ">
+					<div class="searchForm col-md-6">
+					<form id="searchForm" method="get">
+					
+						<!-- 검색 기간 셀렉트 박스 -->
+						<div class="searchDateSelect col-md-3">
+							<select name="searchDate" class="form-control select2 select2-hidden-accessible" data-select2-id="1" tabindex="-1" aria-hidden="true">
+			                   
+			                   <option value="전체기간" >전체기간</option>
+			                   <option value="1" >1일</option>
+			                   <option value="7" >1주</option>
+			                   <option value="30" >1개월</option>
+			                   <option value="183" >6개월</option>
+	              		 	</select>
+               			</div>
+               			
+               			<!-- 검색 종류 셀렉트 박스 -->
+		               	<div class="searchBySelect col-md-3">
+							<select name="searchBy" class="form-control select2 select2-hidden-accessible" data-select2-id="1" tabindex="-1" aria-hidden="true">
+			                   <option value="제목내용" >제목+내용</option>
+			                   <option value="제목만" >제목만</option>
+			                   <option value="글작성자" >작성자</option>
+			               </select>
+		               	</div>
+		               	
+		               	<!--  검색값 입력 -->
+						<div class="searchInput input-group input-group-button col-md-6">
+		                   <input name="searchInput" type="text" class="form-control" placeholder="검색어를 입력해주세요.">
+		                   <div class="input-group-append">
+		                       <button id="searchBtn" class="btn btn-primary" type="button">검색</button>
+		                   </div>
+		               	</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<!-- 검색창 End -->	
+	</div>
+</div>
+</div>
+
+
+
+	
+		<!-- <div id="bottom">
+			<form id="searchForm" method="get">
+				<div class="searchSelect">
+					<select name="searchDate" class="form-control dateSearch">
+						<option value="전체기간">전체기간</option>
+						<option value="1">1일</option>
+						<option value="7">1주</option>
+						<option value="30">1개월</option>
+						<option value="183">6개월</option>
+					</select>
+				</div>
+				<div class="searchSelect ">
+					<select name="searchBy" class="form-control contentSearch">
+						<option value="제목내용">제목+내용</option>
+						<option value="제목만">제목만</option>
+						<option value="글작성자">글작성자</option>
+					</select>
+				</div>
+				<div id="searchInput" class="searchSelect">
+					<input type="text" class="form-control" name="searchInput"
+						placeholder="Text input">
+				</div>
+				<div id="searchBtn">
+					<button type="button" class="btn btn-default">검색</button>
+				</div>
+			</form>
+			-------- 검색창 -------
+		</div> -->
+
+</th:block>
+<th:block layout:fragment="customJs">
+	
+	<script>window.jQuery || document.write('<script src="src/js/vendor/jquery-3.3.1.min.js"><\/script>')</script>
+	<script src="plugins/popper.js/dist/umd/popper.min.js"></script>
+	<script src="plugins/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script src="plugins/perfect-scrollbar/dist/perfect-scrollbar.min.js"></script>
+	<script src="plugins/screenfull/dist/screenfull.js"></script>
+	<script src="plugins/datatables.net/js/jquery.dataTables.min.js"></script>
+	<script src="plugins/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+	<script
+		src="plugins/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+	<script
+		src="plugins/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
+	<script src="plugins/jvectormap/jquery-jvectormap.min.js"></script>
+	
+	<script src="plugins/moment/moment.js"></script>
+	
+	<script src="plugins/d3/dist/d3.min.js"></script>
+	<script src="plugins/c3/c3.min.js"></script>
+	<script src="js/tables.js"></script>
+	<script src="js/widgets.js"></script>
+	<script src="js/charts.js"></script>
+	<script src="dist/js/theme.js"></script>
+	<script src="js/jquery-jvectormap-2.0.5.min.js"></script>
+	<!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+	<script>
+	    (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+	    function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+	    e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+	    e.src='https://www.google-analytics.com/analytics.js';
+	    r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+	    ga('create','UA-XXXXX-X','auto');ga('send','pageview');
+	</script>
+</th:block>
+
+</html>

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
+<!--
+   @file documentForm.html
+   @brief 양식 생성 form view
+   @author 김건훈
+ -->	
+		<!-- CSS custom -->
+		<th:block layout:fragment="customCss">
+			<link rel="stylesheet" href="/dist/css/electronicApproval/electronicApproval.css">
+			<link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.8/summernote.css" rel="stylesheet">
+			<link rel="stylesheet" href="icheck/skins/square/blue.css">
+		</th:block>
+		
+		<th:block layout:fragment="customTitle">
+		<title>양식 생성</title>
+		</th:block>
+	
+		<!--  Script custom -->
+		<th:block layout:fragment="customScript">
+			<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+			<script src="icheck/icheck.min.js"></script>
+			<script src="dist/js/electronicApproval/documentForm.js"></script>
+		</th:block>
+		<th:block layout:fragment="customContents">
+				       <div class="page-header">
+					       <div class="row align-items-end">
+					           <div class="col-lg-8">
+					               <div class="page-header-title">
+									<i class="ik ik-edit bg-blue"></i>
+									<div class="d-inline">
+										<h5>문서 양식생성</h5>
+										<span>기안 문서 양식을 생성할 수 있는 곳입니다.</span>
+									</div>
+								</div>
+					           </div>
+					           <div class="col-lg-4">
+					               <nav class="breadcrumb-container" aria-label="breadcrumb">
+					                   <ol class="breadcrumb">
+					                       <li class="breadcrumb-item">
+					                           <a th:href="@{/index}"><i class="ik ik-home"></i></a>
+					                       </li>
+					                       <li class="breadcrumb-item">전자결재 설정</li>
+					                       <li class="breadcrumb-item" aria-current="page"><a th:href="@{/selectDocumentFormList}">양식함 관리</a></li>
+					                       	<li class="breadcrumb-item active" aria-current="page">양식 생성</li>
+					                   </ol>
+					               </nav>
+					           </div>
+					       </div>
+					   </div>                     
+		               <div class="card">
+			               <!-- 양식생성 테이블 상단 메뉴탭 Start-->
+			                 <div class="card-header ea-card-header">
+			                 	<h3>양식 생성</h3>
+			                 </div>
+	                      	<!-- 양식생성 테이블 상단 메뉴탭 End-->
+	                           <div class="electronic-approval-form">   
+	                                                  
+                               <!-- 문서 양식 기본설정 테이블 Start -->
+                                    <div class="card-header d-block">
+                                        <h6>기본설정</h6> 
+                                    <div class="card-body p-0 table-border-style">
+                                        <div class="table-responsive">
+                                            <table class="table document-form-table">                                          
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="table-active document-form-table-td">분류</td>
+                                                        <td>          
+                                                        	<button class="btn btn-outline-dark btn-xs dropdown-toggle col-sm-9" id="document-form-type-drop-down" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    		분류 선택<i class="ik ik-chevron-down mr-0 align-middle"></i>
+                                               				</button>
+			                                                <div class="dropdown-menu">
+			                                                	<th:block th:each="dftl:${eaDocumentFormTypeList}">
+			                                                		<a class="dropdown-item" th:text="${dftl.dFormType}" th:value="${dftl.dFormTypeCode}"></a>
+			                                                	</th:block>
+			                                                </div>
+                                              		  </td>
+                                                        <td class="table-active document-form-table-td">양식명</td>
+                                                        <td><input type="text" class="form-control col-sm-9" id="document-form-name-input"></td>
+                                                    </tr>
+                                                     <tr>
+                                                        <td class="table-active document-form-table-td"><span>약칭</span><i class="ik ik-help-circle"></i></td>
+                                                        <td><input type="text" class="form-control col-sm-9" id="document-form-abbre-input"></td>
+                                                        <td class="table-active document-form-table-td">설명</td>
+                                                        <td><input type="text" class="form-control col-sm-9" id="document-form-detail-input"></td>
+                                                    </tr>
+                                                     <tr>
+                                                        <td class="table-active document-form-table-td"><span>보존 연한</span><i class="ik ik-help-circle"></i></td>
+                                                        <td>
+                                                        	<button class="btn btn-outline-dark btn-xs dropdown-toggle col-sm-9" id="document-form-expiry-drop-down" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    		보존연한 선택<i class="ik ik-chevron-down mr-0 align-middle"></i>
+                                               				</button>
+			                                                <div class="dropdown-menu">
+			                                                	<a class="dropdown-item">1년</a>
+			                                                    <a class="dropdown-item">5년</a>
+			                                                    <a class="dropdown-item">10년</a>
+			                                                    <a class="dropdown-item">영구</a>
+			                                                </div>
+			                                                <div class="document-form-checkbox">
+			                                                	<label>
+	                                                    			<input type="checkbox" class="ea-icheck ea-checkbox" id="document-form-expiry-check-box">
+	                                                    			<span>변경 금지</span>
+	                                                    		</label>
+	                                                    	</div>
+			                                                </td>
+                                                        <td class="table-active document-form-table-td"><span>보안 등급</span><i class="ik ik-help-circle"></i></td>
+                                                        <td>
+                                                        	<button class="btn btn-outline-dark btn-xs dropdown-toggle col-sm-9" id="document-form-security-drop-down" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    		보안등급 선택<i class="ik ik-chevron-down mr-0 align-middle"></i>
+                                               				</button>
+			                                                <div class="dropdown-menu">
+			                                                	<a class="dropdown-item">S등급</a>
+			                                                    <a class="dropdown-item">A등급</a>
+			                                                    <a class="dropdown-item">B등급</a>
+			                                                    <a class="dropdown-item">C등급</a>
+			                                                </div>
+			                                                <div class="document-form-checkbox">
+	                                                    		<label>
+		                                                    		<input type="checkbox" class="ea-icheck ea-checkbox" id="document-form-security-check-box">
+		                                                    		<span>변경 금지</span>
+	                                                    		</label>
+	                                                    	</div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    </div>
+                                
+                                 <!-- 문서 양식 기본설정 테이블  End -->
+                                 
+                                 <!-- 문서 양식 결재라인 포맷 설정 Start -->  
+                                    <div class="card-header d-block">                                   
+                                       
+                                        <h6>결재 양식
+                                       		<a id="approval-format-set-btn" data-toggle="modal" data-target="#approval-format" data-backdrop="static" data-keyboard="false">설정</a>
+                                    	</h6>
+                                       	<p id="selected-approval-format-1">결재 포맷 : 결재 (결재자,합의자,참조자 지정 가능)</p>
+                                   		<p id="selected-approval-format-2">결재 포맷 : 결재 (결재자,합의자,참조자 지정 가능)</p>
+                                   		<p id="selected-approval-format-3">결재 포맷 : 결재 (결재자,합의자,참조자 지정 가능)</p>
+                                   		<p id="selected-approval-format-4">결재 포맷 : 결재 (결재자,합의자,참조자 지정 가능)</p>
+                                    </div>
+                                 <!-- 문서 양식 결재라인 포맷 설정 End -->
+                                 
+                                 <!-- 문서 양식 상세내용 summer note editor Start -->    
+                                    <div class="card-body  table-border-style">
+                                    	<h6>상세 입력 </h6>                                   
+                                    <textarea id="document-form-detail-content-summer-note" rows="10" ></textarea>                              
+                                    </div>                      		
+                                <!-- 문서 양식 상세내용 summer note editor End -->
+                                <!-- 양식 생성 버튼 Start -->  
+                                    <div class="card-header d-block ea-submit-btn">                                   
+                                        <button type="button" class="btn btn-primary" id="insert-document-form-submit-btn">양식 생성</button>
+                                    </div>
+                                 	<!-- 양식 생성 버튼  End -->  	    
+                        		</div>                         		                                	 
+                        		</div>
+                        		
+                        		<!-- 양식생성 페이지 테이블 내 약칭,보존연한,보안등급 물음표 아이콘 Modal View Start --> 
+	                        	<div class="modal-dialog modal-sm mt-0 mb-0 ruletip" role="document">
+						        	<div class="modal-content">
+	                               		 <div class="modal-body">
+	                                   		 <p id="modal-content-type"></p>
+	                                	 </div>
+	                           		 </div>
+                           		</div>
+                        		<!-- 양식생성 페이지 테이블 내 약칭,보존연한,보안등급 물음표 아이콘 Modal View End -->
+                        		
+                        		<!-- 결재 포맷지정 Modal View Start -->
+		                        <div class="modal fade show" id="approval-format" tabindex="-1" role="dialog" aria-hidden="true">
+		                          <div class="modal-dialog modal-lg mt-0 mb-0 modal-dialog-centered" role="document">
+		                           <div class="modal-content">
+		                              <div class="modal-header">
+		                                  <h5 class="modal-title">결재 포맷을 선택하세요.</h5>
+		                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		                                      <span aria-hidden="true"></span>
+		                                  </button>
+		                              </div>
+		                              <div class="modal-body">
+		                                	<div class="card">
+		                                	 <form class="approval-format-radio">
+		                                	  <div class="approval-format-type-title">
+		                                		 <div class="form-radio">
+		                                		  <div class="radio">
+			                                		<label>
+	                                                    <input type="radio" name="radio" value="EAAPF001" checked="checked">
+	                                                    <i class="helper"></i>결재
+	                                                </label>
+                                                  </div>
+                                                 </div>
+		                                		</div>
+		                                		<img src="img/electronicApproval/approval_format.PNG" style="width: 90%; max-height: 250px;">
+		                                		<div class="approval-format-type-title">
+		                                		<div class="form-radio">
+		                                		  <div class="radio">
+			                                		<label>
+	                                                    <input type="radio" name="radio" value="EAAPF002"> 
+	                                                    <i class="helper"></i>신청
+	                                                </label>
+                                                  </div>
+                                                </div>		                             		
+		                                		</div>
+		                                		<div class="card-body">
+		                                		해당 결재 양식은 준비 중 입니다.
+		                                		</div>
+		                                		<div class="approval-format-type-title">
+		                                		<div class="form-radio">
+		                                		  <div class="radio">
+			                                		<label>
+	                                                    <input type="radio" name="radio" value="EAAPF003">
+	                                                    <i class="helper"></i>결재 후 송신
+	                                                </label>
+                                                  </div>
+                                                </div>		                                		
+		                                		</div>
+		                                		<div class="card-body">
+		                                		해당 결재 양식은 준비 중 입니다.
+		                                		</div>
+		                                		<div class="approval-format-type-title">
+		                                		<div class="form-radio">
+		                                		  <div class="radio">
+			                                		<label>
+	                                                    <input type="radio" name="radio" value="EAAPF004">
+	                                                    <i class="helper"></i>회람
+	                                                </label>
+                                                  </div>
+                                                </div>		                                		
+		                                		</div>
+		                                		</form>
+		                                		<div class="card-body">
+		                                		해당 결재 양식은 준비 중 입니다.
+		                                		</div>
+		                                	</div>
+		                              </div>
+		                              <div class="modal-footer">
+		                                  <button type="button" class="btn btn-primary approval-format-set-btn">확인</button>
+		                              </div>
+		                          	</div>
+		                         </div>
+		                       </div>
+	                     	<!-- 결재 포맷지정 Modal View Start --> 
+		</th:block>
+
+	<th:block layout:fragment="customJs">        
+        <script>window.jQuery || document.write('<script src="../src/js/vendor/jquery-3.3.1.min.js"><\/script>')</script>
+        <script src="/plugins/popper.js/dist/umd/popper.min.js"></script>
+        <script src="/plugins/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="/plugins/perfect-scrollbar/dist/perfect-scrollbar.min.js"></script>
+        <script src="/plugins/screenfull/dist/screenfull.js"></script>
+        <script src="/plugins/sweetalert/dist/sweetalert.min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.8/summernote.js"></script>
+        <script src="/summernote/lang/summernote-ko-KR.js"></script>
+        <script src="dist/js/theme.js"></script>
+        <script src="/js/layouts.js"></script>
+	</th:block>
+</html>

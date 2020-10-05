@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
+
+<th:block layout:fragment="customTitle">
+	<title>boardUpdateForm</title>
+</th:block>
+
+
+<th:block layout:fragment="customScript">
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+<!-- 섬머노트 에디터 css, js Start -->
+
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.16/dist/summernote-lite.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.16/dist/summernote-lite.min.js"></script>
+<script src="summernote/lang/summernote-ko-KR.js"></script>
+<!-- 섬머노트 에디터 css, js End -->
+<script type="text/javascript">
+
+	$(document).ready(function() {
+	    $('#summernote').summernote({
+	            height: 500,                 // set editor height
+	            minHeight: null,             // set minimum height of editor
+	            maxHeight: null,             // set maximum height of editor
+	            focus: true,
+	            lang: 'ko-KR'// set focus to editable area after initializing summernote
+	    });
+	    
+	    
+	    $('#boardUpdateBtn').click(function(){
+	    	var boardCategory = $('[name=boardCategory]')
+	    	var boardTitle = $('[name=boardTitle]')
+	    	var boardContentText = $('[name=boardContentText]')
+	    	
+	    	console.log(boardCategory);
+	    	console.log(boardTitle);
+	    	console.log(boardContentText);
+	    	
+	    	if(boardCategory.val() == '카테고리 선택'){
+	    		alert('카테고리를 선택해 주세요.')
+	    		boardCategory.focus();
+	    	}else if(boardTitle.val() == ''){
+	    		alert('제목을 입력해 주세요.')
+	    		boardTitle.focus();
+	    	}else if(boardContentText.val() == ''){
+	    		alert('내용을 입력해 주세요.')
+	    		boardContentText.focus();
+	    	}else{
+	    		$('#boardUpdateForm').submit();
+	    	}
+
+	    	
+	    })
+	    
+	    $('#cancleBtn').click(function(){	// 취소 버튼
+	    	history.back()
+
+	    })
+	    
+	    
+	    
+	});
+	
+	
+	
+	
+
+</script>
+</th:block>
+
+<th:block layout:fragment="customContents">
+	
+		
+	<!-- 게시판 페이지 헤더 Start -->
+	<div class="col-md-12">
+
+		<div class="page-header" >
+	       	<div class="row align-items-end">
+	       	
+	       		<!-- 페이지 헤더 타이틀 -->
+	           	<div class="col-lg-8">
+	               	<div class="page-header-title">
+	               
+	                   	<i class="ik ik-credit-card bg-blue"></i>
+	                   	<div class="d-inline">
+	                       	<h5>그룹웨어</h5>
+	                       	<span>(주)한국 스마트 정보 교육원</span>
+	                   	</div>
+	                   
+	               	</div>
+	           	</div>
+	           	
+	           	<!-- 페이지 헤더 목차 -->
+	           	<div class="col-lg-4">
+	               	<nav class="breadcrumb-container" aria-label="breadcrumb">
+	               	
+	                   	<ol class="breadcrumb">
+	                   	
+	                   		<!-- index 이동 버튼 -->
+	                       	<li class="breadcrumb-item">
+	                           	<a href="/">
+	                           		<i class="ik ik-home"></i>
+	                           	</a>
+	                       	</li>
+	                       	
+	                       	<!-- 게시판 최초 list 이동 버튼 -->
+	                       	<li class="breadcrumb-item">
+	                           	<a href="/boardList">게시판</a>
+	                       	</li>
+	                       	
+	                       	<!-- 현재 페이지 표시 -->
+	                       	<li class="breadcrumb-item active" aria-current="page">
+	                       		글 수정
+	                       	</li>
+	                       	
+	                   	</ol>
+	                   	
+	               	</nav>
+	          	</div>
+	       	</div>
+		</div>
+      
+       	<!-- 글수정 폼 Start -->
+       	<div style="margin: 25px 0 0 0">
+          
+        	<th:block th:each="b:${boardList}">
+             
+              	<form id="boardUpdateForm" action="/boardUpdate" class="forms-sample" method="post" enctype="multipart/form-data">
+              
+        	  		<!-- 카테고리 선택 -->
+                  	<div class="row">
+                      	<div class="col-md-3"> 
+                          	<div class="form-group">
+                          
+                              	<label for="exampleSelectGender">구분</label>
+                              
+                              	<select name="boardCategory" class="form-control" id="exampleSelectGender">
+                              
+                              			<option>카테고리 선택</option>
+                              			
+                              			<option value="공지">공지</option>
+                              		
+                              			<!-- 부서 리스트 option값 생성 -->
+                                  		<th:block th:each="d:${departList}">
+                                  			
+                                  			<!-- 현재 게시글 카테고리 selected 상태 표시 -->
+                                  			<th:block th:if="${d.departList == b.boardCategory}"> 	
+				                				<option th:value="${d.departList}" selected="selected">[[${d.departList}]] </option>
+				                			</th:block>
+				                			
+				                			<th:block th:unless="${d.departList == b.boardCategory}"> 
+				                				<option th:value="${d.departList}">[[${d.departList}]] </option>
+				                			</th:block>
+				                		
+                						</th:block>
+                					
+                              	</select>
+                              
+                          	</div>
+                      	</div>
+                	</div>
+                  
+                  	<!-- 게시글 제목 -->
+                  	<div class="row">
+                      	<div class="col-md-8">
+                      	
+                          	<div class="form-group">
+                          	
+                              	<label for="exampleInputPassword4">제목</label>
+                      			<input name="boardTitle" type="text" class="form-control" th:value="${b.boardTitle}">
+                      			
+                          	</div>
+                          	
+                      	</div>
+                  	</div>
+                  	
+                  	<!-- 파일 첨부 -->
+                  	<div class="row">
+	                  	<div class="form-group col-md-5" >
+	                  	
+	                  		<!-- 파일 첨부 안내 -->
+	                      	<label>		
+	                      	
+	                      		파일 첨부
+	                      		 
+		                      	<span style="color:#919191;">ㅣ</span>
+		                      	
+		                      	최대 5MB
+		                      	
+		                      	<span style="color:#919191;">까지 파일을 올리실 수 있습니다.</span>
+		                      	
+	                      	</label>
+	                      
+	                      		<button type="button" class="file-add-btn-update btn btn-outline-dark btn-xs">파일 추가</button>
+	                      	
+	                      	<!-- 파일 선택 폼 -->
+	                      	<div class="file-group-div input-group col-xs-5">
+	                      	
+	                      		<!-- 첨부된 파일이 없을 시 -->
+	                      		<th:block th:if="${#strings.isEmpty(boardFileList)}">	
+	                      			
+	                      			<div class="file-input-group input-group col-xs-5">
+	                      			
+	                      				<input type="file" name="file" class="file-upload-default"/>	<!-- 파일 정보 저장 hidden input태그 -->
+	                      				
+	                      				<input type="text" class="form-control file-upload-info" placeholder="선택된 파일이 없습니다." readonly="readonly">
+	                      				
+	                      				<a class="file-upload-cancle" href="#" style="padding:0;">		
+	                          				<i class="ik ik-x-square" style="color: red;"></i>
+		                          		</a>
+		                          		
+		                          		<div style="width:20px;"></div>			
+		                          
+		                          		<span class="input-group-append">
+		                          			<button class="file-upload-browse btn btn-primary" type="button">파일 선택</button>
+		                          		</span>
+		                          		
+		                          		<input type="hidden" class="fileSizeCheck">
+		                          		
+	                      			</div>
+	                      			
+	                      		</th:block>
+	                      		
+	                      		<!-- 첨부된 파일이 있을 시 파일 리스트 select-->
+                      			<th:block th:each="f:${boardFileList}">	
+                      				
+                      				<div class="file-input-group input-group col-xs-5">
+                      				
+	                      				<input type="file" name="file" class="file-upload-default"/>	<!-- 파일 정보 저장 hidden input태그 -->
+	                      				
+	                        			<input type="text" class="form-control file-upload-info" placeholder="선택된 파일이 없습니다."
+	                        			readonly="readonly" th:value="${f.boardFileOriginalName + ' ' + f.fileSize + f.fileUnit}" 
+	                        			th:attr="fileNum=${f.boardFileNum}">	
+		                          			
+	                          			<a class="file-update-cancle" href="#" style="padding:0;">		
+	                          				<i class="ik ik-x-square" style="color: red;"></i>
+		                          		</a>
+		                          		
+		                          		<input type="hidden" name="boardFileNum" th:value="${f.boardFileNum}">
+		                          		
+		                          		<input type="hidden" class="fileSizeCheck" th:value="${f.boardFileSize}">
+		                          		
+		                          	
+		                          		<div style="width:20px;"></div>			
+
+	                          		</div>
+	                          		
+                         		</th:block>
+                         		
+                         		
+                         	
+	              
+	                      	</div>
+	                      	
+	                  	</div>
+                  	</div>
+                  
+                  	<div class="row">
+	                  	<div class="form-group col-md-12">
+	                  	
+	                      	<label for="exampleTextarea1">내용</label>
+	                      	<textarea name="boardContentText" id="summernote" th:utext="${b.boardContentText}"></textarea>
+	                      	
+	                  	</div>
+                  	</div>
+                  	
+                  	
+                  	<input type="hidden" name="boardNum" th:value="${b.boardNum}">
+                  	<input type="hidden" name="selectPage" th:value="${pagingDto.selectPage}">
+                  	<input type="hidden" name="viewNum" th:value="${pagingDto.viewNum}">
+                  	<input type="hidden" name="searchBoardCategory" th:value="${searchDto.boardCategory}">
+                  	<input type="hidden" name="isSearchCheck" th:value="${searchDto.isSearchCheck}">
+                  	<input type="hidden" name="searchBy" th:value="${searchDto.searchBy}">
+                  	<input type="hidden" name="searchDate" th:value="${searchDto.searchDate}">
+                  	<input type="hidden" name="searchInput" th:value="${searchDto.searchInput}">
+                  	
+              	</form>
+              	
+              </th:block>
+              
+              	<button id="cancleBtn" class="btn btn-light float-md-right">취소</button>
+                <button id="boardUpdateBtn" type="button" class="btn btn-primary mr-2 float-md-right">확인</button>
+                
+       	</div>
+      <!-- 글수정폼 End -->
+ 
+   </div>
+
+</th:block>
+
+
+
+
+<th:block layout:fragment="customJs">
+
+	<script>window.jQuery || document.write('<script src="src/js/vendor/jquery-3.3.1.min.js"><\/script>')</script>
+	<script src="plugins/popper.js/dist/umd/popper.min.js"></script>
+	<script src="plugins/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script src="plugins/perfect-scrollbar/dist/perfect-scrollbar.min.js"></script>
+	<script src="plugins/screenfull/dist/screenfull.js"></script>
+	<script src="plugins/datatables.net/js/jquery.dataTables.min.js"></script>
+	<script src="plugins/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+	<script
+		src="plugins/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+	<script
+		src="plugins/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
+	<script src="plugins/jvectormap/jquery-jvectormap.min.js"></script>
+	
+	<script src="plugins/moment/moment.js"></script>
+	<script src="js/form-components-file.js"></script>	<!-- 파일 첨부 관련 커스텀 js -->
+	<script src="plugins/d3/dist/d3.min.js"></script>
+	<script src="plugins/c3/c3.min.js"></script>
+	<script src="js/tables.js"></script>
+	<script src="js/widgets.js"></script>
+	<script src="js/charts.js"></script>
+	<script src="dist/js/theme.js"></script>
+	<script src="js/jquery-jvectormap-2.0.5.min.js"></script>
+	<!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+	<script>
+	    (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+	    function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+	    e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+	    e.src='https://www.google-analytics.com/analytics.js';
+	    r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+	    ga('create','UA-XXXXX-X','auto');ga('send','pageview');
+	</script>
+</th:block>
+
+</html>

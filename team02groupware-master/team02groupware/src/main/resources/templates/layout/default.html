@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html  class="no-js" lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+	<!-- head st -->
+	
+<div th:replace="fragments/head :: headFragment"></div>
+	
+	<!-- head ed -->
+	
+    <body>
+        <!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+		
+		<!-- wrapper st -->
+		
+        <div class="wrapper">
+        
+        	<!-- header st -->
+        	
+            <div th:replace="fragments/header :: headerFragment"></div>
+            
+			<!-- header ed -->
+			
+			<!-- page-wrap st -->
+			
+            <div class="page-wrap">
+            
+            	<!-- left sidebar st -->
+            	
+                <div th:replace="fragments/left :: leftFragment"></div>
+                
+                <!-- left sidebar ed -->
+                
+                
+                <!-- main-content st -->
+                
+                <div class="main-content">
+                    <div class="container-fluid">
+                    
+                    	<th:block layout:fragment="customContents"></th:block>
+                        
+                    </div>                    
+                </div>
+                
+                <!-- main-content ed -->
+				
+				<!-- right sidebar st -->
+				
+                <div th:replace="fragments/right :: rightFragment"></div>
+				
+				<!-- right sidebar ed -->
+				
+				<!-- chat panel st -->
+				
+                <div th:replace="fragments/chat_panel :: chat_panelFragment"></div>
+                
+				
+				<!-- chat panel ed -->
+				
+				<!-- footer st -->
+				
+                <div th:replace="fragments/footer :: footerFragment"></div>
+                
+                
+                <!-- footer ed -->
+                
+            </div>
+            
+            <!-- page-wrap ed -->
+            
+        </div>
+        
+        <!-- wrapper ed -->
+        
+        
+		<!-- modal apps-modal st -->
+        
+        <div th:replace="fragments/apps_modal :: apps_modalFragment"></div>
+        
+        <!-- modal apps-modal ed -->
+        
+        <!-- script st -->
+          
+		<th:block layout:fragment="customJs"></th:block>
+		
+		<!-- script ed -->
+    </body>
+
+</html>

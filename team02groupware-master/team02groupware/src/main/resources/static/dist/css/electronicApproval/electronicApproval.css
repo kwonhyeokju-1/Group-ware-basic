@@ -1,0 +1,304 @@
+@charset "UTF-8";
+	 /*
+	  * @file electronic_approval.css
+	  * @brief 전자결재 관련 페이지 css
+	  * @author 김건훈
+	  */	
+	.ik-help-circle{	/* 사내전자결재규정 물음표아이콘 css */
+		color: #bcc8d8;
+		margin-left: 15px;
+		cursor:pointer;
+	}
+
+	.ruletip{		/* 사내전자결재규정 Modal css */
+		position: absolute;
+		display : none; 
+		z-index: 1051;	
+	}
+	
+	.dropdown-item{		/* 검색키워드 드롭다운 선택항목 css */
+		cursor:pointer;
+	}
+	
+	.border-checkbox-label { /* 양식함 테이블 row에 위치한 체크박스 css */
+		margin-bottom : 0px;
+	}
+	.document-form-check-box{ /* 양식함 테이블 row에 위치한 체크박스 css */
+		margin-top: 3px;
+	}
+
+	.document-form-table input{ /* 전자결재  FORM(양식생성 테이블) row에 위치한 input box css */
+		border-color : #343a40; 
+	}
+	.document-form-table td{  /* 전자결재  FORM(양식생성, 기안하기) 테이블 요소 CSS */
+		border-right: 1px solid #dee2e6;
+	}
+	.document-form-table tr:last-child { /* 전자결재  FORM(양식생성, 기안하기) 테이블 요소 CSS */
+		border-bottom: 1px solid #dee2e6; 
+	} 
+	
+	.document-form-checkbox{ /* 양식생성 테이블 row에 위치한 check box css */
+		margin-top: 15px;
+	}
+	
+	.document-form-table-td{ /* 양식생성 테이블 td css */
+		text-align: center;
+	}
+	
+	.btn{/* 버튼 관련 css */
+		height: unset;
+	}
+
+	.select2-container { /* select2 box css */
+  		width: 100% !important;
+	}
+	
+	.list-group li{ /* 결재자 설정부분 리스트 css */
+		border-color: #fff;
+  		
+	}
+	.search-keyword-btn{ /* 양식함 관리 화면 검색 select box css */
+	 width: 100px;
+	 height: 32px;
+	}
+	
+ 	.card .card-header{/*  card, card-header 밑줄제거 */
+	border-bottom: unset; 
+	} 
+	
+ 	.electronic-approval-form{ /* 전자결재 FORM 요소 정렬 CSS */
+		width: 80%;
+		margin-top: 15px;
+	} 
+	
+	.document-draft-btn{/* 기안하기 화면 기본설정 테이블 버튼 */
+		width: 155px;
+		display: inline-block;
+				
+	} 
+
+	
+	#approval-format-set-btn{ /* 양식 생성 화면 결재 양식 설정 btn CSS */
+		color: #007bff;
+		margin-left: 10px;
+		cursor: pointer;
+		font-size: 0.9rem;
+	}
+	
+	.document-draft-title, .company-code-title{ /* 기안하기 화면 제목 input box CSS */
+    	border-color: #343a40;
+	}
+	
+	.approval-format-type-title{ /* 결재 양식 화면 결재양식 설정 CSS */
+		padding-left: 20px;
+	}
+	
+	.table-hover{ /* 전자결재 관련 테이블 CSS*/
+		cursor: pointer;
+	}
+	
+	.document-form-type-clone{ /* 양식 분류설정 <li> clone 용 CSS */
+		display: none;
+	}
+	
+	.document-code-setting-table td{ /* 관리자용 기본설정 페이지에서 문서번호 설정 테이블 CSS */
+		vertical-align: top !important;
+	}
+	
+	.pagination-btn-group{ /* 전자결재 관련 테이블 페이지네이션 버튼 관련 CSS */
+		text-align: center; 
+		margin-top: 50px;
+	}
+	
+	.contents-quantity{ /* 전자결재 관련 테이블 컨텐츠 수 표시 관련 CSS */
+		float: left; 
+		margin-top: 25px;
+	}
+	
+	.pagination{ /* 전자결재 관련 테이블 페이지네이션 버튼 관련 CSS */
+		justify-content: center;
+	}
+	
+	.table-nav{ /* 전자결재 관련 테이블 상단 삭제 및 검색 탭 관련 CSS */
+		margin-bottom: 20px;
+	}
+	
+	.table-row-delete-nav{ /* 전자결재 관련 테이블 row 삭제 버튼 포함 NAV 관련 CSS */
+		display: inline-block;
+		visibility: hidden;
+	}
+	
+	.ea-submit-btn{ /* 전자결재 submit 버튼 관련 CSS */
+		text-align: center;
+	}
+	
+	.ea-submit-btn>button{ /* 전자결재 submit 버튼 관련 CSS */
+		width: 100px;
+	}
+	
+	.table-row-delete-nav>li{ /* 전자결재 관련 테이블 row check시 테이블 상단에 삭제 버튼 포함된 <li> CSS */
+		display: inline-block;
+		margin-right: 5px;
+	}
+	
+	.document-form-checkbox > label > span{ /* 양식 생성 page 변경 금지 CSS */
+		vertical-align: middle;
+		cursor: pointer;
+	}
+	.ea-table{ /* 전자결재 관련 테이블 CSS */
+		text-align: center;
+	}
+	
+	.ea-card-header{ /* 전자결재 각 페이지 title 포함되어있는 head 부분 CSS */
+		border-bottom: 1px solid #f1f1f1 !important;
+	}
+	
+	.document-form-list-top-nav{ /* 양식함 관리 리스트 top nav 관련 CSS */
+		margin-left: 4px;
+	}
+	
+	.add-file-nav{ /* 첨부파일 영역 관련 CSS */
+		margin-right: 5px;
+	}
+	
+	.document-detail-view-top-table{ /* 문서상세보기 화면 상단 table 관련 CSS */
+		margin-bottom: 0px !important;
+		 border-right: 1px solid #cdcdcd !important;
+		 border-left: 1px solid #cdcdcd !important;
+		 border-top: 1px solid #cdcdcd !important;
+	}
+	
+	.detail-view-table-active{ /* 문서상세보기 화면 table 관련 CSS */
+		background: #f9f9f9;
+		border-right: 1px solid #cdcdcd !important;
+		width: 96px;
+	}
+	
+	.detail-view-table-inactive{ /* 문서상세보기 화면 table 관련 CSS */
+		width: 358.4px;
+		border-right: 1px solid #cdcdcd !important;
+	}
+	
+	.detail-view-document-type{ /* 문서상세보기 화면 상단 문서종류 관련 CSS */
+		font-size: 32px;
+		text-align: center;
+	}
+	
+	.detail-view-top-table-lg-td{ /* 문서상세보기 화면 상단 테이블 td 관련 CSS */
+		width: 140px !important;
+	}
+	
+	.approval-comment-tab{ /* 문서상세보기 화면 코멘트 탭 관련 CSS */
+		background-color: #d9dde0;
+		padding: 8px 34px;
+		cursor: pointer;
+	}
+	
+	.approval-history-tab{ /* 문서상세보기 화면 이력 탭 관련 CSS  */
+		background-color: #d9dde0;
+		padding: 8px 34px;
+		cursor: pointer;
+	}
+	
+	.approval-comment-history-tab-active{ /* 활성화 된 의견 또는 이력 활성화 관련 CSS */
+		background-color: #f6f7f8 !important;
+	}
+	
+	.approval-comment-body{ /* 문서상세보기 화면 코멘트 바디 관련 CSS */
+		background-color: #f6f7f8;
+		padding: 30px 20px;
+		display: block;
+	}
+	
+	.approval-history-body{ /* 문서상세보기 화면 이력 바디 관련 CSS */
+		background-color: #f6f7f8;
+		padding: 30px 20px 10px 30px;
+		display: none;
+	}
+	
+	.approval-comment-text{ /* 문서상세보기 화면 코멘트 textarea 관련 CSS */
+		border: 1px solid #fff;
+		resize: none;
+		padding: 5px;
+		width: 93%;
+		height:60px;
+		overflow: hidden;
+		display: inline-block;
+	}
+	
+	.approval-comment-btn{ /* 문서상세보기 화면 코멘트 등록 버튼 관련 CSS */
+		display: inline-block;
+	    position: absolute;
+	    padding: 15px 10px;
+	}
+	
+	.approval-commenter-ul > li{ /* 문서상세보기 화면 코멘트 등록자 이름,등록일시 포함 ul 관련 CSS */
+		margin-right: 20px;
+	}
+
+	.approval-commenter-cancel-img{ /* 문서상세보기 화면 코멘트 삭제 img 관련 CSS */
+		float: right; 
+		margin-top : 5px; 
+		width: 8px; 
+		height: auto;
+		cursor: pointer;
+		display: none;
+	}
+	
+	.ea-rule-update-before{ /* 사내 전자결재 규정 수정 전 화면 관련 CSS */
+		display: block;
+	}
+	
+	.ea-rule-update-after{ /* 사내 전자결재 규정 수정 중 화면 관련 CSS */
+		display: none;
+	}
+	
+	.ea-rule-update-btn-before{ /* 사내 전자결재 규정 수정 전 버튼 관련 CSS */
+		display: block;
+	}
+	
+	.ea-rule-update-btn-after{ /* 사내 전자결재 규정 수정 중 버튼 관련 CSS */
+		display: none;
+	}
+	.document-form-type-update-done-btn{ /* 문서 양식 분류 수정완료 버튼 */
+		display: none;
+		width:20%;
+		color: white;
+	}
+	#selected-approval-format-1{ /* 선택된 결재양식 1 (결재) 관련css */
+		display: none;
+	}
+	#selected-approval-format-2{ /* 선택된 결재양식 2 (신청) 관련css */
+		display: none;
+	}
+	#selected-approval-format-3{ /* 선택된 결재양식 3 (결재 후 송신) 관련css */
+		display: none;
+	}
+	#selected-approval-format-4{ /* 선택된 결재양식 4 (회람) 관련css */
+		display: none;
+	}
+	.modal-body-document-form-approval-format{ /* 문서양식 미리보기 모달 body - 결재양식포맷관련 CSS */
+		margin-bottom: 16px;
+	}
+	#document-form-modal-view-title{
+		text-align: center;
+		margin-bottom: 16px;
+	}
+	#delete-document-form-btn{ /* 문서양식 상세보기 페이지 내 문서양식 삭제 버튼 관련 CSS */
+		cursor: pointer;
+	}
+	#draft-document-form-type-drop-down{ /* 문서 기안하기 페이지 내 문서양식 분류선택 드롭다운 관련 CSS*/
+		visibility: hidden;
+	}
+	.draft-document-form-name-drop-down{ /* 문서 기안하기 페이지 내 문서양식 종류선택 드롭다운 관련 CSS */
+		display: none;
+	}
+	#project-document-section{ /* 문서양식종류가 프로젝트 일때 프로젝트 선택영역 관련 CSS */
+		visibility: hidden;
+	}
+	#draft-approval-format-table-after{
+		visibility: hidden;
+	}
+	#draft-documnet-contents{
+		display: none;
+	}
